@@ -1,0 +1,9 @@
+DearMonsterClientApp/node_modules/
+DearMonsterClientApp/client/node_modules/
+
+DearMonsterClientApp/client/public/assets/gif/
+DearMonsterClientApp/client/build/
+
+DearMonsterServer/node_modules/
+
+.DS_Store
