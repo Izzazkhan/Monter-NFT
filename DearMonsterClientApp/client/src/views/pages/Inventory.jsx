@@ -32,12 +32,12 @@ const Inventory = ({ match }) => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
-		dispatch(connectUserSuccess(accounts[0]))	
+		dispatch(connectUserSuccess(accounts[0]))
 	};
 
 	useEffect(() => {
 		getCave();
-  }, [window.web3])
+	}, [window.web3])
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -48,7 +48,7 @@ const Inventory = ({ match }) => {
 			window.loaded_web3 = true
 		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-	 }
+		}
 
 		let web3 = window.web3
 		// Load account
@@ -59,20 +59,30 @@ const Inventory = ({ match }) => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// if (DearMonsterNetwork) {
 		if (true) {
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 			var _attributes = await DearMonsterContract.methods.getAttributes().call()
+
+
+			console.log("===== _attributes =====")
+			console.log(_attributes)
+
+
 			var _elementPath = await DearMonsterContract.methods.getElementPath().call()
+
+			console.log("===== _elementPath =====")
+			console.log(_elementPath)
+
 			setPaths(_elementPath)
 			setAttributes(_attributes)
 		}
-	};	
+	};
 
-	function getData () {
+	function getData() {
 		// if (posts.length > 0) 
 		// 	return
 		let _posts = []
-		for (let i = 0 ; i < attributes.length; i++ ){
+		for (let i = 0; i < attributes.length; i++) {
 			for (let j = 0; j < data.length; j++) {
 				if (data[j]['img'] == attributes[i][2] && attributes[i][0] == account) {
 					let post = {}
@@ -90,7 +100,7 @@ const Inventory = ({ match }) => {
 					post.values['OwnerID'] = `${attributes[i][0].substring(0, 4)}...${attributes[i][0].slice(-4)}`
 					_posts.push(post);
 				}
-				
+
 			}
 			// data.map((post) => {
 			// 	post['rating'] = attributes[i][5]
@@ -112,7 +122,7 @@ const Inventory = ({ match }) => {
 	useEffect(() => {
 		console.log('**************,', posts.length)
 		if (posts.length > 0)
-		  return
+			return
 		getData();
 	}, [attributes])
 
@@ -120,10 +130,10 @@ const Inventory = ({ match }) => {
 		<div>
 			<CurrenPageTitle title='Inventory'></CurrenPageTitle>
 			<NavLinks match={match} />
-			{posts.length > 0 ? ''  :
+			{posts.length > 0 ? '' :
 				<div className='container'>
 					<div className='center'>
-						{userId  ? (
+						{userId ? (
 							<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 								You Don't have any inventory
 							</p>
@@ -151,21 +161,21 @@ const Inventory = ({ match }) => {
 						);
 					})}
 				</div>
-				{ pageData.length == 0 ? (
-							''
-						) : (
-							<footer className='center pb-8 pt-4'>
-								<img
-									src='/assets/imgs/ArrowLeft.png '
-									className='cursor'
-									onClick={previousPage}
-								/>
-								<p className='text-white fs-22 mx-5'>
-									{currentPage}/{totalPages}
-								</p>
-								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
-							</footer>
-						)}				
+				{pageData.length == 0 ? (
+					''
+				) : (
+					<footer className='center pb-8 pt-4'>
+						<img
+							src='/assets/imgs/ArrowLeft.png '
+							className='cursor'
+							onClick={previousPage}
+						/>
+						<p className='text-white fs-22 mx-5'>
+							{currentPage}/{totalPages}
+						</p>
+						<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+					</footer>
+				)}
 			</div>
 		</div>
 	);

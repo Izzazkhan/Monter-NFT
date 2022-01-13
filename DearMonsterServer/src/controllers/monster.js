@@ -12,8 +12,6 @@ exports.store = async (req, res) => {
     try {
         const { title } = req.body;
         
-
-
         // Must uncomment for verification
         // const monster = await Monster.findOne({title});
         // if (monster) return res.status(401).json({message: 'The monster already exist.'});
@@ -42,10 +40,12 @@ exports.show = async function (req, res) {
 
 exports.update = async function (req, res) {
     try {
-        const { update, id } = req.body;
+
+        const id = req.params.id;
+        const update = req.body;
         // const userId = req.user._id;
 
-
+        // const userId = req.user._id;
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 

@@ -45,8 +45,15 @@ exports.show = async function (req, res) {
 
 exports.update = async function (req, res) {
     try {
-        const { update, id } = req.body;
-        const userId = req.user._id;
+
+
+        const id = req.params.id;
+        const update = req.body;
+        // const userId = req.user._id;
+
+        console.log("=================")
+        console.log(update)
+        console.log(id)
 
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
@@ -57,10 +64,10 @@ exports.update = async function (req, res) {
         if (!req.file) return res.status(200).json({minion, message: 'Minion has been updated'});
 
         //Attempt to upload to cloudinary
-        const result = await uploader(req);
-        const minon_ = await Minion.findByIdAndUpdate(id, {$set: update}, {$set: {profileImage: result.url}}, {new: true});
+        // const result = await uploader(req);
+        // const minon_ = await Minion.findByIdAndUpdate(id, {$set: update}, {$set: {profileImage: result.url}}, {new: true});
 
-        if (!req.file) return res.status(200).json({user: user_, message: 'Minion has been updated'});
+        // if (!req.file) return res.status(200).json({user: user_, message: 'Minion has been updated'});
 
     } catch (error) {
         res.status(500).json({message: error.message});

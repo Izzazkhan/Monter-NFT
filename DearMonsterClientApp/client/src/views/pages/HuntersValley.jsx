@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { CSVLink } from 'react-csv';
 import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { notification } from "../../utils/notification";
+import {notification} from "../../utils/notification";
 import data from "../../data/Post.json";
 import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from "../../contracts/DMSToken.json";
@@ -26,11 +26,11 @@ const HuntersValley = () => {
 	const [attributes, setAttributes] = useState([]);
 	const [ratings, setRatings] = useState([]);
 	const [numberList, setNumberList] = useState([]);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch();	 
 
 	const headers = ['Token ID', 'Wallet'];
 	const star_mappings = {
-		'Star 1': 1,
+		'Star 1': 1, 
 		'Star 2': 2,
 		'Star 3': 3,
 		'Star 4': 4,
@@ -63,7 +63,7 @@ const HuntersValley = () => {
 		else if (window.web3) {
 			window.web3 = new Web3(window.web3.currentProvider)
 			window.loaded_web3 = true
-		}
+		} 
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
@@ -76,16 +76,16 @@ const HuntersValley = () => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
 		console.log("=============================")
 		console.log(DearMonsterContract.methods)
 		console.log("=============================")
 
 		var _owner = await DearMonsterContract.methods.owner().call()
 		setIsOwner(_owner === accounts[0] || accounts[0] === '0xd7EeFFb68C815FFc8D0E77abdd2F5c8Ec65b58C7')
-		console.log('=============  owner address =======\n', _owner)
-		console.log('=============  owner address =======\n', accounts[0])
-
+		console.log('=============  owner address =======\n', _owner)	
+		console.log('=============  owner address =======\n', accounts[0])	
+		
 		var maxSupply = await DearMonsterContract.methods.getMaxSupply().call()
 		var maxPurchaseLimit = await DearMonsterContract.methods.getMaxPurchaseLimit().call()
 		var _price = await DearMonsterContract.methods.getPrice().call()
@@ -115,19 +115,19 @@ const HuntersValley = () => {
 
 		const value = document.getElementById('caveprice').value
 		setPrice(value);
-
+		
 		let web3 = window.web3
-		let accounts = await web3.eth.getAccounts()
+		let accounts = await web3.eth.getAccounts()	
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-		await DearMonsterContract.methods.setPrice(parseInt(value)).send({ from: accounts[0] });
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		await DearMonsterContract.methods.setPrice(parseInt(value)).send({from:accounts[0]});	
 	}
-
+	
 	const handleCaveLimitChange = async (e) => {
 		if (!userId) return
-
+		
 		const value = document.getElementById('maxcavenumber').value
 		setCaveLimit(value);
 
@@ -136,13 +136,13 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-		await DearMonsterContract.methods.setMaxSupply(parseInt(value)).send({ from: accounts[0] });
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		await DearMonsterContract.methods.setMaxSupply(parseInt(value)).send({from:accounts[0]});	
 	}
 
 	const handleMaxPurchaseCount = async (e) => {
 		if (!userId) return
-
+		
 		const value = document.getElementById('maxpurchasecount').value
 		setPurchaseLimit(value);
 
@@ -151,23 +151,23 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(value)).send({ from: accounts[0] });
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(value)).send({from:accounts[0]});		
 	}
 
 	const handleQuantityChange = (e) => {
 		const { value } = e.target;
 		setQuantity(value);
 	}
-
+	
 	const export_csv = (arrayHeader, arrayData, delimiter, fileName) => {
 		let header = arrayHeader.join(delimiter) + '\n';
 		let csv = header;
-		arrayData.forEach(array => {
-			csv += array.join(delimiter) + "\n";
+		arrayData.forEach( array => {
+				csv += array.join(delimiter)+"\n";
 		});
 
-		let csvData = new Blob([csv], { type: 'text/csv' });
+		let csvData = new Blob([csv], { type: 'text/csv' });  
 		let csvUrl = URL.createObjectURL(csvData);
 
 		let hiddenElement = document.createElement('a');
@@ -199,7 +199,7 @@ const HuntersValley = () => {
 			else if (parseInt(attributes[i][5]) === 5) data5_cnt += 1
 		}
 		export_csv(headers, data, ',', 'export.csv')
-		export_csv(['Star level', 'Total Count'],
+		export_csv(['Star level', 'Total Count'], 
 			[['Star1', data1_cnt], ['Star2', data2_cnt], ['Star3', data3_cnt], ['Star4', data4_cnt], ['Star5', data5_cnt]],
 			',', 'summary.csv'
 		)
@@ -213,7 +213,7 @@ const HuntersValley = () => {
 		else if (window.web3) {
 			window.web3 = new Web3(window.web3.currentProvider)
 			window.loaded_web3 = true
-		}
+		} 
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
@@ -228,9 +228,9 @@ const HuntersValley = () => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// if (DearMonsterNetwork && DMSTokenNetwork) {
-		if (true) {
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
+	  if (true) {
+			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 			// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)			
 
@@ -244,45 +244,46 @@ const HuntersValley = () => {
 					type: 'error',
 					message: 'Not enough NFTs!',
 				});
-				notify();
+				notify();				
 				return
 			}
 
 			// var _owner = await DearMonsterContract.methods.owner().call()
 			DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (balance) {
-				console.log('==========balance==========', balance)
-
+        		console.log('==========balance==========', balance)
+				
 				var tokensOfOwner = await DearMonsterContract.methods.tokensOfOwner(accounts[0]).call()
 				console.log('=========== tokenOfOwner =========', tokensOfOwner)
 				var _amount = Number(quantity * price * 10 ** 18);
-				var amount = _amount.toLocaleString('fullwide', { useGrouping: false })
+				var amount = _amount.toLocaleString('fullwide', {useGrouping:false})
 				if (_amount >= balance) {
 					let notify = notification({
 						type: 'error',
 						message: 'Insufficient fund!',
 					});
-					notify();
-					return
+					notify();				
+					return				
 				}
-				await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-				await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
+				
+				await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({from:accounts[0]});
+				
+				await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({from:accounts[0]});
 				var _elementPath = await DearMonsterContract.methods.getElementPath().call()
 				console.log(_elementPath)
+				
 				var _attributes = await DearMonsterContract.methods.getAttributes().call()
 				console.log(_attributes)
-
-
-
+				
 				Swal.fire({
 					icon: 'success',
 					title: 'Cave Minted Successfully',
 					text: 'Please check Inventory for minted Cave!'
-				})
+				  })
 
 				setAttributes(_attributes)
-				updateBalance(balance + 1111)
-			})
-
+				updateBalance(balance + 1111)			
+     	})
+			
 		}
 	}
 
@@ -301,12 +302,12 @@ const HuntersValley = () => {
 		const prob_4_10 = 15
 		const prob_5_10 = 5
 
-		for (let i = 0; i < 1000; i++) {
-			if (i < prob_1_10) { localNumberlist[i] = 1 }
-			else if (i >= prob_1_10 && i < (prob_1_10 + prob_2_10)) { localNumberlist[i] = 2 }
-			else if (i >= (prob_1_10 + prob_2_10) && i < (prob_1_10 + prob_2_10 + prob_3_10)) { localNumberlist[i] = 3 }
-			else if (i >= (prob_1_10 + prob_2_10 + prob_3_10) && i < (prob_1_10 + prob_2_10 + prob_3_10 + prob_4_10)) { localNumberlist[i] = 4 }
-			else { localNumberlist[i] = 5 }
+		for(let i=0; i< 1000; i++){
+			if(i< prob_1_10){ localNumberlist[i] = 1 }
+			else if(i >= prob_1_10 && i < (prob_1_10+prob_2_10)){ localNumberlist[i] = 2 }
+			else if(i >= (prob_1_10+prob_2_10) && i < (prob_1_10+prob_2_10+prob_3_10)){ localNumberlist[i] = 3 }
+			else if(i >= (prob_1_10+prob_2_10+prob_3_10) && i < (prob_1_10+prob_2_10+prob_3_10+prob_4_10)){ localNumberlist[i] = 4 }
+			else{ localNumberlist[i] = 5 }
 		}
 		setNumberList([...localNumberlist])
 	}, [])
@@ -315,13 +316,13 @@ const HuntersValley = () => {
 		getPath();
 	}, [quantity])
 
-	function getPath() {
+	function getPath () {
 		let paths = [];
 		let _ratings = [];
-		for (let i = 0; i < quantity; i++) {
-			let rand = parseInt(Math.random() * 600);
+		for (let i = 0; i < quantity; i++){
+			let rand = parseInt(Math.random()*600);
 			let randCheck = randomizer()
-
+			
 			if (randCheck == 5) {
 				paths[i] = rand % 2 ? data[18].img : data[21].img;
 				_ratings[i] = 5;
@@ -350,8 +351,8 @@ const HuntersValley = () => {
 	}
 
 	const randomizer = () => {
-		var idx = Math.floor(Math.random() * numberList.length);
-		return numberList[idx]
+	  	var idx = Math.floor(Math.random() * numberList.length);
+	  	return numberList[idx]
 	}
 
 	return (
@@ -366,10 +367,10 @@ const HuntersValley = () => {
 						<p class='mt-2 mb-6'>Discovery Cave</p>
 						<div class='d-flex justify-content-between w-60 mb-4'>
 							<p>Price</p>
-							{isOwner ?
+							{isOwner ? 
 								<div class='d-flex align-items-center'>
 									<img src='/assets/imgs/coin.png' className='w-30px me-1' />
-									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handlePriceChange} />
+									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handlePriceChange}/>
 									<input
 										type='number'
 										name=''
@@ -381,18 +382,18 @@ const HuntersValley = () => {
 										defaultValue="14800"
 									/>
 								</div>
-								:
+								: 
 								<div class='d-flex align-items-center'>
 									<img src='/assets/imgs/coin.png' className='w-30px me-1' />
 									<p id='caveprice_common'>14,800</p>
 								</div>
 							}
 						</div>
-						{isOwner ?
+						{isOwner ? 
 							<div class='d-flex justify-content-between w-60 mb-4'>
 								<p>Cave limit</p>
 								<div class='d-flex align-items-center'>
-									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleCaveLimitChange} />
+									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleCaveLimitChange}/>
 									<input
 										type='number'
 										name=''
@@ -407,11 +408,11 @@ const HuntersValley = () => {
 							</div>
 							: ''}
 
-						{isOwner ?
+						{isOwner ? 
 							<div class='d-flex justify-content-between w-60 mb-4'>
 								<p>Purchase limit</p>
 								<div class='d-flex align-items-center'>
-									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleMaxPurchaseCount} />
+								<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleMaxPurchaseCount}/>
 									<input
 										type='number'
 										name=''
@@ -425,23 +426,23 @@ const HuntersValley = () => {
 								</div>
 							</div>
 							: ''}
-						{isOwner ?
+							{isOwner ?
 							<div class='d-flex justify-content-between w-60 mb-4'>
 								<p>Star level</p>
 								<div class='d-flex align-items-center'>
 									{/* <CSVLink >Export to CSV</CSVLink> */}
-									<img src='/assets/imgs/download_1.png' className='cursor w-30px me-1' onClick={exportToExcel} />
+									<img src='/assets/imgs/download_1.png' className='cursor w-30px me-1' onClick={exportToExcel}/>
 									<select id='select-star' className='form-control  w-100px'>
 										<option>Star 1</option>
 										<option>Star 2</option>
 										<option>Star 3</option>
 										<option>Star 4</option>
 										<option>Star 5</option>
-									</select>
+									</select>	
 								</div>
-							</div>
-							: ''}
-
+							</div>	
+							: ''}				
+						
 						<div className='d-flex justify-content-between mb-6 w-60 align-items-center'>
 							<p>Select quantity</p>
 							<input
@@ -455,7 +456,7 @@ const HuntersValley = () => {
 								defaultValue='1'
 								onChange={handleQuantityChange}
 							/>
-						</div>
+						</div>	
 					</div>
 					<footer className='center mt-6 flex align-items-center pb-4 mb-4'>
 						{userId ? (
@@ -471,7 +472,7 @@ const HuntersValley = () => {
 								>
 									Purchase
 								</div>	 */}
-							</div>
+							</div>						
 						) : (
 							<div
 								className='header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor'

@@ -46,7 +46,7 @@ const Header = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)	
-		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")	
+		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")	
 		DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (bal) {
 			setBlance(Math.floor(bal / (10**18)));
 		})		
