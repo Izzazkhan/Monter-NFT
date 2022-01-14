@@ -5,15 +5,30 @@ import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import data from '../..//data/Post.json';
 import { usePagination } from '../../hooks/usePagination';
+import { getTradeItemsAction } from './../../store/actions/auth/tradeItem';
+
 import { useSelector } from 'react-redux';
 import { getTradItems } from '../../store/actions/auth/login';
 import { useDispatch } from 'react-redux';
+import { baseUrl } from "../../config/config"
+import axios from 'axios'
+
 const TradingPost = ({ }) => {
+	const dispatch = useDispatch();
+
 	const history = useHistory();
 	const [filterValues, setFilterValues] = useState({});
 	const [error, setError] = useState('');
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
-		usePagination(data, 6, history.location.pathname);
+	const [pageData, setPageData] = useState(null);
+	const [currentPage, setCurrentPage] = useState(0)
+	const [previousPage, setPreviousPage] = useState(0)
+	const [nextPage, setNextPage] = useState(0)
+	const [totalPages, setTotalPages] = useState(0)
+	const [doPagination, setDoPagination] = useState(false)
+
+
+	const [data, setData] = useState(["some chocolates"])
+
 
 	const sortData = (order, sortBy) => {
 		const sortingData = data.sort((a, b) => {
@@ -55,6 +70,18 @@ const TradingPost = ({ }) => {
 	};
 
 	React.useEffect(() => {
+		// console.log("==>", baseUrl);
+		axios({
+			method: 'get',
+			url: `${baseUrl}api/tradeItem`,
+			responseType: 'stream'
+		})
+			.then(function (response) {
+				if (response.data) {
+					setData(response.data)
+				}
+			});
+
 		if (Object.keys(filterValues).length !== 0) {
 			const filterdata = data.filter((item) => {
 				const isTrue = Object.keys(filterValues).filter((key) => {
@@ -77,23 +104,23 @@ const TradingPost = ({ }) => {
 			<div className='mt-lg-9 mt-7 container '>
 				<div class='row  px-md-auto justify-content-center'>
 					<div class='col-md-5 col-lg-3 col-12'>
-						<FindMonster
+						{/* <FindMonster
 							filterData={filterData}
 							sortData={sortData}
 							searchData={searchData}
 							clearSearchData={clearSearchData}
 							clearFilterData={clearFilterData}
-						/>
+						/> */}
 					</div>
 					<div class='col-lg-9 col-md-7 col-12'>
 						<div class='px-md-0'>
 							<section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
-								{error && pageData.length == 0 ? (
+								{error && data?.length === 0 ? (
 									<div className='col-12 center w-100 text-white mt-5'>
 										<h3>{error}</h3>
 									</div>
 								) : (
-									pageData.map((post) => {
+									data.lenth > 0 ? data.map((post) => {
 										return (
 											<PostCard
 												post={post}
@@ -101,11 +128,11 @@ const TradingPost = ({ }) => {
 												className='mb-9'
 											/>
 										);
-									})
+									}) : ""
 								)}
 							</section>
 						</div>
-						{'error' && pageData.length == 0 ? (
+						{/* {'error' && pageData?.length == 0 ? (
 							''
 						) : (
 							<footer className='center pb-8 pt-4'>
@@ -119,7 +146,7 @@ const TradingPost = ({ }) => {
 								</p>
 								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
 							</footer>
-						)}
+						)} */}
 					</div>
 				</div>
 			</div>
