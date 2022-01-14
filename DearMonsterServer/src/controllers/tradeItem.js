@@ -1,25 +1,24 @@
-const Monster = require('../models/monster');
-const {uploader} = require('../utils/index');
-
+const TradeItem = require('../models/tradeItem');
 
 exports.index = async function (req, res) {
-    const monster = await Monster.find({});
-    res.status(200).json({monster});
+    const tradeItem = await TradeItem.find({ onSale: true });
+    res.status(200).json({tradeItem, message: "item retrived successfully"});
 };
 
 
 exports.store = async (req, res) => {
     try {
-        const { title } = req.body;
+        const { monsterId } = req.body;
         
+        // monsterId, seller, price
         // Must uncomment for verification
-        const monster = await Monster.findOne({title});
-        if (monster) return res.status(401).json({message: 'The monster already exist.'});
+        const tradeItem = await TradeItem.findOne({monsterId, onSale: true});
+        if (tradeItem) return res.status(401).json({message: 'TradeItem already on sale.'});
 
-        const newMonster = new Monster({...req.body});
-        const monster_ = await newMonster.save();
+        const newTradeItem = new TradeItem({...req.body});
+        const tradeItem_ = await newTradeItem.save();
         
-        res.status(200).json({message: 'Monster created successfully', monster: monster_});
+        res.status(200).json({message: 'Trade item created successfully', tradeItem: tradeItem_});
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
     }
@@ -28,11 +27,26 @@ exports.store = async (req, res) => {
 exports.show = async function (req, res) {
     try {
         const id = req.params.id;
+        const tradeItem = await TradeItem.aggregate([
+            {
+                $match: {  _id : id }
+            },
+            {
+                $lookup: {
+                    from: 'Monster',
+                    foreignField: '_id',
+                    localField: 'monsterId',
+                    as: 'monster'
+                }
+            },
+            {
+                $unwind: '$monster'
+            }
+        ]);
 
-        const monster = await Monster.findById(id);
-        if (!monster) return res.status(401).json({message: 'Monster does not exist'});
+        if (!tradeItem) return res.status(401).json({message: 'TradeItem does not exist'});
         
-        res.status(200).json({monster});
+        res.status(200).json({tradeItem});
     } catch (error) {
         res.status(500).json({message: error.message})
     }
@@ -40,19 +54,17 @@ exports.show = async function (req, res) {
 
 exports.update = async function (req, res) {
     try {
-
-        const id = req.params.id;
-        const update = req.body;
+        const { update, id } = req.body;
         // const userId = req.user._id;
 
-        // const userId = req.user._id;
+
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 
-        const monster = await Monster.findByIdAndUpdate(id, {$set: update}, {new: true});
+        const tradeItem = await TradeItem.findByIdAndUpdate(id, {$set: update}, {new: true});
 
         //if there is no image, return success message
-        if (!req.file) return res.status(200).json({monster, message: 'Monster has been updated'});
+        if (!req.file) return res.status(200).json({tradeItem, message: 'tradeItem has been updated'});
 
         //Attempt to upload to cloudinary
         // const result = await uploader(req);
@@ -76,9 +88,28 @@ exports.destroy = async function (req, res) {
         // Must uncomment for verification
         // if (user_id.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 
-        await Monster.findByIdAndDelete(id);
-        res.status(200).json({message: 'Monster has been deleted'});
+        await TradeItem.findByIdAndDelete(id);
+        res.status(200).json({message: 'TradeItem has been deleted'});
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

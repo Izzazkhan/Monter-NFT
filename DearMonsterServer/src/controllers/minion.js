@@ -12,13 +12,9 @@ exports.store = async (req, res) => {
     try {
         const { name } = req.body;
 
-        console.log("req.body")
-        console.log(req.body)
-        
-
         // Must uncomment for verification
-        // const minion = await Minion.findOne({name});
-        // if (minion) return res.status(401).json({message: 'The minion already exist.'});
+        const minion = await Minion.findOne({name});
+        if (minion) return res.status(401).json({message: 'The minion already exist.'});
 
         const newMinion = new Minion({...req.body});
         const minion_ = await newMinion.save();
@@ -77,13 +73,7 @@ exports.update = async function (req, res) {
 
 exports.destroy = async function (req, res) {
     try {
-
-
-        console.log('-----------------')
-
         const id = req.params.id;
-
-
         // const user_id = req.user._id;
         //Make sure the passed id is that of the logged in user
 

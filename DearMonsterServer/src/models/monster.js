@@ -22,20 +22,6 @@ const MonsterSchema = new mongoose.Schema({
         type: String,
         required: 'monster category is required'
     },
-    // values: {
-    //     Level: {
-    //         type: String,
-    //     },
-    //     EXP: {
-    //         type: String,
-    //     },
-    //     Element: {
-    //         type: String,
-    //     },
-    //     Energy: {
-    //         type: String,
-    //     }
-    // }
 }, {timestamps: true});
 
 

@@ -2,7 +2,7 @@ const express = require('express');
 // const {check} = require('express-validator');
 // const multer = require('multer');
 
-const TradeItem = require('../controllers/tradeItem');
+const TradeItem = require('../controllers/mintedMonster');
 // const validate = require('../middlewares/validate');
 
 const router = express.Router();
