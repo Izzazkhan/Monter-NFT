@@ -13,7 +13,6 @@ import DMSToken from "../../contracts/DMSToken.json";
 import Swal from 'sweetalert2';
 import axios from 'axios'
 
-
 const HuntersValley = () => {
 	const { userId } = useSelector((state) => state.auth);
 	const { balance } = useSelector((state) => state.auth);
@@ -107,7 +106,7 @@ const HuntersValley = () => {
 		}, 500)
 
 		var _attributes = await DearMonsterContract.methods.getAttributes().call()
-		console.log(_attributes)
+		console.log('_attributes', _attributes)
 		setAttributes(_attributes)
 	}, [window.web3, userId])
 
@@ -240,6 +239,7 @@ const HuntersValley = () => {
 			var price = await DearMonsterContract.methods.getPrice().call()
 			var totalSupply = await DearMonsterContract.methods.totalSupply().call()
 			console.log('************ cave price **********', price)
+
 			// if (isMaxSupply) {
 			// 	let notify = notification({
 			// 		type: 'error',
@@ -266,7 +266,7 @@ const HuntersValley = () => {
 					notify();
 					return
 				}
-
+				
 				let DearMonsterContractConsole = await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 				console.log("========== DearMonsterContractConsole ==========")
 				console.log(DearMonsterContractConsole)
@@ -283,6 +283,8 @@ const HuntersValley = () => {
 				var _attributes = await DearMonsterContract.methods.getAttributes().call()
 				console.log(_attributes)
 
+
+				
 				Swal.fire({
 					icon: 'success',
 					title: 'Cave Minted Successfully',

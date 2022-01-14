@@ -39,10 +39,10 @@ const TrainingGround = () => {
 		<div>
 			<CurrenPageTitle title='Training Ground'></CurrenPageTitle>
 			<div className='center'>
-					<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-						Coming Soon
-					</p>
-				</div>			
+				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
+					Coming Soon
+				</p>
+			</div>
 			{/* <div className='container center mt-8'>
 				<div className='center flex-column'>
 					<div className='border border-warning text-white p-2 rounded-2'>Total Rewards:</div>

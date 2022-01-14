@@ -9,13 +9,13 @@ export const usePagination = (data, itemsPerPage) => {
 	const [pageData, setPageData] = React.useState([]);
 	const [totalPages, setTotalPages] = React.useState(0);
 
-    const paginate = (pageNumber) => {
-		
+	const paginate = (pageNumber) => {
+
 		setCurrentPage(pageNumber);
 		setPageData(
 			totalData.slice((pageNumber - 1) * totalItemsPerPage, pageNumber * totalItemsPerPage),
-			);
-			// pageNumber && history.push(`/trading-post?page=${pageNumber}&limit=${itemsPerPage}`);
+		);
+		// pageNumber && history.push(`/trading-post?page=${pageNumber}&limit=${itemsPerPage}`);
 	};
 
 	const previousPage = () => {
@@ -39,25 +39,26 @@ export const usePagination = (data, itemsPerPage) => {
 		paginate(Math.ceil(totalData.length / totalItemsPerPage));
 	};
 
-	const doPagination = (data, itemsPerPage,currentPage) => {
-		if(data==null){
+	const doPagination = (data, itemsPerPage, currentPage) => {
+		if (data == null) {
 			setTotalData([]);
 			setTotalPages(0);
 			setPageData([]);
 			setCurrentPage(1);
-		}else{	
-		data.length > 0 && setTotalData(data);
-		data.length > 0 && setPageData(data.slice(0, totalItemsPerPage));
-		const totalPages = Math.ceil(data.length / totalItemsPerPage);
-		data.length > 0 && setTotalPages(totalPages);
-		itemsPerPage && setTotalItemsPerPage(itemsPerPage);
-		currentPage && setCurrentPage(currentPage);
+		} else {
+			data.length > 0 && setTotalData(data);
+			data.length > 0 && setPageData(data.slice(0, totalItemsPerPage));
+			const totalPages = Math.ceil(data.length / totalItemsPerPage);
+			data.length > 0 && setTotalPages(totalPages);
+			itemsPerPage && setTotalItemsPerPage(itemsPerPage);
+			currentPage && setCurrentPage(currentPage);
 
 		}
 
 	};
 
 	React.useEffect(() => {
+		console.log("==========>totla data", totalData);
 		const totalPages = Math.ceil(totalData.length / totalItemsPerPage);
 		setTotalPages(totalPages);
 		setPageData(totalData.slice(0, totalItemsPerPage));

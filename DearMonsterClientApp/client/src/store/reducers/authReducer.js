@@ -15,7 +15,7 @@ export const authReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isAuthenticated: false,
-				userId:'',
+				userId: '',
 				loading: true,
 			};
 		case CONNECT_USER_SUCCESS:
@@ -33,12 +33,12 @@ export const authReducer = (state = initialState, action) => {
 				error: action.payload,
 				loading: false,
 			};
-		
-			case UPDATE_USER_BALANCE:
-				return {
-					...state,
-					balance: action.balance,
-				};
+
+		case UPDATE_USER_BALANCE:
+			return {
+				...state,
+				balance: action.balance,
+			};
 
 		default:
 			return state;

@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "@walletconnect/web3-provider": "^1.7.0",
     "authereum": "^0.1.14",
+    "axios": "^0.24.0",
     "evm-chains": "^0.2.0",
     "firebase": "^8.9.1",
     "fortmatic": "^2.2.1",

@@ -15,13 +15,13 @@ export const NavbarRoutes = [
 		exact: true,
 		component: lazy(() => import('../views/pages/HuntersValley')),
 	},
-	// {
-	// 	path: TRADING_POST,
-	// 	title: 'Trading post',
-	// 	pathForNavabr: TRADING_POST,
-	// 	exact: true,
-	// 	component: lazy(() => import('../views/pages/TradingPost')),
-	// },
+	{
+		path: TRADING_POST,
+		title: 'Trading post',
+		pathForNavabr: TRADING_POST,
+		exact: true,
+		component: lazy(() => import('../views/pages/TradingPost')),
+	},
 	{
 		path: INVENTORY,
 		title: 'Inventory',
