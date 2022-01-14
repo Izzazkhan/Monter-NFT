@@ -115,7 +115,7 @@ const Inventory = ({ match }) => {
 		}
 		setPosts(_posts)
 		doPagination(_posts);
-		console.log('*************&*', _posts.length)
+		console.log('*************&*', _posts)
 		console.log('*****************', pageData)
 	}
 

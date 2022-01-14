@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { connectUserAction } from '../../store/actions/auth/login';
 
 const PostCard = ({ className, post, stepImg }) => {
-	const {userId} = useSelector(state => state.auth)
-	const dispatch= useDispatch();
+	const { userId } = useSelector(state => state.auth)
+	const dispatch = useDispatch();
 
 
 	return (

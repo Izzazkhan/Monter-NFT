@@ -1,18 +1,19 @@
-import React, {useState, } from 'react';
+import React, { useState, } from 'react';
 import FindMonster from '../../components/TradingPost/FindMonster';
 import PostCard from '../../components/postCard/PostCard';
 import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import data from '../..//data/Post.json';
 import { usePagination } from '../../hooks/usePagination';
-
-const TradingPost = ({}) => {
+import { useSelector } from 'react-redux';
+import { getTradItems } from '../../store/actions/auth/login';
+import { useDispatch } from 'react-redux';
+const TradingPost = ({ }) => {
 	const history = useHistory();
 	const [filterValues, setFilterValues] = useState({});
 	const [error, setError] = useState('');
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
 		usePagination(data, 6, history.location.pathname);
-
 
 	const sortData = (order, sortBy) => {
 		const sortingData = data.sort((a, b) => {
@@ -68,12 +69,12 @@ const TradingPost = ({}) => {
 	return (
 		<div>
 			<CurrenPageTitle title='Trading Post'></CurrenPageTitle>
-			<div className='center'>
-					<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-						Coming Soon
-					</p>
-				</div>
-			{/* <div className='mt-lg-9 mt-7 container '>
+			{/* <div className='center'>
+				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
+					Coming Soon
+				</p>
+			</div> */}
+			<div className='mt-lg-9 mt-7 container '>
 				<div class='row  px-md-auto justify-content-center'>
 					<div class='col-md-5 col-lg-3 col-12'>
 						<FindMonster
@@ -121,7 +122,7 @@ const TradingPost = ({}) => {
 						)}
 					</div>
 				</div>
-			</div> */}
+			</div>
 		</div>
 	);
 };
