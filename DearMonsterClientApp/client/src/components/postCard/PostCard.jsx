@@ -3,6 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
+import Web3 from 'web3';
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
+import DearMonster from '../../contracts/DearMonster.json';
+import DMSToken from '../../contracts/DMSToken.json';
+
+
 const PostCard = ({ className, post, stepImg }) => {
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
@@ -23,30 +29,58 @@ const PostCard = ({ className, post, stepImg }) => {
 		dispatch(connectUserSuccess(accounts[0]))
 	};
 
-	const purchaseFun = () => {
-
-		let params = new URLSearchParams()
-		params.append('owner', post.owner)
-		params.append('seller', post.seller)
-		params.append('buyer', owner)
-		params.append('tradeId', post.tradeId)
-		params.append('mintedId', post.mintedId)
+	const purchaseFun = async () => {
 
 
-		const config = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
+
+
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
 		}
-		axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((e) => {
-				console.log("Error ----------------")
-				console.log(e)
-			})
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
+		const accounts = await web3.eth.getAccounts()
 
+		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+
+		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
+		await DMSTokenContract.methods.approve(DearMonsterTrading._address, web3.utils.toBN(post.price.toString())).send({ from: accounts[0] });
+
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
+		await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
+
+		const transaction = await TradingContract.methods.buyTrade(post.id, post.price).send({ from: accounts[0] })
+
+		if (transaction.status) {
+			let params = new URLSearchParams()
+			params.append('owner', post.owner)
+			params.append('seller', post.seller)
+			params.append('buyer', owner)
+			params.append('tradeId', post.tradeId)
+			params.append('mintedId', post.mintedId)
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}
+			axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
+				.then((res) => {
+					console.log(res.data)
+				})
+				.catch((e) => {
+					console.log("Error ----------------")
+					console.log(e)
+				})
+		}
 	}
 
 

@@ -6,13 +6,17 @@ import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import jsonData from '../..//data/Post.json';
 import { usePagination } from '../../hooks/usePagination';
 import { getTradeItemsAction } from './../../store/actions/auth/tradeItem';
-
 import { useSelector } from 'react-redux';
 import { getTradItems } from '../../store/actions/auth/login';
 import { useDispatch } from 'react-redux';
 import { baseUrl } from "../../config/config"
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
+
+
+
+
+
 const TradingPost = ({ }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -29,7 +33,8 @@ const TradingPost = ({ }) => {
 	}, [])
 
 
-	const getTradingData = () => {
+	const getTradingData = async () => {
+
 		axios.get(`${apiUrl}/api/tradeItem/allInTrade`)
 			.then((res) => {
 				let _posts = []
