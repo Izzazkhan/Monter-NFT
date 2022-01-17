@@ -1,0 +1,1 @@
+export const apiUrl = 'http://aedd-119-155-21-243.ngrok.io'

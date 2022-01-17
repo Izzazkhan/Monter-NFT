@@ -12,7 +12,7 @@ import { getTradItems } from '../../store/actions/auth/login';
 import { useDispatch } from 'react-redux';
 import { baseUrl } from "../../config/config"
 import axios from 'axios'
-
+import { apiUrl } from '../../utils/constant';
 const TradingPost = ({ }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -30,7 +30,7 @@ const TradingPost = ({ }) => {
 
 
 	const getTradingData = () => {
-		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/allInTrade')
+		axios.get(`${apiUrl}/api/tradeItem/allInTrade`)
 			.then((res) => {
 				let _posts = []
 				if (res.data.tradeItems && res.data.tradeItems.length > 0) {

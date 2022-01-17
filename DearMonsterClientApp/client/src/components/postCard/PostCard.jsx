@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
-
+import { apiUrl } from '../../utils/constant'
 const PostCard = ({ className, post, stepImg }) => {
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const PostCard = ({ className, post, stepImg }) => {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}
 		}
-		axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/buyFromAllTradeItems', params, config)
+		axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
 			.then((res) => {
 				console.log(res.data)
 			})

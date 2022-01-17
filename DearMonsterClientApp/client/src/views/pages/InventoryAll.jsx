@@ -10,7 +10,7 @@ import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
-
+import { apiUrl } from '../../utils/constant'
 const Inventory = ({ match }) => {
 	const [posts, setPosts] = React.useState([]);
 	const { userId } = useSelector((state) => state.auth);
@@ -71,7 +71,7 @@ const Inventory = ({ match }) => {
 
 	function getData(owner) {
 		let _posts = []
-		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/mintedMonster/ownerItems/' + owner)
+		axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + owner)
 			.then((res) => {
 				if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 					res.data.mintedMonster.forEach(item => {

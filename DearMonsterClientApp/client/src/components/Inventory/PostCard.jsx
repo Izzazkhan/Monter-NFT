@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
 import axios from 'axios'
 import Swal from 'sweetalert2';
+import { apiUrl } from '../../utils/constant'
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
 	console.log('post ====', post)
@@ -51,7 +52,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const accounts = await web3.eth.getAccounts()
 		if (sellPrice > 0) {
 			const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
-			const transaction = await DearMonsterTradingContract.methods.putTrade(Number(post.id), sellPrice.toString()).send({ from: accounts[0] })
+			const transaction = await DearMonsterTradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
 			console.log('==== putTrade transaction ====', transaction)
 			if (transaction.status) {
 				let params = new URLSearchParams()
@@ -63,7 +64,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
 				}
-				axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem', params, config)
+				axios.post(`${apiUrl}/api/tradeItem`, params, config)
 					.then((res) => {
 						console.log(res.data)
 						Swal.fire({
@@ -108,10 +109,10 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		let web3 = window.web3
 		const accounts = await web3.eth.getAccounts()
 		const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
-		const transaction = await DearMonsterTradingContract.methods.removeTrade(post.mintedId).send({ from: accounts[0] })
+		const transaction = await DearMonsterTradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 		console.log('==== removeTrade transaction ====', transaction)
 		if (transaction.status) {
-			axios.delete(`http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/${post.tradeId}`)
+			axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`)
 				.then((res) => {
 					console.log('response delete', res)
 					Swal.fire({

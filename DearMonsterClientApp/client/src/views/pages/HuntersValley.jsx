@@ -12,6 +12,7 @@ import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from "../../contracts/DMSToken.json";
 import Swal from 'sweetalert2';
 import axios from 'axios'
+import { apiUrl } from '../../utils/constant'
 
 const HuntersValley = () => {
 	const { userId } = useSelector((state) => state.auth);
@@ -32,7 +33,7 @@ const HuntersValley = () => {
 
 
 	const getMonstersData = () => {
-		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/monster')
+		axios.get(`${apiUrl}/api/monster`)
 			.then((res) => {
 				setData(res.data.monsters)
 			})
@@ -344,7 +345,7 @@ const HuntersValley = () => {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
 					}
-					axios.post('http://1a2f-119-155-21-243.ngrok.io/api/mintedMonster', params, config)
+					axios.post(`${apiUrl}/api/mintedMonster`, params, config)
 						.then((res) => {
 							console.log('response =============> monster minted')
 						})
