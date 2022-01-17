@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { NavbarRoutes } from '../../routes/';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -36,7 +36,7 @@ const Header = () => {
 		else if (window.web3) {
 			window.web3 = new Web3(window.web3.currentProvider)
 			window.loaded_web3 = true
-		} 
+		}
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
@@ -46,18 +46,18 @@ const Header = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)	
-		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")	
+		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
 		DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (bal) {
-			setBlance(Math.floor(bal / (10**18)));
-		})		
+			setBlance(Math.floor(bal / (10 ** 18)));
+		})
 	}, [userId, balance]);
-	
+
 	function init() {
 		console.log("Initializing example");
 		console.log("WalletConnectProvider is", WalletConnectProvider);
 		console.log("Fortmatic is", Fortmatic);
 		console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
-	
+
 		// Tell Web3modal what providers we have available.
 		// Built-in web browser provider (only one can exist as a time)
 		// like MetaMask, Brave or Opera is added automatically by Web3modal
@@ -68,7 +68,7 @@ const Header = () => {
 				}
 			}
 		};
-	
+
 		let web3_Modal = new Web3Modal({
 			cacheProvider: false, // optional
 			providerOptions, // required
@@ -76,7 +76,7 @@ const Header = () => {
 		});
 
 		setWeb3Modal(web3_Modal);
-	
+
 		console.log("Web3Modal instance is", web3Modal);
 	}
 
@@ -84,12 +84,12 @@ const Header = () => {
 
 		// // Get a Web3 instance for the wallet
 		const web3 = new Web3(provider);
-		setWeb3(web3);	
-	
+		setWeb3(web3);
+
 		// // Get list of accounts of the connected wallet
 		const accounts_temp = await web3.eth.getAccounts();
-		
-	
+
+
 		// const tokenInstance_temp = new web3.eth.Contract(
 		// 	BVToken.abi,
 		// 	BVToken.networks[networkId_temp] && BVToken.networks[networkId_temp].address,
@@ -105,7 +105,7 @@ const Header = () => {
 		// publicSaleInstance_temp.options.address = "0x018c09FCe2357C505c3890e15906194e3f656fB4";
 		// setPublicSaleInstance(publicSaleInstance_temp);
 		// console.log(publicSaleInstance_temp)
-	
+
 		// // MetaMask does not give you all accounts, only the selected account
 		console.log("Got accounts", accounts_temp);
 		setAccount(accounts_temp[0])
@@ -125,7 +125,7 @@ const Header = () => {
 		// 	console.log(address);
 		// 	console.log(humanFriendlyBalance);
 		// });
-	
+
 		// // Because rendering account does its own RPC commucation
 		// // with Ethereum node, we do not want to display any results
 		// // until data for all accounts is loaded
@@ -135,7 +135,7 @@ const Header = () => {
 		// // document.querySelector("#connected").style.display = "block";
 		setWalletConnected(true);
 	}
-	
+
 	async function refreshAccountData() {
 
 		// If any current data is displayed when
@@ -160,7 +160,7 @@ const Header = () => {
 		console.log("Opening a dialog", web3Modal);
 		try {
 			provider = await web3Modal.connect();
-		} catch(e) {
+		} catch (e) {
 			console.log("Could not get a wallet connection", e);
 			return;
 		}
@@ -194,7 +194,7 @@ const Header = () => {
 
 	async function onDisconnect() {
 		console.log("Killing the wallet connection", provider);
-	
+
 		setWalletConnected(false);
 		dispatch(connectUserSuccess(null))
 	}
@@ -209,11 +209,10 @@ const Header = () => {
 					<img src='/assets/imgs/Hamburger.png' className='w-35px' alt='' />
 				</button>
 				<div
-					className={`${
-						active
+					className={`${active
 							? 'position-fixed bg-dark top-0 w-100 w-100 start-0 vh-lg-auto vh-100'
 							: 'd-none d-lg-flex align-items-center '
-					} `}
+						} `}
 					style={{ zIndex: '999' }}
 				>
 					<button
@@ -223,19 +222,21 @@ const Header = () => {
 						<img src='/assets/imgs/cancel.png' className='w-35px' alt='' />
 					</button>
 					<div
-						className={`${
-							active && 'show-navbar flex-lg-column mt-lg-8'
-						} w-lg-auto d-lg-flex d-none flex-lg-row flex-column w-100 mt-8 mt-lg-5 justify-content-between align-items-center`}
+						className={`${active && 'show-navbar flex-lg-column mt-lg-8'
+							} w-lg-auto d-lg-flex d-none flex-lg-row flex-column w-100 mt-8 mt-lg-5 justify-content-between align-items-center`}
 					>
 						{NavbarRoutes.map((route) => {
 							return (
-								<Link
-									to={route.pathForNavabr}
-									className={`header-btn text-warning ${!active && 'me-4'} w-auto mb-5`}
-									onClick={() => setActive(false)}
-								>
-									<span className='mx-2'>{route.title}</span>
-								</Link>
+								!route.hidden ?
+									<Link
+										to={route.pathForNavabr}
+										className={`header-btn text-warning ${!active && 'me-4'} w-auto mb-5`}
+										onClick={() => setActive(false)}
+									>
+										<span className='mx-2'>{route.title}</span>
+									</Link>
+									:
+									''
 							);
 						})}
 					</div>
@@ -251,9 +252,8 @@ const Header = () => {
 					)}
 					{!userId && (
 						<div
-							className={`${
-								userId ? 'w-25' : 'px-5'
-							} header-Connect-btn h-40px ms-4 center bold cursor`}
+							className={`${userId ? 'w-25' : 'px-5'
+								} header-Connect-btn h-40px ms-4 center bold cursor`}
 							onClick={onConnect}
 						>
 							Connect

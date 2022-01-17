@@ -96,6 +96,41 @@ exports.destroy = async function (req, res) {
 };
 
 
+exports.inTradeItems = async function (req, res) {
+    const seller = req.params.owner;
+
+    const tradeItems = await TradeItem.aggregate([
+            {
+                $match: { seller }
+            },
+            {
+                $lookup: {
+                    from: 'mintedmonsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonsterId',
+                    as: 'mintedMonster'
+                }
+            },
+            {
+                $unwind: '$mintedMonster'
+            },
+            {
+                $lookup: {
+                    from: 'monsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonster.monsterId',
+                    as: 'monster'
+                }
+            },
+            {
+                $unwind: '$monster'
+            },
+        ]);
+    res.status(200).json({tradeItems, message: "Trade items retrived successfully"});
+};
+
+
+
 
 
 

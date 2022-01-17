@@ -27,8 +27,29 @@ const Inventory = ({ match }) => {
 	};
 
 	useEffect(() => {
+		getConnection();
+  	}, [window.web3])
+
+	const getConnection = async () => {
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		} else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		} else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+	 }
+
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()	 
+		setAccount(accounts[0]);
+	};
+
+	useEffect(() => {
 		getCave();
-  }, [window.web3])
+  	}, [])
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -46,24 +67,6 @@ const Inventory = ({ match }) => {
 		let accounts = await web3.eth.getAccounts()	 
 		setAccount(accounts[0]);
 		getData(accounts[0]);
-
-
-
-	 	// todo: fix network in json file, missing from there !!!!!!!!!!!
-		// let networkId = await web3.eth.net.getId()
-		// let DearMonsterNetwork = DearMonster.networks[networkId]
-		// if (DearMonsterNetwork) {
-
-
-		// getting items from API instead of Contracts
-
-		// // let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xAc6bf4c267132d2B3ABb40895dEEe219f1aEF445")
-		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
-		// var _attributes = await DearMonsterContract.methods.getAttributes().call()
-		// var _elementPath = await DearMonsterContract.methods.getElementPath().call()
-		// setPaths(_elementPath)
-		// setAttributes(_attributes)
-
 	};	
 
 	function getData (owner) {
@@ -75,7 +78,7 @@ const Inventory = ({ match }) => {
 					let post = {}
 					post['mintedId'] = item._id
 					post['monsterId'] = item.monster._id
-					post['id'] = item.monster.tokenId
+					post['id'] = item.tokenId
 					post['title'] = item.monster.title
 					post['img'] = item.monster.img
 					post['rating'] = item.rating
@@ -117,7 +120,7 @@ const Inventory = ({ match }) => {
 			{posts.length > 0 ? ''  :
 				<div className='container'>
 					<div className='center'>
-						{userId  ? (
+						{account  ? (
 							<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 								You Don't have any inventory
 							</p>
@@ -141,7 +144,7 @@ const Inventory = ({ match }) => {
 				<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
 					{pageData.map((post) => {
 						return (
-							<PostCard post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
+							<PostCard account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
 						);
 					})}
 				</div>

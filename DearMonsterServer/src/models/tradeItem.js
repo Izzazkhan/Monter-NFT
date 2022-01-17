@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 
 const TradeItemSchema = new mongoose.Schema({
-    monsterId: {
+    mintedMonsterId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Monster',
+        ref: 'MintedMonster',
         required: true
     },
     seller: {

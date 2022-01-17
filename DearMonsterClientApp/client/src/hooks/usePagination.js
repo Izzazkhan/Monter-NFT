@@ -58,7 +58,6 @@ export const usePagination = (data, itemsPerPage) => {
 	};
 
 	React.useEffect(() => {
-		console.log("==========>totla data", totalData);
 		const totalPages = Math.ceil(totalData.length / totalItemsPerPage);
 		setTotalPages(totalPages);
 		setPageData(totalData.slice(0, totalItemsPerPage));

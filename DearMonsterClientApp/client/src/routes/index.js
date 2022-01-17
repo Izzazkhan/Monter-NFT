@@ -3,7 +3,8 @@ import {
 	HUNTERS_VALLEY,
 	TRADING_POST,
 	INSTRUCTIONS,
-	INVENTORY,
+	INVENTORY_ALL,
+	INVENTORY_TRADING,
 	TRAINING_GROUND,
 } from './routesPath';
 
@@ -23,13 +24,20 @@ export const NavbarRoutes = [
 		component: lazy(() => import('../views/pages/TradingPost')),
 	},
 	{
-		path: INVENTORY,
+		path: INVENTORY_ALL,
 		title: 'Inventory',
 		pathForNavabr: '/inventory/all',
 		exact: true,
-		component: lazy(() => import('../views/pages/Inventory')),
+		component: lazy(() => import('../views/pages/InventoryAll')),
 	},
-
+	{
+		path: INVENTORY_TRADING,
+		title: 'Inventory Trading',
+		pathForNavabr: '/inventory/trading',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/InventoryTrading')),
+	},
 	{
 		path: TRAINING_GROUND,
 		pathForNavabr: TRAINING_GROUND,

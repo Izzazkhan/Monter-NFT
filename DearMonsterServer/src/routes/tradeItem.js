@@ -24,4 +24,6 @@ router.put('/:id', TradeItem.update);
 //DELETE
 router.delete('/:id', TradeItem.destroy);
 
+router.get('/inTradeItems/:owner', TradeItem.inTradeItems);
+
 module.exports = router;

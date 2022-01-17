@@ -1,11 +1,11 @@
-import React, { useState }  from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
 
-const PostCard = ({ className, post, stepImg }) => {
-	
-	
+const PostCard = ({ className, post, stepImg, account }) => {
+
+
 	const [owner, setOwner] = useState(null);
 
 	const { userId } = useSelector(state => state.auth)
@@ -26,10 +26,9 @@ const PostCard = ({ className, post, stepImg }) => {
 	}
 
 	const sellFunction = async () => {
-
 		let params = new URLSearchParams()
 		params.append('seller', owner)
-		params.append('monsterId', post.monsterId)
+		params.append('mintedMonsterId', post.mintedId)
 		params.append('price', 5000)
 		const config = {
 			headers: {
@@ -37,14 +36,23 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 		}
 		axios.post('http://localhost:4000/api/tradeItem', params, config)
-		.then((res) => {
-			console.log(res.data)
-		})
-		.catch((e) => {
-			console.log("Error ----------------")
-			console.log(e)
-		})
+			.then((res) => {
+				console.log(res.data)
+			})
+			.catch((e) => {
+				console.log("Error ----------------")
+				console.log(e)
+			})
+	}
 
+	const revokeSellFunction = () => {
+		axios.delete(`http://localhost:4000/api/tradeItem/${post.tradeId}`)
+			.then((res) => {
+				console.log('response delete', res)
+			})
+			.catch((e) => {
+				console.log("error: ", e);
+			});
 	}
 
 
@@ -89,15 +97,22 @@ const PostCard = ({ className, post, stepImg }) => {
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				{userId && owner ? (
-					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={ () => sellFunction() }>
-						Sell
-					</div>
-				) : (
-					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => connectFunction()}>
-						Connect
-					</div>
-				)}
+				{ account || owner ?
+					post?.onSale ? (
+						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => revokeSellFunction()}>
+							Revoke Sale
+						</div>
+					) : (
+						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
+							Sell
+						</div>
+					)
+					:
+					(
+						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => connectFunction()}>
+							Connect
+						</div>
+					)}
 			</footer>
 		</div>
 	);
