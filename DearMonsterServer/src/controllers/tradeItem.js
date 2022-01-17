@@ -13,7 +13,7 @@ exports.store = async (req, res) => {
 
         // monsterId, seller, price
         // Must uncomment for verification
-        const tradeItem = await TradeItem.findOne({ monsterId, onSale: true });
+        const tradeItem = await TradeItem.findOne({ mintedMonsterId: monsterId, onSale: true });
         if (tradeItem) return res.status(401).json({ message: 'TradeItem already on sale.' });
 
         const newTradeItem = new TradeItem({ ...req.body });

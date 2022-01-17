@@ -4,15 +4,22 @@ import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
 import axios from 'axios'
+import Swal from 'sweetalert2';
 
-const PostCard = ({ className, post, stepImg, account }) => {
-	console.log('post ============', post)
-
+const PostCard = ({ className, getData, post, stepImg, account }) => {
+	console.log('post ====', post)
 
 	const [owner, setOwner] = useState(null);
-
+	const [sellInput, setSellInput] = useState(false);
+	const [sellPrice, setSellPrice] = useState(0);
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
+
+
+	const priceChangeHandler = (e) => {
+		setSellPrice(e.target.value)
+	}
+
 
 	const connectFunction = async () => {
 		await window.ethereum.request({
@@ -29,52 +36,100 @@ const PostCard = ({ className, post, stepImg, account }) => {
 	}
 
 	const sellFunction = async () => {
-		if (!userId) return
-		const web3 = new Web3(window.ethereum)
-		// let web3 = window.web3
-		const accounts = await web3.eth.getAccounts()
-
-		const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
-		const transaction = await DearMonsterTradingContract.methods.putTrade(post.mintedId, '').send({ from: accounts[0] });
-		if (transaction.status) {
-			let params = new URLSearchParams()
-			params.append('seller', account ? account : owner ? owner : userId)
-			params.append('mintedMonsterId', post.mintedId)
-			params.append('price', 5000)
-			const config = {
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
-			}
-			axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem', params, config)
-				.then((res) => {
-					console.log(res.data)
-				})
-				.catch((e) => {
-					console.log("Error ----------------")
-					console.log(e)
-				})
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
 		}
-
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
+		const accounts = await web3.eth.getAccounts()
+		if (sellPrice > 0) {
+			const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+			const transaction = await DearMonsterTradingContract.methods.putTrade(Number(post.id), sellPrice.toString()).send({ from: accounts[0] })
+			console.log('==== putTrade transaction ====', transaction)
+			if (transaction.status) {
+				let params = new URLSearchParams()
+				params.append('seller', account ? account : owner ? owner : userId)
+				params.append('mintedMonsterId', post.mintedId)
+				params.append('price', sellPrice)
+				const config = {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				}
+				axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem', params, config)
+					.then((res) => {
+						console.log(res.data)
+						Swal.fire({
+							icon: 'success',
+							title: 'Item Added To Sell',
+							text: 'Please check Inventory Trading for items on trade!'
+						})
+					})
+					.catch((e) => {
+						console.log("Error ----------------")
+						console.log(e)
+					})
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Transaction',
+					text: 'Transaction error'
+				})
+			}
+		}
+		else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Invalid Price',
+				text: 'Price should be greater than 0'
+			})
+		}
 	}
 
 	const revokeSellFunction = async () => {
-		if (!userId) return
-		const web3 = new Web3(window.ethereum)
-		// let web3 = window.web3
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		}
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
 		const accounts = await web3.eth.getAccounts()
-
 		const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
-		const transaction = await DearMonsterTradingContract.methods.removeTrade(post.mintedId).send({ from: accounts[0] });
+		const transaction = await DearMonsterTradingContract.methods.removeTrade(post.mintedId).send({ from: accounts[0] })
+		console.log('==== removeTrade transaction ====', transaction)
 		if (transaction.status) {
-
 			axios.delete(`http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/${post.tradeId}`)
 				.then((res) => {
 					console.log('response delete', res)
+					Swal.fire({
+						icon: 'success',
+						title: 'Item Removed From Trading',
+						text: 'Please check Inventory Trading for items on trade!'
+					})
 				})
 				.catch((e) => {
 					console.log("error: ", e);
-				});
+				})
+		}
+		else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Transaction',
+				text: 'Transaction error'
+			})
 		}
 	}
 
@@ -126,9 +181,16 @@ const PostCard = ({ className, post, stepImg, account }) => {
 							Revoke Sale
 						</div>
 					) : (
-						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
-							Sell
-						</div>
+
+						!sellInput ?
+
+							(
+								<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(true)}>
+									Sell
+								</div>
+							)
+							:
+							''
 					)
 					:
 					(
@@ -136,6 +198,36 @@ const PostCard = ({ className, post, stepImg, account }) => {
 							Connect
 						</div>
 					)}
+
+
+				{
+					sellInput ?
+						<>
+							(
+							<div className='d-flex justify-content-between w-60 mb-4'>
+								<div className='d-flex align-items-center'>
+									<input
+										type='text'
+										name='sellPrice'
+										className='form-control  w-100px'
+										id='sellPrice'
+										value={sellPrice}
+										onChange={priceChangeHandler}
+									/>
+								</div>
+							</div>
+
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
+								Sell
+							</div>
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(false)}>
+								Cancel
+							</div>
+							)
+						</>
+						:
+						''
+				}
 			</footer>
 		</div>
 	);
