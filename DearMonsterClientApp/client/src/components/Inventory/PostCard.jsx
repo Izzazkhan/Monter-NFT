@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
+import Web3 from 'web3';
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
 import axios from 'axios'
 
 const PostCard = ({ className, post, stepImg, account }) => {
+	console.log('post ============', post)
 
 
 	const [owner, setOwner] = useState(null);
@@ -26,33 +29,53 @@ const PostCard = ({ className, post, stepImg, account }) => {
 	}
 
 	const sellFunction = async () => {
-		let params = new URLSearchParams()
-		params.append('seller', account ? account : owner ? owner : userId )
-		params.append('mintedMonsterId', post.mintedId)
-		params.append('price', 5000)
-		const config = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+		if (!userId) return
+		const web3 = new Web3(window.ethereum)
+		// let web3 = window.web3
+		const accounts = await web3.eth.getAccounts()
+
+		const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+		const transaction = await DearMonsterTradingContract.methods.putTrade(post.mintedId, '').send({ from: accounts[0] });
+		if (transaction.status) {
+			let params = new URLSearchParams()
+			params.append('seller', account ? account : owner ? owner : userId)
+			params.append('mintedMonsterId', post.mintedId)
+			params.append('price', 5000)
+			const config = {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 			}
+			axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem', params, config)
+				.then((res) => {
+					console.log(res.data)
+				})
+				.catch((e) => {
+					console.log("Error ----------------")
+					console.log(e)
+				})
 		}
-		axios.post('http://localhost:4000/api/tradeItem', params, config)
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((e) => {
-				console.log("Error ----------------")
-				console.log(e)
-			})
+
 	}
 
-	const revokeSellFunction = () => {
-		axios.delete(`http://localhost:4000/api/tradeItem/${post.tradeId}`)
-			.then((res) => {
-				console.log('response delete', res)
-			})
-			.catch((e) => {
-				console.log("error: ", e);
-			});
+	const revokeSellFunction = async () => {
+		if (!userId) return
+		const web3 = new Web3(window.ethereum)
+		// let web3 = window.web3
+		const accounts = await web3.eth.getAccounts()
+
+		const DearMonsterTradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+		const transaction = await DearMonsterTradingContract.methods.removeTrade(post.mintedId).send({ from: accounts[0] });
+		if (transaction.status) {
+
+			axios.delete(`http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/${post.tradeId}`)
+				.then((res) => {
+					console.log('response delete', res)
+				})
+				.catch((e) => {
+					console.log("error: ", e);
+				});
+		}
 	}
 
 
@@ -97,7 +120,7 @@ const PostCard = ({ className, post, stepImg, account }) => {
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				{ account || owner ?
+				{account || owner ?
 					post?.onSale ? (
 						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => revokeSellFunction()}>
 							Revoke Sale

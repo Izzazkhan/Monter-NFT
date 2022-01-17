@@ -51,8 +51,8 @@ const Inventory = ({ match }) => {
 	// useEffect(() => {
 	// 	getCave();
 	// }, [window.web3])
-	
-	
+
+
 	useEffect(() => {
 		getCave();
 	}, [])
@@ -79,7 +79,7 @@ const Inventory = ({ match }) => {
 
 	function getData(owner) {
 		let _posts = []
-		axios.get('http://localhost:4000/api/tradeItem/inTradeItems/' + owner)
+		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/inTradeItems/' + owner)
 			.then((res) => {
 
 				console.log('res.data ================')

@@ -32,19 +32,19 @@ const HuntersValley = () => {
 
 
 	const getMonstersData = () => {
-		axios.get('http://localhost:4000/api/monster')
-		.then((res) => {
-			setData(res.data.monsters)
-		})
-		.catch((e) => {
-			console.log("Error ----------------")
-			console.log(e)
-		})
+		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/monster')
+			.then((res) => {
+				setData(res.data.monsters)
+			})
+			.catch((e) => {
+				console.log("Error ----------------")
+				console.log(e)
+			})
 
 	}
 
 	useEffect(() => {
-		if(data.length > 0){
+		if (data.length > 0) {
 			setQuantity(1)
 			getPath(1)
 		}
@@ -290,7 +290,7 @@ const HuntersValley = () => {
 					notify();
 					return
 				}
-				
+
 				let DearMonsterContractConsole = await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 				console.log("========== DearMonsterContractConsole ==========")
 				console.log(DearMonsterContractConsole)
@@ -308,7 +308,7 @@ const HuntersValley = () => {
 				console.log(_attributes)
 
 
-				
+
 				Swal.fire({
 					icon: 'success',
 					title: 'Cave Minted Successfully',
@@ -320,7 +320,7 @@ const HuntersValley = () => {
 				let latestIds = tokensOfOwnerFromContract.slice((tokensOfOwnerFromContract.length - quantity), tokensOfOwnerFromContract.length)
 
 
-				latestIds.forEach(async (item ,index) => {
+				latestIds.forEach(async (item, index) => {
 					let attributesByIndex = await DearMonsterContract.methods.attributes(item).call();
 
 					console.log("=====================")
@@ -332,26 +332,26 @@ const HuntersValley = () => {
 					params.append('tokenId', parseInt(item))
 					params.append('rating', parseInt(attributesByIndex['star']))
 					params.append('monsterId', monsterIdsState[index])
-					
+
 
 					params.append('values.Level', attributesByIndex['level'])
 					params.append('values.EXP', attributesByIndex['exp'])
 					params.append('values.Element', attributesByIndex['element'])
 					params.append('values.Energy', attributesByIndex['energy'])
-					
+
 					const config = {
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
 					}
-					axios.post('http://localhost:4000/api/mintedMonster', params, config)
-					.then((res) => {
-						console.log('response =============> monster minted')
-					})
-					.catch((e) => {
-						console.log("Error ----------------")
-						console.log(e)
-					})
+					axios.post('http://1a2f-119-155-21-243.ngrok.io/api/mintedMonster', params, config)
+						.then((res) => {
+							console.log('response =============> monster minted')
+						})
+						.catch((e) => {
+							console.log("Error ----------------")
+							console.log(e)
+						})
 				})
 
 				setAttributes(_attributes)

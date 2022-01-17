@@ -28,7 +28,7 @@ const Inventory = ({ match }) => {
 
 	useEffect(() => {
 		getConnection();
-  	}, [window.web3])
+	}, [window.web3])
 
 	const getConnection = async () => {
 		if (window.ethereum) {
@@ -39,17 +39,17 @@ const Inventory = ({ match }) => {
 			window.loaded_web3 = true
 		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-	 }
+		}
 
 		let web3 = window.web3
 		// Load account
-		let accounts = await web3.eth.getAccounts()	 
+		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
 	};
 
 	useEffect(() => {
 		getCave();
-  	}, [])
+	}, [])
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -60,46 +60,46 @@ const Inventory = ({ match }) => {
 			window.loaded_web3 = true
 		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-	 }
+		}
 
 		let web3 = window.web3
 		// Load account
-		let accounts = await web3.eth.getAccounts()	 
+		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
 		getData(accounts[0]);
-	};	
+	};
 
-	function getData (owner) {
+	function getData(owner) {
 		let _posts = []
-		axios.get('http://localhost:4000/api/mintedMonster/ownerItems/'+owner)
-		.then((res) => {
-			if( res.data.mintedMonster && res.data.mintedMonster.length > 0 ) {
-				res.data.mintedMonster.forEach( item => {
-					let post = {}
-					post['mintedId'] = item._id
-					post['monsterId'] = item.monster._id
-					post['id'] = item.tokenId
-					post['title'] = item.monster.title
-					post['img'] = item.monster.img
-					post['rating'] = item.rating
-					post['totalRating'] = item.monster.totalRating
-					post['values'] = {}
-					post.values['Level'] = item.values.Level
-					post.values['EXP'] = item.values.EXP
-					post.values['Element'] = item.values.Element
-					post.values['Energy'] = item.values.Energy
-					// post.values['Price'] = "48000"
-					post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
-					_posts.push(post);
-				})
-			}
-			setPosts(_posts)
-			doPagination(_posts);
-		})
-		.catch((e) => {
-			console.log("Error ----------------")
-			console.log(e)
-		})
+		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/mintedMonster/ownerItems/' + owner)
+			.then((res) => {
+				if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
+					res.data.mintedMonster.forEach(item => {
+						let post = {}
+						post['mintedId'] = item._id
+						post['monsterId'] = item.monster._id
+						post['id'] = item.tokenId
+						post['title'] = item.monster.title
+						post['img'] = item.monster.img
+						post['rating'] = item.rating
+						post['totalRating'] = item.monster.totalRating
+						post['values'] = {}
+						post.values['Level'] = item.values.Level
+						post.values['EXP'] = item.values.EXP
+						post.values['Element'] = item.values.Element
+						post.values['Energy'] = item.values.Energy
+						// post.values['Price'] = "48000"
+						post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
+						_posts.push(post);
+					})
+				}
+				setPosts(_posts)
+				doPagination(_posts);
+			})
+			.catch((e) => {
+				console.log("Error ----------------")
+				console.log(e)
+			})
 	}
 
 	// useEffect(() => {
@@ -117,10 +117,10 @@ const Inventory = ({ match }) => {
 		<div>
 			<CurrenPageTitle title='Inventory'></CurrenPageTitle>
 			<NavLinks match={match} />
-			{posts.length > 0 ? ''  :
+			{posts.length > 0 ? '' :
 				<div className='container'>
 					<div className='center'>
-						{account  ? (
+						{account ? (
 							<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 								You Don't have any inventory
 							</p>
@@ -148,21 +148,21 @@ const Inventory = ({ match }) => {
 						);
 					})}
 				</div>
-				{ pageData.length == 0 ? (
-							''
-						) : (
-							<footer className='center pb-8 pt-4'>
-								<img
-									src='/assets/imgs/ArrowLeft.png '
-									className='cursor'
-									onClick={previousPage}
-								/>
-								<p className='text-white fs-22 mx-5'>
-									{currentPage}/{totalPages}
-								</p>
-								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
-							</footer>
-						)}				
+				{pageData.length == 0 ? (
+					''
+				) : (
+					<footer className='center pb-8 pt-4'>
+						<img
+							src='/assets/imgs/ArrowLeft.png '
+							className='cursor'
+							onClick={previousPage}
+						/>
+						<p className='text-white fs-22 mx-5'>
+							{currentPage}/{totalPages}
+						</p>
+						<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+					</footer>
+				)}
 			</div>
 		</div>
 	);

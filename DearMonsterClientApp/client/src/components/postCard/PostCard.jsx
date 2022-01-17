@@ -31,14 +31,14 @@ const PostCard = ({ className, post, stepImg }) => {
 		params.append('buyer', owner)
 		params.append('tradeId', post.tradeId)
 		params.append('mintedId', post.mintedId)
-		
+
 
 		const config = {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}
 		}
-		axios.post('http://localhost:4000/api/tradeItem/buyFromAllTradeItems', params, config)
+		axios.post('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/buyFromAllTradeItems', params, config)
 			.then((res) => {
 				console.log(res.data)
 			})
@@ -103,7 +103,7 @@ const PostCard = ({ className, post, stepImg }) => {
 					userId != post?.seller ?
 						(
 							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
-							onClick={ ()=> purchaseFun() }>
+								onClick={() => purchaseFun()}>
 								Purchase
 							</div>
 						)

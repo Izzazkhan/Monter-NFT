@@ -26,11 +26,11 @@ const TradingPost = ({ }) => {
 
 	useEffect(() => {
 		getTradingData();
-  	}, [])
+	}, [])
 
 
 	const getTradingData = () => {
-		axios.get('http://localhost:4000/api/tradeItem/allInTrade')
+		axios.get('http://1a2f-119-155-21-243.ngrok.io/api/tradeItem/allInTrade')
 			.then((res) => {
 				let _posts = []
 				if (res.data.tradeItems && res.data.tradeItems.length > 0) {
