@@ -17,8 +17,8 @@ export const NavbarRoutes = [
 	},
 	{
 		path: TRADING_POST,
-		title: 'Trading post',
 		pathForNavabr: TRADING_POST,
+		title: 'Trading post',
 		exact: true,
 		component: lazy(() => import('../views/pages/TradingPost')),
 	},

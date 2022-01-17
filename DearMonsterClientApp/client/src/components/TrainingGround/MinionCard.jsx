@@ -3,12 +3,12 @@ import React from 'react';
 const MinionCard = ({ className, post, stepImg, handleFight }) => {
 	return (
 		<div className={`${className}`}>
-			<main class='center flex-column'>
+			<main className='center flex-column'>
 				<div>
 					<img src={post.img} className='w-md h-lg' />
 				</div>
 				<div
-					class='findDearMonster h-md2 pt-4 pb-5 '
+					className='findDearMonster h-md2 pt-4 pb-5 '
 					style={{ marginTop: '-50px', width: '300px' }}
 				>
 					<p className='text-center mt-3  fs-18 bold'>{post.title}</p>
@@ -27,7 +27,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 			</main>
 			<footer className='center mt-5 '>
 				<div
-					class='header-Connect-btn h-40px center w-100px px-2 bold cursor'
+					className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
 					data-bs-toggle='modal'
 					data-bs-target='#exampleModal'
 					onClick={()=>{

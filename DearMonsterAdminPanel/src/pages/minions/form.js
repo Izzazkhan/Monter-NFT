@@ -11,21 +11,33 @@ function MinionForm(props) {
     // const selector = useSelector((state) => state)
     // console.log('selectorselector', selector)
 
-    const [state, setState] = useState({ name: '', rating: '', totalRating: '', price: '', win_Rate: '', reward_Estimated: '', exp_Gain: '' })
-    const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
+    const [state, setState] = useState({
+        title: '',
+        img: '',
+        rating: '',
+        totalRating: '',
+        price: '',
+        Win_Rate: '',
+        Reward_Estimated: '',
+        Exp_Gain: ''
+    })
+
+    // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
 
     useEffect(() => {
         if (props.location.state !== undefined) {
             const propsData = props.location.state.data
             setState({
                 ...state,
-                id: propsData._id,
-                name: propsData.title, rating: propsData.rating, totalRating: propsData.totalRating,
+                _id: propsData._id,
+                title: propsData.title,
+                img: propsData.img,
+                rating: propsData.rating,
+                totalRating: propsData.totalRating,
                 price: propsData.price,
-                win_Rate: propsData.values.Win_Rate,
-                reward_Estimated: propsData.values.Reward_Estimated,
-                exp_Gain: propsData.values.Exp_Gain,
-                image: propsData.img
+                Win_Rate: propsData.values.Win_Rate,
+                Reward_Estimated: propsData.values.Reward_Estimated,
+                Exp_Gain: propsData.values.Exp_Gain,
             })
         }
     }, [])
@@ -43,28 +55,27 @@ function MinionForm(props) {
     //     this.state.imagePreviewUrl = null;
     // }
 
-    const handleImageChange = (e) => {
-        e.preventDefault()
-        let reader = new FileReader()
-        let file = e.target.files[0]
-        reader.onloadend = () => {
-            setImageState({ ...imageState, image: file, imagePreviewUrl: reader.result })
-        }
-        reader.readAsDataURL(file)
-    }
+    // const handleImageChange = (e) => {
+    //     e.preventDefault()
+    //     let reader = new FileReader()
+    //     let file = e.target.files[0]
+    //     reader.onloadend = () => {
+    //         setImageState({ ...imageState, image: file, imagePreviewUrl: reader.result })
+    //     }
+    //     reader.readAsDataURL(file)
+    // }
 
     // console.log('imageState', imageState)
 
     const validateForm = () => {
         let isValid = false
-        if (state.name && state.rating && state.totalRating && state.price && state.win_Rate && state.reward_Estimated && state.exp_Gain) {
+        if (state.title && state.img && state.rating && state.totalRating && state.price && state.Win_Rate && state.Reward_Estimated && state.Exp_Gain) {
             isValid = true
         }
         return isValid
     }
 
     const submitData = () => {
-
         if (props.location.state && validateForm()) {
             props.editMinions(state)
             // dispatch(editMinions(state))
@@ -76,8 +87,7 @@ function MinionForm(props) {
         else {
             alert('Enter Complete Minion Details');
         }
-
-        // clearData();
+        clearData();
     }
 
     const handleChange = (e) => {
@@ -87,7 +97,7 @@ function MinionForm(props) {
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
-        if (field !== 'id' && field !== 'image') {
+        if (field !== '_id') {
             return (
                 <div className="form-group col-md-6" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
@@ -103,7 +113,7 @@ function MinionForm(props) {
     });
 
     const clearData = () => {
-        setState({ name: '', rating: '', totalRating: '', price: '', win_Rate: '', reward_Estimated: '', exp_Gain: '' })
+        setState({ title: '', img: '', rating: '', totalRating: '', price: '', Win_Rate: '', Reward_Estimated: '', Exp_Gain: '' })
     }
 
     return (
@@ -116,7 +126,7 @@ function MinionForm(props) {
                             {InputField}
                         </div>
 
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="form-group col-md-6">
                                 <label className="control-label">Item Image</label>
                                 <input type="file" required="required" className="form-control" onChange={handleImageChange} />
@@ -125,10 +135,13 @@ function MinionForm(props) {
                                     height: imageState.imagePreviewUrl && '100px'
                                 }} src={imageState.imagePreviewUrl} />
                             </div>
-                        </div>
-                        <div classNameName="row" style={{ justifyContent: 'center' }}>
+                        </div> */}
+                        <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
                             {state.id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
-                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}   <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
+                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}
+                        </div>
+                        <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
+                            <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
                         </div>
                         <br />
                     </div>

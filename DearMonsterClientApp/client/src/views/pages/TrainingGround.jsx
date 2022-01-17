@@ -66,23 +66,23 @@ const TrainingGround = () => {
 						Early claim
 					</div>
 					<div
-						class='modal fade'
+						className='modal fade'
 						id='EarlyClaimModal'
 						tabindex='-1'
 						aria-labelledby='EarlyClaimModalLabel'
 						aria-hidden='true'
 					>
-						<div class='modal-dialog'>
-							<div class='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-								<div class='modal-body p-4'>
+						<div className='modal-dialog'>
+							<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+								<div className='modal-body p-4'>
 									30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
 									rewards, 70DMS is transferred from admin wallet to user wallet.
 								</div>
-								<div class='modal-footer'>
-									<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>
+								<div className='modal-footer'>
+									<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
 										Close
 									</button>
-									<button type='button' class='btn btn-warning' data-bs-dismiss='modal'>
+									<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
 										Confirm
 									</button>
 								</div>

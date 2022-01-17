@@ -7,7 +7,7 @@ import { CSVLink } from 'react-csv';
 import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { notification } from "../../utils/notification";
-import data from "../../data/Post.json";
+// import data from "../../data/Post.json";
 import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from "../../contracts/DMSToken.json";
 import Swal from 'sweetalert2';
@@ -16,17 +16,40 @@ import axios from 'axios'
 const HuntersValley = () => {
 	const { userId } = useSelector((state) => state.auth);
 	const { balance } = useSelector((state) => state.auth);
-	const [quantity, setQuantity] = useState(1);
+	const [quantity, setQuantity] = useState();
 	const [price, setPrice] = useState(14800);
 	const [caveLimit, setCaveLimit] = useState(30);
 	const [purchaseLimit, setPurchaseLimit] = useState(10);
 	const [account, setAccount] = useState();
 	const [isOwner, setIsOwner] = useState(false);
 	const [path, setPath] = useState([]);
+	const [monsterIdsState, setMonsterIds] = useState([]);
 	const [attributes, setAttributes] = useState([]);
 	const [ratings, setRatings] = useState([]);
 	const [numberList, setNumberList] = useState([]);
+	const [data, setData] = useState([]);
 	const dispatch = useDispatch();
+
+
+	const getMonstersData = () => {
+		axios.get('http://localhost:4000/api/monster')
+		.then((res) => {
+			setData(res.data.monsters)
+		})
+		.catch((e) => {
+			console.log("Error ----------------")
+			console.log(e)
+		})
+
+	}
+
+	useEffect(() => {
+		if(data.length > 0){
+			setQuantity(1)
+			getPath(1)
+		}
+	}, [data])
+
 
 	const headers = ['Token ID', 'Wallet'];
 	const star_mappings = {
@@ -158,6 +181,7 @@ const HuntersValley = () => {
 	const handleQuantityChange = (e) => {
 		const { value } = e.target;
 		setQuantity(value);
+		getPath(value)
 	}
 
 	const export_csv = (arrayHeader, arrayData, delimiter, fileName) => {
@@ -182,7 +206,7 @@ const HuntersValley = () => {
 
 		var star_key = document.getElementById("select-star").value;
 		var star_idx = star_mappings[star_key]
-		var data = []
+		var csvData = []
 		var data1_cnt = 0
 		var data2_cnt = 0
 		var data3_cnt = 0
@@ -190,7 +214,7 @@ const HuntersValley = () => {
 		var data5_cnt = 0
 		for (let i = 0; i < attributes.length; i++) {
 			if (parseInt(attributes[i][5]) === star_idx) {
-				data.push([i, attributes[i][0]])
+				csvData.push([i, attributes[i][0]])
 			}
 			if (parseInt(attributes[i][5]) === 1) data1_cnt += 1
 			else if (parseInt(attributes[i][5]) === 2) data2_cnt += 1
@@ -198,7 +222,7 @@ const HuntersValley = () => {
 			else if (parseInt(attributes[i][5]) === 4) data4_cnt += 1
 			else if (parseInt(attributes[i][5]) === 5) data5_cnt += 1
 		}
-		export_csv(headers, data, ',', 'export.csv')
+		export_csv(headers, csvData, ',', 'export.csv')
 		export_csv(['Star level', 'Total Count'],
 			[['Star1', data1_cnt], ['Star2', data2_cnt], ['Star3', data3_cnt], ['Star4', data4_cnt], ['Star5', data5_cnt]],
 			',', 'summary.csv'
@@ -217,7 +241,7 @@ const HuntersValley = () => {
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
-		getPath()
+		getPath(quantity)
 
 		let web3 = window.web3
 		// Load account
@@ -239,7 +263,7 @@ const HuntersValley = () => {
 			var price = await DearMonsterContract.methods.getPrice().call()
 			var totalSupply = await DearMonsterContract.methods.totalSupply().call()
 			console.log('************ cave price **********', price)
-
+			// todo : uncomment this !!!!!
 			// if (isMaxSupply) {
 			// 	let notify = notification({
 			// 		type: 'error',
@@ -296,7 +320,7 @@ const HuntersValley = () => {
 				let latestIds = tokensOfOwnerFromContract.slice((tokensOfOwnerFromContract.length - quantity), tokensOfOwnerFromContract.length)
 
 
-				latestIds.forEach(async (item) => {
+				latestIds.forEach(async (item ,index) => {
 					let attributesByIndex = await DearMonsterContract.methods.attributes(item).call();
 
 					console.log("=====================")
@@ -307,6 +331,8 @@ const HuntersValley = () => {
 					params.append('owner', attributesByIndex['owner'])
 					params.append('tokenId', parseInt(item))
 					params.append('rating', parseInt(attributesByIndex['star']))
+					params.append('monsterId', monsterIdsState[index])
+					
 
 					params.append('values.Level', attributesByIndex['level'])
 					params.append('values.EXP', attributesByIndex['exp'])
@@ -320,9 +346,7 @@ const HuntersValley = () => {
 					}
 					axios.post('http://localhost:4000/api/mintedMonster', params, config)
 					.then((res) => {
-						console.log('response =============>')
-						console.log(res)
-						
+						console.log('response =============> monster minted')
 					})
 					.catch((e) => {
 						console.log("Error ----------------")
@@ -360,44 +384,49 @@ const HuntersValley = () => {
 			else { localNumberlist[i] = 5 }
 		}
 		setNumberList([...localNumberlist])
+
+		getMonstersData()
+
 	}, [])
 
-	useEffect(() => {
-		getPath();
-	}, [quantity])
+	// useEffect(() => {
+	// 	getPath();
+	// }, [quantity])
 
-	function getPath() {
+	function getPath(items) {
 		let paths = [];
 		let _ratings = [];
-		for (let i = 0; i < quantity; i++) {
+		let monsterIds = [];
+		for (let i = 0; i < items; i++) {
 			let rand = parseInt(Math.random() * 600);
 			let randCheck = randomizer()
 
 			if (randCheck == 5) {
 				paths[i] = rand % 2 ? data[18].img : data[21].img;
+				monsterIds[i] = rand % 2 ? data[18]._id : data[21]._id;
 				_ratings[i] = 5;
 			} else if (randCheck == 4) {
 				paths[i] = rand % 2 ? data[0].img : data[24].img;
+				monsterIds[i] = rand % 2 ? data[0]._id : data[24]._id;
 				_ratings[i] = 4;
 			} else if (randCheck == 3) {
 				paths[i] = rand % 2 ? data[6].img : data[12].img;
+				monsterIds[i] = rand % 2 ? data[6]._id : data[12]._id;
 				_ratings[i] = 3;
 			} else if (randCheck == 2) {
 				paths[i] = rand % 2 ? data[3].img : data[9].img;
+				monsterIds[i] = rand % 2 ? data[3]._id : data[9]._id;
 				_ratings[i] = 2;
 			} else {
 				paths[i] = rand % 2 ? data[15].img : data[27].img;
+				monsterIds[i] = rand % 2 ? data[15]._id : data[27]._id;
 				_ratings[i] = 1;
 			}
 		}
 
-		console.log("=========")
-		console.log(paths)
-		console.log(_ratings)
-		console.log("=========")
-
 		setPath(paths)
 		setRatings(_ratings)
+		setMonsterIds(monsterIds)
 	}
 
 	const randomizer = () => {
@@ -409,16 +438,16 @@ const HuntersValley = () => {
 		<div>
 			<CurrenPageTitle title="Hunter's Valley"></CurrenPageTitle>
 			<div className='container center mt-6'>
-				<div class='discoveryCaveBg py-2 w-md-lg2 w-md2 mb-8'>
-					<div class='center'>
-						<img src='/assets/gif/Cave Animated.gif' alt='' class='w-75 mt-7' />
+				<div className='discoveryCaveBg py-2 w-md-lg2 w-md2 mb-8'>
+					<div className='center'>
+						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
 					</div>
-					<div class='center fs-19 flex-column text-white'>
-						<p class='mt-2 mb-6'>Discovery Cave</p>
-						<div class='d-flex justify-content-between w-60 mb-4'>
+					<div className='center fs-19 flex-column text-white'>
+						<p className='mt-2 mb-6'>Discovery Cave</p>
+						<div className='d-flex justify-content-between w-60 mb-4'>
 							<p>Price</p>
 							{isOwner ?
-								<div class='d-flex align-items-center'>
+								<div className='d-flex align-items-center'>
 									<img src='/assets/imgs/coin.png' className='w-30px me-1' />
 									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handlePriceChange} />
 									<input
@@ -433,16 +462,16 @@ const HuntersValley = () => {
 									/>
 								</div>
 								:
-								<div class='d-flex align-items-center'>
+								<div className='d-flex align-items-center'>
 									<img src='/assets/imgs/coin.png' className='w-30px me-1' />
 									<p id='caveprice_common'>14,800</p>
 								</div>
 							}
 						</div>
 						{isOwner ?
-							<div class='d-flex justify-content-between w-60 mb-4'>
+							<div className='d-flex justify-content-between w-60 mb-4'>
 								<p>Cave limit</p>
-								<div class='d-flex align-items-center'>
+								<div className='d-flex align-items-center'>
 									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleCaveLimitChange} />
 									<input
 										type='number'
@@ -459,9 +488,9 @@ const HuntersValley = () => {
 							: ''}
 
 						{isOwner ?
-							<div class='d-flex justify-content-between w-60 mb-4'>
+							<div className='d-flex justify-content-between w-60 mb-4'>
 								<p>Purchase limit</p>
-								<div class='d-flex align-items-center'>
+								<div className='d-flex align-items-center'>
 									<img src='/assets/imgs/apply.png' className='cursor w-30px me-1' onClick={handleMaxPurchaseCount} />
 									<input
 										type='number'
@@ -477,9 +506,9 @@ const HuntersValley = () => {
 							</div>
 							: ''}
 						{isOwner ?
-							<div class='d-flex justify-content-between w-60 mb-4'>
+							<div className='d-flex justify-content-between w-60 mb-4'>
 								<p>Star level</p>
-								<div class='d-flex align-items-center'>
+								<div className='d-flex align-items-center'>
 									{/* <CSVLink >Export to CSV</CSVLink> */}
 									<img src='/assets/imgs/download_1.png' className='cursor w-30px me-1' onClick={exportToExcel} />
 									<select id='select-star' className='form-control  w-100px'>
@@ -497,13 +526,13 @@ const HuntersValley = () => {
 							<p>Select quantity</p>
 							<input
 								type='number'
-								name=''
+								name='quantity'
 								className='form-control  w-100px'
 								placeholder={purchaseLimit}
-								id=''
+								id='quantity'
 								min='1'
 								max={purchaseLimit}
-								defaultValue='1'
+								value={quantity}
 								onChange={handleQuantityChange}
 							/>
 						</div>

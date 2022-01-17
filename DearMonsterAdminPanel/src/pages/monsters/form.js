@@ -6,28 +6,27 @@ import { connect } from 'react-redux';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 function MonsterPage(props) {
-    console.log('props', props)
 
-    const [state, setState] = useState({ id: '', name: '', element: '', level: '', exp: '', star: '', energy: '' })
-    const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
+    const [state, setState] = useState({ title: '', cetagory: '', img: '', totalRating: 0, price: 0 });
+    
+    // todo commented untill file is added
+    // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
 
     useEffect(() => {
-        if (
-            props.location.state !== undefined
-        ) {
+        if ( props.location.state !== undefined ) {
             const propsData = props.location.state.data
             setState({
-                ...state, id: propsData.id, name: propsData.name, element: propsData.element, level: propsData.level,
-                exp: propsData.exp,
-                star: propsData.star,
-                energy: propsData.energy,
-                image: propsData.image
+                ...state, 
+                _id: propsData._id, 
+                title: propsData.title, 
+                img: propsData.img, 
+                totalRating: propsData.totalRating, 
+                price: propsData.price, 
+                cetagory: propsData.cetagory
             })
         }
 
     }, [props.location.state])
-
-    console.log('stateeeee', state)
 
     // handleSubmit(e) {
     //     e.preventDefault();
@@ -42,43 +41,37 @@ function MonsterPage(props) {
     //     this.state.imagePreviewUrl = null;
     // }
 
-    const handleImageChange = (e) => {
-        e.preventDefault()
-        let reader = new FileReader()
-        let file = e.target.files[0]
-        reader.onloadend = () => {
-            setImageState({ ...imageState, image: file, imagePreviewUrl: reader.result })
-        }
+    // const handleImageChange = (e) => {
+    //     e.preventDefault()
+    //     let reader = new FileReader()
+    //     let file = e.target.files[0]
+    //     reader.onloadend = () => {
+    //         setImageState({ ...imageState, image: file, imagePreviewUrl: reader.result })
+    //     }
 
-        reader.readAsDataURL(file)
-    }
+    //     reader.readAsDataURL(file)
+    // }
 
     // console.log('imageState', imageState)
 
     const submitData = () => {
 
         const dearMonsters = {
-            name: state.name,
-            element: state.element,
-            level: state.level,
-            exp: state.exp,
-            star: state.star,
-            energy: state.energy,
-            image: imageState.image ? imageState.image.name : ''
+            title: state.title,
+            img: state.img,
+            totalRating: state.totalRating,
+            cetagory: state.cetagory,
+            price: state.price,
         }
+        if (state.title && state.totalRating && !state._id) {
+            props.addDearMonsters({ ...dearMonsters })
+        } else if (state.title && state.totalRating && state._id) {
+            props.editDearMonsters({ ...dearMonsters, _id: state._id });
+            props.history.push('/monsters')
 
-
-        if (state.name && state.element && !state.id) {
-            props.addDearMonsters({ ...dearMonsters, id: Math.floor(Math.random() * (999 - 100 + 1) + 100) })
-            // props.history.push('/')
-            // < Redirect to={`/`} />
-
-        } else if (state.name && state.element && state.id) {
-            props.editDearMonsters({ ...dearMonsters, id: state.id });
         } else {
-            alert('Enter Employee Details.');
+            alert('Enter Monster Details.');
         }
-
         clearData();
     }
 
@@ -89,7 +82,10 @@ function MonsterPage(props) {
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
-        if (field !== 'id' && field !== 'image') {
+
+        // todo commenting until file is added
+        // if (field !== 'id' && field !== 'img') {
+            if (field !== '_id') {
             return (
                 <div className="form-group col-md-6" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
@@ -103,7 +99,7 @@ function MonsterPage(props) {
     });
 
     const clearData = () => {
-        setState({ id: '', name: '', element: '', level: '', exp: '', star: '', energy: '' })
+        setState({ title: '', cetagory: '', img: '', totalRating: 0, price: 0 })
     }
 
     return (
@@ -116,7 +112,9 @@ function MonsterPage(props) {
                             {InputField}
                         </div>
 
-                        <div className="row">
+                        {/* todo untill file is added */}
+
+                        {/* <div className="row">
                             <div className="form-group col-md-6">
                                 <label className="control-label">Item Image</label>
                                 <input type="file" required="required" className="form-control" onChange={handleImageChange} />
@@ -125,9 +123,12 @@ function MonsterPage(props) {
                                     height: imageState.imagePreviewUrl && '100px'
                                 }} src={imageState.imagePreviewUrl} />
                             </div>
-                        </div>
-                        <div classNameName="row" style={{ justifyContent: 'center' }}>
-                            {state.id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
+                        </div> */}
+
+
+
+                        <div className="row" style={{ justifyContent: 'center', width: "200px" }}>
+                            {state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
                                 <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}   <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
                         </div>
                         <br />

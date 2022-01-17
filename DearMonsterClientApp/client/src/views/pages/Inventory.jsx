@@ -9,6 +9,7 @@ import { connectUserAction, connectUserSuccess } from './../../store/actions/aut
 import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
+import axios from 'axios'
 
 const Inventory = ({ match }) => {
 	const [posts, setPosts] = React.useState([]);
@@ -21,23 +22,13 @@ const Inventory = ({ match }) => {
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
 		usePagination(posts, 30, history.location.pathname);
 
-	const handleConnect = async () => {
-		await window.ethereum.request({
-			method: "wallet_requestPermissions",
-			params: [{
-				eth_accounts: {}
-			}]
-		});
-		let web3 = window.web3
-		// Load account
-		let accounts = await web3.eth.getAccounts()
-		setAccount(accounts[0]);
-		dispatch(connectUserSuccess(accounts[0]))
+	const handleConnect = () => {
+		dispatch(connectUserAction());
 	};
 
 	useEffect(() => {
 		getCave();
-	}, [window.web3])
+  }, [window.web3])
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -48,92 +39,85 @@ const Inventory = ({ match }) => {
 			window.loaded_web3 = true
 		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-		}
+	 }
 
 		let web3 = window.web3
 		// Load account
-		let accounts = await web3.eth.getAccounts()
+		let accounts = await web3.eth.getAccounts()	 
 		setAccount(accounts[0]);
+		getData(accounts[0]);
 
+
+
+	 	// todo: fix network in json file, missing from there !!!!!!!!!!!
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// if (DearMonsterNetwork) {
-		if (true) {
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
-			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-			var _attributes = await DearMonsterContract.methods.getAttributes().call()
 
 
-			console.log("===== _attributes =====")
-			console.log(_attributes)
+		// getting items from API instead of Contracts
 
+		// // let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xAc6bf4c267132d2B3ABb40895dEEe219f1aEF445")
+		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		// var _attributes = await DearMonsterContract.methods.getAttributes().call()
+		// var _elementPath = await DearMonsterContract.methods.getElementPath().call()
+		// setPaths(_elementPath)
+		// setAttributes(_attributes)
 
-			var _elementPath = await DearMonsterContract.methods.getElementPath().call()
+	};	
 
-			console.log("===== _elementPath =====")
-			console.log(_elementPath)
-
-			setPaths(_elementPath)
-			setAttributes(_attributes)
-		}
-	};
-
-	function getData() {
-		// if (posts.length > 0) 
-		// 	return
+	function getData (owner) {
 		let _posts = []
-		for (let i = 0; i < attributes.length; i++) {
-			for (let j = 0; j < data.length; j++) {
-				if (data[j]['img'] == attributes[i][2] && attributes[i][0] == account) {
+		axios.get('http://localhost:4000/api/mintedMonster/ownerItems/'+owner)
+		.then((res) => {
+			if( res.data.mintedMonster && res.data.mintedMonster.length > 0 ) {
+				res.data.mintedMonster.forEach( item => {
 					let post = {}
-					post['id'] = i
-					post['title'] = data[j]['title']
-					post['img'] = attributes[i][2]
-					post['rating'] = [...attributes][i][5]
-					post['totalRating'] = 5
+					post['mintedId'] = item._id
+					post['monsterId'] = item.monster._id
+					post['id'] = item.monster.tokenId
+					post['title'] = item.monster.title
+					post['img'] = item.monster.img
+					post['rating'] = item.rating
+					post['totalRating'] = item.monster.totalRating
 					post['values'] = {}
-					post.values['Level'] = "1"
-					post.values['EXP'] = "0"
-					post.values['Element'] = "None"
-					post.values['Energy'] = "2"
+					post.values['Level'] = item.values.Level
+					post.values['EXP'] = item.values.EXP
+					post.values['Element'] = item.values.Element
+					post.values['Energy'] = item.values.Energy
 					// post.values['Price'] = "48000"
-					post.values['OwnerID'] = `${attributes[i][0].substring(0, 4)}...${attributes[i][0].slice(-4)}`
+					post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
 					_posts.push(post);
-				}
-
+				})
 			}
-			// data.map((post) => {
-			// 	post['rating'] = attributes[i][5]
-			// 	post.values['rating'] = attributes[i][5]
-			// 	post.values['ownerId'] = `${attributes[i][0].substring(0, 4)}...${attributes[i][0].slice(-4)}`
-			// 	if (post.img == attributes[i][2]) {
-			// 		temp.push (post);
-			// 		console.log(post['rating'])
-			// 	}
-			// 	// console.log(temp)
-			// })
-		}
-		setPosts(_posts)
-		doPagination(_posts);
-		console.log('*************&*', _posts)
-		console.log('*****************', pageData)
+			setPosts(_posts)
+			doPagination(_posts);
+		})
+		.catch((e) => {
+			console.log("Error ----------------")
+			console.log(e)
+		})
 	}
 
-	useEffect(() => {
-		console.log('**************,', posts.length)
-		if (posts.length > 0)
-			return
-		getData();
-	}, [attributes])
+	// useEffect(() => {
+	// 	if (posts.length > 0)
+	// 	  return
+	// 	getData();
+	// }, [attributes])
+
+
+	// useEffect(() => {
+	// 	getData();
+	// }, [])
 
 	return (
 		<div>
 			<CurrenPageTitle title='Inventory'></CurrenPageTitle>
 			<NavLinks match={match} />
-			{posts.length > 0 ? '' :
+			{posts.length > 0 ? ''  :
 				<div className='container'>
 					<div className='center'>
-						{userId ? (
+						{userId  ? (
 							<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 								You Don't have any inventory
 							</p>
@@ -144,7 +128,7 @@ const Inventory = ({ match }) => {
 								</p>
 								<div
 									onClick={handleConnect}
-									class={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
+									className={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
 								>
 									Connect
 								</div>
@@ -161,21 +145,21 @@ const Inventory = ({ match }) => {
 						);
 					})}
 				</div>
-				{pageData.length == 0 ? (
-					''
-				) : (
-					<footer className='center pb-8 pt-4'>
-						<img
-							src='/assets/imgs/ArrowLeft.png '
-							className='cursor'
-							onClick={previousPage}
-						/>
-						<p className='text-white fs-22 mx-5'>
-							{currentPage}/{totalPages}
-						</p>
-						<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
-					</footer>
-				)}
+				{ pageData.length == 0 ? (
+							''
+						) : (
+							<footer className='center pb-8 pt-4'>
+								<img
+									src='/assets/imgs/ArrowLeft.png '
+									className='cursor'
+									onClick={previousPage}
+								/>
+								<p className='text-white fs-22 mx-5'>
+									{currentPage}/{totalPages}
+								</p>
+								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+							</footer>
+						)}				
 			</div>
 		</div>
 	);

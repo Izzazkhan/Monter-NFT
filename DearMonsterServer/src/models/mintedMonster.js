@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 
 
 const MintedMonsterSchema = new mongoose.Schema({
-    // monsterId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Monster',
-    //     required: true
-    // },
+    monsterId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Monster',
+        required: true
+    },
     owner: {
         type: String,
         required: true

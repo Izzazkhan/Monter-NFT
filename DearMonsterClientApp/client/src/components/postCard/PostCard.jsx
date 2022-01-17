@@ -10,13 +10,13 @@ const PostCard = ({ className, post, stepImg }) => {
 	return (
 		<div className={`${className}`}>
 			<header className='center mb-3'>
-				<div class='header-Connect-btn h-25px center px-1 w-90px fs-12'>{post?.id}</div>
+				<div className='header-Connect-btn h-25px center px-1 w-90px fs-12'>{post?.id}</div>
 			</header>
-			<main class='center flex-column'>
+			<main className='center flex-column'>
 				<div>
 					<img src={post?.img} className='w-md2' />
 				</div>
-				<div class='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
+				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
 					<p className='text-center mt-47px fs-18 bold'>{post?.title}</p>
 					<div className='center mt-5'>
 						<div>
@@ -57,12 +57,12 @@ const PostCard = ({ className, post, stepImg }) => {
 			</main>
 			<footer className='center mt-6'>
 				{userId ? (
-					<div class='header-Connect-btn h-40px center w-100px px-2 bold  cursor'>
+					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'>
 						Purchase
 					</div>
 				) : (
 					<div
-						class='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
+						className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
 						onClick={() => {
 							dispatch(connectUserAction());
 						}}

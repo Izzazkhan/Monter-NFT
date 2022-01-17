@@ -38,14 +38,11 @@ function Monsters(props) {
                             <thead className="table__head">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Element</th>
-                                    <th>Level</th>
-                                    <th>Experience</th>
-                                    <th>Stars</th>
-                                    <th>Energy</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
                                     <th>Image</th>
-                                    <th>Action(s)</th>
+                                    <th>Total Rating</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
 
@@ -54,17 +51,14 @@ function Monsters(props) {
                                 {props.dearMonsters.dearMonsters
                                     && props.dearMonsters.dearMonsters.map((data, index) => {
                                         return <tr key={(index + 1)}>
-                                            <td>{(index + 1)}</td>
-                                            <td>{data.name}</td>
-                                            <td>{data.element}</td>
-                                            <td>{data.level}</td>
-                                            <td>{data.exp}</td>
-                                            <td>{data.star}</td>
-                                            <td>{data.energy}</td>
-                                            <td>{data.image}</td>
-
+                                            <td>{data._id}</td>
+                                            <td>{data.title}</td>
+                                            <td>{data.cetagory}</td>
+                                            <td>{data.img}</td>
+                                            <td>{data.totalRating}</td>
+                                            <td>{data.price}</td>
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>
-                                                <button onClick={() => deleteDearMonsters(data.id)}>DELETE</button>
+                                                <button onClick={() => deleteDearMonsters(data._id)}>DELETE</button>
                                             </td>
                                         </tr>
                                     })}

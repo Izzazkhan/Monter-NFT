@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Minion } from '../../utilities/constant'
+
 export const getMinions = (token) => dispatch => {
     axios
         .get(`${Minion}`, {
@@ -11,9 +12,6 @@ export const getMinions = (token) => dispatch => {
             // 'Content-Type': 'application/x-www-form-urlencoded'
         })
         .then((res) => {
-            console.log('response data', res)
-            // if (res.data.success) {
-            // }
             return dispatch({
                 type: 'GET_MINIONS',
                 payload: res.data.minions
@@ -28,14 +26,14 @@ export const addMinions = (data) => dispatch => {
 
     // if (state.email && state.password) {
     const params = new URLSearchParams()
-    params.append('title', data.name)
-    params.append('rating', data.rating)
-    params.append('totalRating', data.totalRating)
+    params.append('title', data.title)
+    params.append('img', data.img)
+    params.append('rating', Number(data.rating))
+    params.append('totalRating', Number(data.totalRating))
     params.append('price', Number(data.price))
-    params.append('values.Win_Rate', data.win_Rate)
-    params.append('values.Reward_Estimated', data.reward_Estimated)
-    params.append('values.Exp_Gain', data.exp_Gain)
-    params.append('img', 'image value')
+    params.append('values.Win_Rate', Number(data.Win_Rate))
+    params.append('values.Reward_Estimated', Number(data.Reward_Estimated))
+    params.append('values.Exp_Gain', Number(data.Exp_Gain))
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -59,25 +57,24 @@ export const addMinions = (data) => dispatch => {
 };
 
 export const editMinions = (data) => dispatch => {
-    console.log('edit data', data)
     // return dispatch => {
     const params = new URLSearchParams()
-    params.append('id', data.id)
-    params.append('title', data.name)
-    params.append('rating', data.rating)
-    params.append('totalRating', data.totalRating)
+
+    params.append('title', data.title)
+    params.append('img', data.img)
+    params.append('rating', Number(data.rating))
+    params.append('totalRating', Number(data.totalRating))
     params.append('price', Number(data.price))
-    params.append('values.Win_Rate', data.win_Rate)
-    params.append('values.Reward_Estimated', data.reward_Estimated)
-    params.append('values.Exp_Gain', data.exp_Gain)
-    params.append('img', 'image value')
+    params.append('values.Win_Rate', Number(data.Win_Rate))
+    params.append('values.Reward_Estimated', Number(data.Reward_Estimated))
+    params.append('values.Exp_Gain', Number(data.Exp_Gain))
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
     axios
-        .put(`${Minion}`, params, config)
+        .put(`${Minion}/${data._id}`, params, config)
         .then((res) => {
             console.log('response', res)
             // return dispatch({
@@ -87,17 +84,9 @@ export const editMinions = (data) => dispatch => {
         }).catch((e) => {
             console.log("Error", e)
         })
-
-    // return dispatch({
-    //     type: 'EDIT_MINIONS',
-    //     payload: data
-    // });
-    // }
 };
 
 export const deleteMinions = (id) => dispatch => {
-    console.log('delete id', id)
-    // return dispatch => {
     axios.delete(`${Minion}/${id}`)
         .then((res) => {
             console.log('response delete', res)
@@ -116,12 +105,4 @@ export const deleteMinions = (id) => dispatch => {
             console.log("error: ", e);
         });
 
-
-
-    // return dispatch({
-    //     type: 'DELETE_MINIONS',
-    //     payload: id
-    // });
-
-    // }
 }; 

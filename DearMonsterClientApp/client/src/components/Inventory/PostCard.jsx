@@ -1,22 +1,63 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserAction } from '../../store/actions/auth/login';
+import { connectUserSuccess } from '../../store/actions/auth/login';
+import axios from 'axios'
 
 const PostCard = ({ className, post, stepImg }) => {
+	
+	
+	const [owner, setOwner] = useState(null);
+
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
+
+	const connectFunction = async () => {
+		await window.ethereum.request({
+			method: "wallet_requestPermissions",
+			params: [{
+				eth_accounts: {}
+			}]
+		});
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		setOwner(accounts[0])
+		dispatch(connectUserSuccess(accounts[0]))
+	}
+
+	const sellFunction = async () => {
+
+		let params = new URLSearchParams()
+		params.append('seller', owner)
+		params.append('monsterId', post.monsterId)
+		params.append('price', 5000)
+		const config = {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		}
+		axios.post('http://localhost:4000/api/tradeItem', params, config)
+		.then((res) => {
+			console.log(res.data)
+		})
+		.catch((e) => {
+			console.log("Error ----------------")
+			console.log(e)
+		})
+
+	}
 
 
 	return (
 		<div className={`${className}`}>
 			<header className='center mb-3'>
-				<div class='header-Connect-btn h-25px center px-1 w-90px fs-12'>{post?.id}</div>
+				<div className='header-Connect-btn h-25px center px-1 w-90px fs-12'>{post?.id}</div>
 			</header>
-			<main class='center flex-column'>
+			<main className='center flex-column'>
 				<div>
 					<img src={post?.img} className='w-md2' />
 				</div>
-				<div class='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
+				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
 					<p className='text-center mt-47px fs-18 bold'>{post?.title}</p>
 					<div className='center mt-5'>
 						<div>
@@ -48,17 +89,12 @@ const PostCard = ({ className, post, stepImg }) => {
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				{userId ? (
-					<div class='header-Connect-btn h-40px center w-100px px-2 bold  cursor'>
+				{userId && owner ? (
+					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={ () => sellFunction() }>
 						Sell
 					</div>
 				) : (
-					<div
-						class='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
-						onClick={() => {
-							dispatch(connectUserAction());
-						}}
-					>
+					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => connectFunction()}>
 						Connect
 					</div>
 				)}

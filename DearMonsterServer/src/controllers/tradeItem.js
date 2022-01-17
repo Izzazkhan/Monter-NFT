@@ -33,7 +33,7 @@ exports.show = async function (req, res) {
             },
             {
                 $lookup: {
-                    from: 'Monster',
+                    from: 'monsters',
                     foreignField: '_id',
                     localField: 'monsterId',
                     as: 'monster'

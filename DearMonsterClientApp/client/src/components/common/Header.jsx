@@ -231,7 +231,7 @@ const Header = () => {
 							return (
 								<Link
 									to={route.pathForNavabr}
-									class={`header-btn text-warning ${!active && 'me-4'} w-auto mb-5`}
+									className={`header-btn text-warning ${!active && 'me-4'} w-auto mb-5`}
 									onClick={() => setActive(false)}
 								>
 									<span className='mx-2'>{route.title}</span>
@@ -244,14 +244,14 @@ const Header = () => {
 				<div className='d-lg-flex d-none justify-content-between align-items-center'>
 					<img src='/assets/imgs/coin.png' className='w-50px' />
 					{userId && (
-						<div class='dms-block h-40px ms-4 center px-2'>
+						<div className='dms-block h-40px ms-4 center px-2'>
 							<div className='dms-btn w-100 me-2 center balance-div'>{blance}</div>
 							<div className='dms-btn w-100  center'>DMS</div>
 						</div>
 					)}
 					{!userId && (
 						<div
-							class={`${
+							className={`${
 								userId ? 'w-25' : 'px-5'
 							} header-Connect-btn h-40px ms-4 center bold cursor`}
 							onClick={onConnect}
@@ -261,9 +261,9 @@ const Header = () => {
 					)}
 					{userId && (
 						<div>
-							<div class='dropdown ms-4'>
+							<div className='dropdown ms-4'>
 								<button
-									class='btn dropdown-toggle fs-13 w-105px h-35px rounded-3 text-white border border-warning center'
+									className='btn dropdown-toggle fs-13 w-105px h-35px rounded-3 text-white border border-warning center'
 									type='button'
 									id='dropdownMenuButton1'
 									data-bs-toggle='dropdown'
@@ -272,31 +272,31 @@ const Header = () => {
 									{userId && `${userId.substring(0, 4)}...${userId.slice(-4)}`}
 								</button>
 								<ul
-									class='dropdown-menu  w-sm dropdown-menu-end '
+									className='dropdown-menu  w-sm dropdown-menu-end '
 									aria-labelledby='dropdownMenuButton1'
 								>
 									{/* <li>
-										<a class='dropdown-item py-5 text-whit cursor py-7px' href='#'>
+										<a className='dropdown-item py-5 text-whit cursor py-7px' href='#'>
 											Wallet
 										</a>
 									</li>
 									<li>
-										<a class='dropdown-item py-5 text-whit cursor py-7px' href='#'>
+										<a className='dropdown-item py-5 text-whit cursor py-7px' href='#'>
 											Transactions
 										</a>
 									</li>
 									<li>
-										<p class='dropdown-item py-5 text-whit cursor py-7px' href='#'>
+										<p className='dropdown-item py-5 text-whit cursor py-7px' href='#'>
 											Your NFTs
 										</p>
 									</li>
 									<li>
-										<p class='dropdown-item py-5 text-whit cursor py-7px' href='#'>
+										<p className='dropdown-item py-5 text-whit cursor py-7px' href='#'>
 											Make a Profile
 										</p>
 									</li> */}
 									<li>
-										<p class='dropdown-item py-5 text-whit cursor py-7px' href='#'
+										<p className='dropdown-item py-5 text-whit cursor py-7px' href='#'
 											onClick={onDisconnect}
 										>
 											Disconnect
@@ -304,11 +304,11 @@ const Header = () => {
 									</li>
 								</ul>
 							</div>
-							<div class='mt-2'>
+							<div className='mt-2'>
 								<a
 									target='_blank'
 									href='https://pancakeswap.finance/swap?outputCurrency=0x9bfd1348cf574e3eb2b114cc18374b09ad012c69&inputCurrency=BNB'
-									class='btn border position-absolute  center w-100px px-1 fs-12   mx-4  text-white cursor'
+									className='btn border position-absolute  center w-100px px-1 fs-12   mx-4  text-white cursor'
 								>
 									BUY DMS
 								</a>
@@ -318,10 +318,10 @@ const Header = () => {
 				</div>
 			</section>
 			<section>
-				<div class='announcementBar  mt-3 h-30px py-2 fw-bold fs-17'>
+				<div className='announcementBar  mt-3 h-30px py-2 fw-bold fs-17'>
 					<div id='rssBlock '>
-						<p class='cnnContents overflow-x-auto'>
-							<span class='marqueeStyle  '>
+						<p className='cnnContents overflow-x-auto'>
+							<span className='marqueeStyle  '>
 								Welcome to the DearMonsters Universe. An exciting and rewarding journey awaits you!
 							</span>
 						</p>

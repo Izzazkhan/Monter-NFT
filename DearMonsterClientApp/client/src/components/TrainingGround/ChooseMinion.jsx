@@ -127,14 +127,14 @@ const ChooseMinion = () => {
 const FightModal = ({ loading, status }) => {
 	return (
 		<div
-			class='modal  fade'
+			className='modal  fade'
 			id='exampleModal'
 			tabindex='-1'
 			aria-labelledby='exampleModalLabel'
 			aria-hidden='true'
 		>
-			<div class='modal-dialog'>
-				<div class='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
+			<div className='modal-dialog'>
+				<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
 					<div className='modal-body center fs-25'>{loading ? <Loading /> : `${status} `}</div>
 				</div>
 			</div>

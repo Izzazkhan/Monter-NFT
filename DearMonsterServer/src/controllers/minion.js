@@ -10,10 +10,10 @@ exports.index = async function (req, res) {
 
 exports.store = async (req, res) => {
     try {
-        const { name } = req.body;
+        const { img } = req.body;
 
         // Must uncomment for verification
-        const minion = await Minion.findOne({name});
+        const minion = await Minion.findOne({img});
         if (minion) return res.status(401).json({message: 'The minion already exist.'});
 
         const newMinion = new Minion({...req.body});
@@ -46,10 +46,6 @@ exports.update = async function (req, res) {
         const id = req.params.id;
         const update = req.body;
         // const userId = req.user._id;
-
-        console.log("=================")
-        console.log(update)
-        console.log(id)
 
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});

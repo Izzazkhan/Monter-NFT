@@ -27,6 +27,7 @@ const MainRoutes = (props) => {
             {currentUser ?
                 <Layout>
                     <Switch>
+                        <Route exact path={'/'} component={Dashboard} />
                         <Route exact path={'/dashboard'} component={Dashboard} />
                         <Route exact path={'/monsters'} component={Monsters} />
                         <Route exact path={'/monsters/create'} component={MonstersForm} />
@@ -35,7 +36,7 @@ const MainRoutes = (props) => {
                         <Route exact path={'/minions/create'} component={MinionsForm} />
                         <Route exact path={'/minions/edit'} component={MinionsForm} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
-                    <Route path="/login" component={LoginPage} /> */}
+                            <Route path="/login" component={LoginPage} /> */}
                         <Route path="*" component={NotFound} />
                     </Switch>
                 </Layout>

@@ -2,7 +2,7 @@ const express = require('express');
 // const {check} = require('express-validator');
 // const multer = require('multer');
 
-const TradeItem = require('../controllers/mintedMonster');
+const MintedMonster = require('../controllers/mintedMonster');
 // const validate = require('../middlewares/validate');
 
 const router = express.Router();
@@ -10,18 +10,18 @@ const router = express.Router();
 // const upload = multer().single('profileImage');
 
 //INDEX
-router.get('/', TradeItem.index);
+router.get('/ownerItems/:owner', MintedMonster.index);
 
 //STORE
-router.post('/', TradeItem.store);
+router.post('/', MintedMonster.store);
 
 //SHOW
-router.get('/:id',  TradeItem.show);
+router.get('/:id',  MintedMonster.show);
 
 //UPDATE
-router.put('/:id', TradeItem.update);
+router.put('/:id', MintedMonster.update);
 
 //DELETE
-router.delete('/:id', TradeItem.destroy);
+router.delete('/:id', MintedMonster.destroy);
 
 module.exports = router;

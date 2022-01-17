@@ -3,17 +3,17 @@ const {uploader} = require('../utils/index');
 
 
 exports.index = async function (req, res) {
-    const monster = await Monster.find({});
-    res.status(200).json({monster});
+    const monsters = await Monster.find({});
+    res.status(200).json({monsters});
 };
 
 
 exports.store = async (req, res) => {
     try {
-        const { title } = req.body;
+        const { img } = req.body;
         
         // Must uncomment for verification
-        const monster = await Monster.findOne({title});
+        const monster = await Monster.findOne({img});
         if (monster) return res.status(401).json({message: 'The monster already exist.'});
 
         const newMonster = new Monster({...req.body});

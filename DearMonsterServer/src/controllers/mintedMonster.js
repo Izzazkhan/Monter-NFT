@@ -1,16 +1,30 @@
 const MintedMonster = require('../models/mintedMonster');
 
 exports.index = async function (req, res) {
-    const mintedMonster = await MintedMonster.find({ onSale: true });
+    const { owner } = req.params;
+
+    const mintedMonster = await MintedMonster.aggregate([
+            {
+                $match: { owner }
+            },
+            {
+                $lookup: {
+                    from: 'monsters',
+                    foreignField: '_id',
+                    localField: 'monsterId',
+                    as: 'monster'
+                }
+            },
+            {
+                $unwind: '$monster'
+            }
+        ]);
     res.status(200).json({mintedMonster, message: "Minted monsters retrived successfully"});
 };
 
 
 exports.store = async (req, res) => {
     try {
-
-        console.log("============")
-        console.log(req.body)
 
         const { tokenId } = req.body;
         // Must uncomment for verification
@@ -79,7 +93,6 @@ exports.update = async function (req, res) {
         res.status(500).json({message: error.message});
     }
 };
-
 
 exports.destroy = async function (req, res) {
     try {

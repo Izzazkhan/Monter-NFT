@@ -3,19 +3,19 @@ const mongoose = require('mongoose');
 const MinionSchema = new mongoose.Schema({
     title: {
         type: String,
-        unique: true,
         required: 'minon name is required',
     },
     img: {
         type: String,
+        unique: true,
         required: true,
     },
     rating: {
-        type: String,
+        type: Number,
         required: true,
     },
     totalRating: {
-        type: String,
+        type: Number,
         required: true,
     },
     price: {
@@ -24,7 +24,7 @@ const MinionSchema = new mongoose.Schema({
     },
     values: {
         Win_Rate: {
-            type: String,
+            type: Number,
             required: true,
         },
         Reward_Estimated: {

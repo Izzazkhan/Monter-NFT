@@ -69,30 +69,6 @@ const TradingPost = ({ }) => {
 		doPagination(data);
 	};
 
-	React.useEffect(() => {
-		// console.log("==>", baseUrl);
-		axios({
-			method: 'get',
-			url: `${baseUrl}api/tradeItem`,
-			responseType: 'stream'
-		})
-			.then(function (response) {
-				if (response.data) {
-					setData(response.data)
-				}
-			});
-
-		if (Object.keys(filterValues).length !== 0) {
-			const filterdata = data.filter((item) => {
-				const isTrue = Object.keys(filterValues).filter((key) => {
-					return filterValues[key] == item[key];
-				});
-				return isTrue.length >= 1 && item;
-			});
-			doPagination(filterdata);
-		}
-	}, [filterValues]);
-
 	return (
 		<div>
 			<CurrenPageTitle title='Trading Post'></CurrenPageTitle>
@@ -102,18 +78,18 @@ const TradingPost = ({ }) => {
 				</p>
 			</div> */}
 			<div className='mt-lg-9 mt-7 container '>
-				<div class='row  px-md-auto justify-content-center'>
-					<div class='col-md-5 col-lg-3 col-12'>
-						{/* <FindMonster
+				<div className='row  px-md-auto justify-content-center'>
+					<div className='col-md-5 col-lg-3 col-12'>
+						<FindMonster
 							filterData={filterData}
 							sortData={sortData}
 							searchData={searchData}
 							clearSearchData={clearSearchData}
 							clearFilterData={clearFilterData}
-						/> */}
+						/>
 					</div>
-					<div class='col-lg-9 col-md-7 col-12'>
-						<div class='px-md-0'>
+					<div className='col-lg-9 col-md-7 col-12'>
+						<div className='px-md-0'>
 							<section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
 								{error && data?.length === 0 ? (
 									<div className='col-12 center w-100 text-white mt-5'>
@@ -132,7 +108,7 @@ const TradingPost = ({ }) => {
 								)}
 							</section>
 						</div>
-						{/* {'error' && pageData?.length == 0 ? (
+						{'error' && pageData?.length == 0 ? (
 							''
 						) : (
 							<footer className='center pb-8 pt-4'>
@@ -146,7 +122,7 @@ const TradingPost = ({ }) => {
 								</p>
 								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
 							</footer>
-						)} */}
+						)}
 					</div>
 				</div>
 			</div>
