@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
+import Swal from 'sweetalert2';
 
-const PostCard = ({ className, post, stepImg, account }) => {
+const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 
 	const [owner, setOwner] = useState(null);
-
+	const [sellInput, setSellInput] = useState(false);
+	const [sellPrice, setSellPrice] = useState(0);
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
+
+
+	const priceChangeHandler = (e) => {
+		setSellPrice(e.target.value)
+	}
+
 
 	const connectFunction = async () => {
 		await window.ethereum.request({
@@ -26,29 +34,48 @@ const PostCard = ({ className, post, stepImg, account }) => {
 	}
 
 	const sellFunction = async () => {
-		let params = new URLSearchParams()
-		params.append('seller', account ? account : owner ? owner : userId )
-		params.append('mintedMonsterId', post.mintedId)
-		params.append('price', 5000)
-		const config = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+		if (sellPrice > 0) {
+
+			let params = new URLSearchParams()
+			params.append('seller', account ? account : owner ? owner : userId)
+			params.append('mintedMonsterId', post.mintedId)
+			params.append('price', sellPrice)
+			const config = {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 			}
+			axios.post('http://localhost:4000/api/tradeItem', params, config)
+				.then((res) => {
+					console.log(res.data)
+					Swal.fire({
+						icon: 'success',
+						title: 'Item Added To Sell',
+						text: 'Please check Inventory Trading for items on trade!'
+					})
+				})
+				.catch((e) => {
+					console.log("Error ----------------")
+					console.log(e)
+				})
+		} else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Invalid Price',
+				text: 'Price should be greater than 0'
+			})
 		}
-		axios.post('http://localhost:4000/api/tradeItem', params, config)
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((e) => {
-				console.log("Error ----------------")
-				console.log(e)
-			})
 	}
 
 	const revokeSellFunction = () => {
 		axios.delete(`http://localhost:4000/api/tradeItem/${post.tradeId}`)
 			.then((res) => {
 				console.log('response delete', res)
+				Swal.fire({
+					icon: 'success',
+					title: 'Item Removed From Trading',
+					text: 'Please check Inventory Trading for items on trade!'
+				})
 			})
 			.catch((e) => {
 				console.log("error: ", e);
@@ -97,15 +124,22 @@ const PostCard = ({ className, post, stepImg, account }) => {
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				{ account || owner ?
+				{account || owner ?
 					post?.onSale ? (
 						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => revokeSellFunction()}>
 							Revoke Sale
 						</div>
 					) : (
-						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
-							Sell
-						</div>
+
+						!sellInput ?
+
+							(
+								<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(true)}>
+									Sell
+								</div>
+							)
+							:
+							''
 					)
 					:
 					(
@@ -113,6 +147,36 @@ const PostCard = ({ className, post, stepImg, account }) => {
 							Connect
 						</div>
 					)}
+
+
+				{
+					sellInput ?
+						<>
+							(
+							<div className='d-flex justify-content-between w-60 mb-4'>
+								<div className='d-flex align-items-center'>
+									<input
+										type='text'
+										name='sellPrice'
+										className='form-control  w-100px'
+										id='sellPrice'
+										value={sellPrice}
+										onChange={priceChangeHandler}
+									/>
+								</div>
+							</div>
+
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
+								Sell
+							</div>
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(false)}>
+								Cancel
+							</div>
+							)
+						</>
+						:
+						''
+				}
 			</footer>
 		</div>
 	);
