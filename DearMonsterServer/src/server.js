@@ -6,6 +6,7 @@ const cors = require('cors');
 const passport = require("passport");
 const path = require("path");
 const bodyParser = require('body-parser');
+const routes = require('./routes/index');
 
 // Setting up port
 const connUri = process.env.MONGO_LOCAL_CONN_URL;
@@ -21,6 +22,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
+//=== 4 - CONFIGURE ROUTES
+//Configure Route
+
+app.use('/api', routes);
+
+// app.use(express.static(path.join(__dirname, "..", "build")));
+// app.use(express.static("build"));
+
+// app.use((req, res, next) => {
+//   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+// });
+
+
+// Front Site Build Path
+app.use('/', express.static(path.join(__dirname, '../build')))
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,10 +60,6 @@ connection.on('error', (err) => {
 app.use(passport.initialize());
 require("./middlewares/jwt")(passport);
 
-
-//=== 4 - CONFIGURE ROUTES
-//Configure Route
-require('./routes/index')(app);
 
 
 //=== 5 - START SERVER
