@@ -1,10 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserAction } from '../../store/actions/auth/login';
+import { connectUserSuccess } from '../../store/actions/auth/login';
+import axios from 'axios'
 
 const PostCard = ({ className, post, stepImg }) => {
-	const {userId} = useSelector(state => state.auth)
-	const dispatch= useDispatch();
+	const { userId } = useSelector(state => state.auth)
+	const dispatch = useDispatch();
+
+	const [owner, setOwner] = useState(null);
+
+	const handleConnect = async () => {
+		await window.ethereum.request({
+			method: "wallet_requestPermissions",
+			params: [{
+				eth_accounts: {}
+			}]
+		});
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		setOwner(accounts[0])
+		dispatch(connectUserSuccess(accounts[0]))
+	};
+
+	const purchaseFun = () => {
+
+		let params = new URLSearchParams()
+		params.append('owner', post.owner)
+		params.append('seller', post.seller)
+		params.append('buyer', owner)
+		params.append('tradeId', post.tradeId)
+		params.append('mintedId', post.mintedId)
+		
+
+		const config = {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		}
+		axios.post('http://localhost:4000/api/tradeItem/buyFromAllTradeItems', params, config)
+			.then((res) => {
+				console.log(res.data)
+			})
+			.catch((e) => {
+				console.log("Error ----------------")
+				console.log(e)
+			})
+
+	}
 
 
 	return (
@@ -56,20 +99,31 @@ const PostCard = ({ className, post, stepImg }) => {
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				{userId ? (
-					<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'>
-						Purchase
-					</div>
-				) : (
-					<div
-						className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
-						onClick={() => {
-							dispatch(connectUserAction());
-						}}
-					>
-						Connect
-					</div>
-				)}
+				{userId ?
+					userId != post?.seller ?
+						(
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
+							onClick={ ()=> purchaseFun() }>
+								Purchase
+							</div>
+						)
+						:
+						(
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'>
+								Owned
+							</div>
+						)
+
+					:
+					(
+						<div
+							className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
+							onClick={handleConnect}
+						>
+							Connect
+						</div>
+					)
+				}
 			</footer>
 		</div>
 	);

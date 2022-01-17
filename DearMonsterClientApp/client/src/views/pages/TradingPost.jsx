@@ -1,9 +1,9 @@
-import React, { useState, } from 'react';
+import React, { useState, useEffect } from 'react';
 import FindMonster from '../../components/TradingPost/FindMonster';
 import PostCard from '../../components/postCard/PostCard';
 import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
-import data from '../..//data/Post.json';
+import jsonData from '../..//data/Post.json';
 import { usePagination } from '../../hooks/usePagination';
 import { getTradeItemsAction } from './../../store/actions/auth/tradeItem';
 
@@ -15,19 +15,57 @@ import axios from 'axios'
 
 const TradingPost = ({ }) => {
 	const dispatch = useDispatch();
-
 	const history = useHistory();
 	const [filterValues, setFilterValues] = useState({});
 	const [error, setError] = useState('');
-	const [pageData, setPageData] = useState(null);
-	const [currentPage, setCurrentPage] = useState(0)
-	const [previousPage, setPreviousPage] = useState(0)
-	const [nextPage, setNextPage] = useState(0)
-	const [totalPages, setTotalPages] = useState(0)
-	const [doPagination, setDoPagination] = useState(false)
+	const [data, setData] = useState([])
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
+		usePagination(data, 6, history.location.pathname);
+
+	// const [data, setData] = useState(["some chocolates"])
+
+	useEffect(() => {
+		getTradingData();
+  	}, [])
 
 
-	const [data, setData] = useState(["some chocolates"])
+	const getTradingData = () => {
+		axios.get('http://localhost:4000/api/tradeItem/allInTrade')
+			.then((res) => {
+				let _posts = []
+				if (res.data.tradeItems && res.data.tradeItems.length > 0) {
+					res.data.tradeItems.forEach(item => {
+						let post = {}
+						post['onSale'] = true
+						post['onTrading'] = true
+						post['tradeId'] = item._id
+						post['seller'] = item.seller
+						post['price'] = item.price
+						post['monsterId'] = item.monster._id
+						post['title'] = item.monster.title
+						post['img'] = item.monster.img
+						post['totalRating'] = item.monster.totalRating
+						post['values'] = {}
+						post['id'] = item.mintedMonster.tokenId
+						post['owner'] = item.mintedMonster.owner
+						post['rating'] = item.mintedMonster.rating
+						post['mintedId'] = item.mintedMonster._id
+						post.values['Level'] = item.mintedMonster.values.Level
+						post.values['EXP'] = item.mintedMonster.values.EXP
+						post.values['Element'] = item.mintedMonster.values.Element
+						post.values['Energy'] = item.mintedMonster.values.Energy
+						post.values['OwnerID'] = `${item.seller.substring(0, 4)}...${item.seller.slice(-4)}`
+						_posts.push(post);
+					})
+				}
+				setData(_posts)
+				doPagination(_posts);
+			})
+			.catch((e) => {
+				console.log("Error ----------------")
+				console.log(e)
+			})
+	}
 
 
 	const sortData = (order, sortBy) => {
@@ -69,14 +107,12 @@ const TradingPost = ({ }) => {
 		doPagination(data);
 	};
 
+
+	console.log(data)
+
 	return (
 		<div>
 			<CurrenPageTitle title='Trading Post'></CurrenPageTitle>
-			{/* <div className='center'>
-				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-					Coming Soon
-				</p>
-			</div> */}
 			<div className='mt-lg-9 mt-7 container '>
 				<div className='row  px-md-auto justify-content-center'>
 					<div className='col-md-5 col-lg-3 col-12'>
@@ -90,13 +126,15 @@ const TradingPost = ({ }) => {
 					</div>
 					<div className='col-lg-9 col-md-7 col-12'>
 						<div className='px-md-0'>
+
+
 							<section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
 								{error && data?.length === 0 ? (
 									<div className='col-12 center w-100 text-white mt-5'>
 										<h3>{error}</h3>
 									</div>
 								) : (
-									data.lenth > 0 ? data.map((post) => {
+									data.length > 0 ? data.map((post) => {
 										return (
 											<PostCard
 												post={post}

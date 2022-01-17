@@ -9,6 +9,12 @@ const router = express.Router();
 
 // const upload = multer().single('profileImage');
 
+router.get('/allInTrade', TradeItem.allInTrade);
+
+router.get('/inTradeItems/:owner', TradeItem.inTradeItems);
+
+router.post('/buyFromAllTradeItems', TradeItem.buyFromAllTradeItems);
+
 //INDEX
 router.get('/', TradeItem.index);
 
@@ -23,7 +29,5 @@ router.put('/:id', TradeItem.update);
 
 //DELETE
 router.delete('/:id', TradeItem.destroy);
-
-router.get('/inTradeItems/:owner', TradeItem.inTradeItems);
 
 module.exports = router;
