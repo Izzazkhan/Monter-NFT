@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"img":{"$numberInt":"1"}},"name":"img_1","background":true,"unique":true}],"uuid":"e3a64606d45448b3854496e8be5ed669","collectionName":"minions","type":"collection"}
