@@ -1,29 +1,32 @@
+const express = require('express')
+const router = express.Router()
+
+
 const auth = require('./auth');
 const user = require('./user');
 const monster = require('./monster');
 const minion = require('./minion');
 const mintedMonster = require('./mintedMonster');
 const tradeItem = require('./tradeItem');
-
 const authenticate = require('../middlewares/authenticate');
 
-module.exports = app => {
-    app.get('/', (req, res) => {
-        res.status(200).send({ message: "Welcome to the SERVER APIs"});
-    });
-    app.use('/api/auth', auth);
-
-    
-    app.use('/api/userA', authenticate, user);
-    app.use('/api/minionA', authenticate, minion);
-    app.use('/api/monsterA', authenticate, monster);
-    app.use('/api/mintedMonsterA',authenticate, mintedMonster);
-    app.use('/api/tradeItemA',authenticate, tradeItem);
+router.get('/', (req, res) => {
+    res.status(200).send({ message: "Welcome to the SERVER APIs"});
+});
+router.use('/auth', auth);
 
 
-    app.use('/api/user', user);
-    app.use('/api/minion', minion);
-    app.use('/api/monster', monster);
-    app.use('/api/mintedMonster', mintedMonster);
-    app.use('/api/tradeItem', tradeItem);
-};
+router.use('/userA', authenticate, user);
+router.use('/minionA', authenticate, minion);
+router.use('/monsterA', authenticate, monster);
+router.use('/mintedMonsterA',authenticate, mintedMonster);
+router.use('/tradeItemA',authenticate, tradeItem);
+
+
+router.use('/user', user);
+router.use('/minion', minion);
+router.use('/monster', monster);
+router.use('/mintedMonster', mintedMonster);
+router.use('/tradeItem', tradeItem);
+
+module.exports = router
