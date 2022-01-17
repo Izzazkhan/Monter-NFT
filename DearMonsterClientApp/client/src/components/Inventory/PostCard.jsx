@@ -27,7 +27,7 @@ const PostCard = ({ className, post, stepImg, account }) => {
 
 	const sellFunction = async () => {
 		let params = new URLSearchParams()
-		params.append('seller', owner)
+		params.append('seller', account ? account : owner ? owner : userId )
 		params.append('mintedMonsterId', post.mintedId)
 		params.append('price', 5000)
 		const config = {
