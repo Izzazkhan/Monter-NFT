@@ -3,6 +3,8 @@ import React, { useState } from "react"
 import axios from 'axios'
 import { Register } from "../../utilities/constant";
 import ToastNotification from '../../components/Toast'
+import Header from '../../layout/Header'
+
 const RegisterPage = () => {
     const [state, setState] = useState({ firstName: '', lastName: '', email: '', password: '' })
     const [errorMsg, setErrorMsg] = useState("");
@@ -56,7 +58,7 @@ const RegisterPage = () => {
             return (
                 <div className="form-group col-md-6" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
-                    <input type="text" required="required" className="form-control" onChange={handleChange}
+                    <input  type= { field === "password" ? "password" : "text" } required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
                         placeholder={`Enter ${field}`} />
                 </div>
@@ -70,6 +72,7 @@ const RegisterPage = () => {
 
     return (
         <>
+            <Header />
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">

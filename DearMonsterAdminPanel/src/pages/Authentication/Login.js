@@ -57,7 +57,7 @@ const LoginPage = (props) => {
         return (
             <div className="form-group col-md-6" key={i}>
                 <label className="control-label">{field.toUpperCase()}</label>
-                <input type="text" required="required" className="form-control" onChange={handleChange}
+                <input type={ field === "password" ? "password" : "text"} required="required" className="form-control" onChange={handleChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`} />
             </div>

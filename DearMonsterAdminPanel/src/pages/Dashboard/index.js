@@ -4,7 +4,7 @@ const Dashboard = () => {
             <div className="content-wrapper">
                 <div className="content-box">
                     <h3>Dashboard</h3>
-                    <table className="table">
+                    {/* <table className="table">
                         <thead className="table__head">
                             <tr>
                                 <th>ID</th>
@@ -18,7 +18,7 @@ const Dashboard = () => {
                                 <th>Action(s)</th>
                             </tr>
                         </thead>
-                    </table>
+                    </table> */}
                 </div>
             </div>
         </div>
