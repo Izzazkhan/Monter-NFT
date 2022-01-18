@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import NavLinks from '../../components/Inventory/NavLinks';
-import PostCard from '../../components/Inventory/PostCard';
+import PostCard from '../../components/Inventory/PostCardTrading';
 import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserAction, connectUserSuccess } from '../../store/actions/auth/login';
@@ -90,12 +90,12 @@ const Inventory = ({ match }) => {
 						let post = {}
 						post['onSale'] = true
 						post['tradeId'] = item._id
-						post['mintedId'] = item.mintedMonster._id
 						post['monsterId'] = item.monster._id
-						post['id'] = item.tokenId
+						post['mintedId'] = item.mintedMonster._id
+						post['id'] = item.mintedMonster.tokenId
+						post['rating'] = item.mintedMonster.rating
 						post['title'] = item.monster.title
 						post['img'] = item.monster.img
-						post['rating'] = item.mintedMonster.rating
 						post['totalRating'] = item.monster.totalRating
 						post['values'] = {}
 						post.values['Level'] = item.mintedMonster.values.Level
