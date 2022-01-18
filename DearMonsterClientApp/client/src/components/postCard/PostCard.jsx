@@ -47,12 +47,12 @@ const PostCard = ({ className, post, stepImg }) => {
 			const accounts = await web3.eth.getAccounts()
 			let convertedPrice = Number( Number(post.price) * 10 ** 18 );
 
-			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
 
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
+			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
 			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] });
 
-			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 			// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })

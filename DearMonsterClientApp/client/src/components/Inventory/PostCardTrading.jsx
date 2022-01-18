@@ -54,9 +54,9 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 	// 	if (sellPrice > 0) {
 
-	// 		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+	// 		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
 
-	// 		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+	// 		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 	// 		// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 	// 		await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			
@@ -117,9 +117,9 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const accounts = await web3.eth.getAccounts()
 
 
-		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
 
-		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 		// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 		

@@ -100,7 +100,7 @@ const HuntersValley = () => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		console.log("=============================")
 		console.log(DearMonsterContract.methods)
 		console.log("=============================")
@@ -145,7 +145,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		await DearMonsterContract.methods.setPrice(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -160,7 +160,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		await DearMonsterContract.methods.setMaxSupply(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -175,7 +175,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -254,8 +254,8 @@ const HuntersValley = () => {
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// if (DearMonsterNetwork && DMSTokenNetwork) {
 		if (true) {
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
+			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 			// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)			
 
