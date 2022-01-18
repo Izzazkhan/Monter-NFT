@@ -1,4 +1,7 @@
-export const Register = 'http://localhost:4000/api/auth/register'
-export const Login = 'http://localhost:4000/api/auth/login'
-export const Minion = 'http://localhost:4000/api/minion'
-export const Monster = 'http://localhost:4000/api/monster'
+let url = 'http://34.234.236.236'
+
+
+export const Register = url+'/api/auth/register'
+export const Login = url+'/api/auth/login'
+export const Minion = url+'/api/minion'
+export const Monster = url+'/api/monster'
