@@ -13,28 +13,20 @@ import { baseUrl } from "../../config/config"
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 
-
-
-
-
 const TradingPost = ({ }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const [filterValues, setFilterValues] = useState({});
 	const [error, setError] = useState('');
 	const [data, setData] = useState([])
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
-		usePagination(data, 6, history.location.pathname);
-
-	// const [data, setData] = useState(["some chocolates"])
+	const [searchedData, setSearchedData] = useState([])
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 6, history.location.pathname);
 
 	useEffect(() => {
 		getTradingData();
 	}, [])
 
-
 	const getTradingData = async () => {
-
 		axios.get(`${apiUrl}/api/tradeItem/allInTrade`)
 			.then((res) => {
 				let _posts = []
@@ -72,8 +64,8 @@ const TradingPost = ({ }) => {
 			})
 	}
 
-
 	const sortData = (order, sortBy) => {
+		console.log('sort data', order, sortBy, data)
 		const sortingData = data.sort((a, b) => {
 			if (order === 'desc') {
 				return +a[sortBy] - +b[sortBy];
@@ -81,39 +73,61 @@ const TradingPost = ({ }) => {
 				return +b[sortBy] - +a[sortBy];
 			}
 			return 0;
-		});
+		})
+		setData(sortingData)
 		doPagination(sortingData);
-	};
+	}
 
 	const filterData = (filteringValues) => {
-		setFilterValues(filteringValues);
-	};
+		const filterData = searchedData.length ? searchedData : data
+
+		const filteredRating = filterData.filter(item =>
+			filteringValues.rating.filter(rating => rating !== item.rating.toString()).length == 0
+		)
+		console.log('filteredRating: ', filteredRating, data)
+		if (filteredRating.length) {
+			setData(filteredRating)
+			doPagination(filteredRating)
+		}
+		else if (filteredRating.length === 0) {
+			setData([])
+			doPagination([])
+		}
+		else {
+			getTradingData()
+		}
+
+		setFilterValues(filteringValues)
+	}
 
 	const clearFilterData = () => {
-		setFilterValues({});
-		doPagination(data);
-	};
+		setFilterValues({})
+		doPagination(data)
+	}
 
 	const searchData = (searchValue) => {
-		const searchData = [...data].filter((e) =>
-			'#' == searchValue[0]
-				? e.id.toLowerCase() == searchValue.slice(1).toLowerCase()
-				: e.id.toLowerCase() == searchValue.toLowerCase(),
-		);
-		if (searchData.length === 0) {
-			setError('No data found');
-			doPagination(null);
-		} else {
+		// console.log('search value', searchValue, data)
+		const searchData = data.filter((element) => element.id.toString() === searchValue);
+		// console.log('searchData: ', searchData)
+		if (searchData.length > 0) {
+			setSearchedData(searchData)
+			setData(searchData)
 			doPagination(searchData);
 		}
-	};
+		else {
+			console.log('heloo ===================')
+			setSearchedData([])
+			getTradingData()
+		}
+	}
 
 	const clearSearchData = () => {
-		doPagination(data);
+		// doPagination(data);
+		getTradingData()
 	};
 
 
-	console.log(data)
+	// console.log('=== data ===', data)
 
 	return (
 		<div>
