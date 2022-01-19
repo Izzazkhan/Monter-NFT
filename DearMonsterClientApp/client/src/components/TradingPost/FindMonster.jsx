@@ -32,14 +32,14 @@ const FindMonster = ({
 
 	const handleFiltering = (e) => {
 		e.preventDefault();
-		filterData({ rating, level: levels });
+		filterData({ rating })
 		setIsFilter(true);
 	};
 
 	const handleSearch = (e) => {
 		e.preventDefault();
-		searchData(e.target.value);
 		setSearchValue(e.target.value);
+		searchData(e.target.value);
 		if (e.target.value) {
 			setIsSearch(true);
 		} else {
@@ -47,6 +47,8 @@ const FindMonster = ({
 			setIsSearch(false);
 		}
 	};
+
+	console.log('=== searchValue ===', searchValue)
 
 	return (
 		<div className='findDearMonster py-6'>
@@ -82,7 +84,7 @@ const FindMonster = ({
 				<select
 					className='form-select w-75 mt-1'
 					onChange={(e) => {
-						sortData(e.target.value, 'rating');
+						sortData(e.target.value, 'price');
 					}}
 				>
 					<option selected value='all'>
@@ -94,7 +96,7 @@ const FindMonster = ({
 			</section>
 			<div className='ps-8 mt-6'>
 				<p className='text-white mb-5'>Star Rating</p>
-				{[...Array(3).keys()].map((star, i) => {
+				{[...Array(5).keys()].map((star, i) => {
 					return (
 						<div className='mb-4'>
 							<div className='form-check'>
@@ -121,7 +123,7 @@ const FindMonster = ({
 					);
 				})}
 			</div>
-			<section className='ps-8 mt-6 text-white'>
+			{/* <section className='ps-8 mt-6 text-white'>
 				<p>Level</p>
 
 				<div className='row w-85 mt-5'>
@@ -150,7 +152,7 @@ const FindMonster = ({
 						);
 					})}
 				</div>
-			</section>
+			</section> */}
 
 			<footer className='mt-6'>
 				<div
