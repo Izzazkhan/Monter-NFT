@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 
 const FindMonster = ({
-	filterData,
 	sortData,
 	searchData,
 	clearSearchData,
 	clearFilterData,
+	filterDataByStar
 }) => {
 	const [rating, setRating] = React.useState([]);
 	const [levels, setLevels] = React.useState([]);
@@ -15,7 +15,6 @@ const FindMonster = ({
 	const addRating = (e) => {
 		setRating(rating.concat(e.target.value));
 	};
-
 	const removeRating = (e) => {
 		const newRating = rating.filter((rating) => rating !== e.target.value);
 		setRating(newRating);
@@ -32,7 +31,7 @@ const FindMonster = ({
 
 	const handleFiltering = (e) => {
 		e.preventDefault();
-		filterData({ rating })
+		filterDataByStar(rating)
 		setIsFilter(true);
 	};
 
@@ -43,12 +42,9 @@ const FindMonster = ({
 		if (e.target.value) {
 			setIsSearch(true);
 		} else {
-			clearSearchData();
 			setIsSearch(false);
 		}
 	};
-
-	console.log('=== searchValue ===', searchValue)
 
 	return (
 		<div className='findDearMonster py-6'>
@@ -58,7 +54,7 @@ const FindMonster = ({
 			<section className='center flex-column mt-9'>
 				<div className='mb-3 w-75 position-relative'>
 					<input
-						type='email'
+						type='text'
 						className='form-control'
 						id='exampleFormControlInput1'
 						placeholder='Search by ID'
@@ -165,10 +161,11 @@ const FindMonster = ({
 					<button
 						className='btn center mx-auto mt-5 btn-outline-secondary'
 						onClick={() => {
+							setRating([]);
 							setIsFilter(false);
 							clearFilterData();
 							setLevels([]);
-							setRating([]);
+							setSearchValue('')
 						}}
 					>
 						Clear Filter

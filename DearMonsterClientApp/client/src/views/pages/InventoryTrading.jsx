@@ -100,7 +100,7 @@ const Inventory = ({ match }) => {
 						post['values'] = {}
 						post.values['Level'] = item.mintedMonster.values.Level
 						post.values['EXP'] = item.mintedMonster.values.EXP
-						post.values['Element'] = item.mintedMonster.values.Element
+						post.values['Element'] = 'None'
 						post.values['Energy'] = item.mintedMonster.values.Energy
 						post['price'] = item.price
 						post.values['OwnerID'] = `${item.seller.substring(0, 4)}...${item.seller.slice(-4)}`
