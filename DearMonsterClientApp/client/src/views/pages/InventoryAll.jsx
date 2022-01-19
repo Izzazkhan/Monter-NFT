@@ -102,16 +102,26 @@ const Inventory = ({ match }) => {
 			})
 	}
 
-	// useEffect(() => {
-	// 	if (posts.length > 0)
-	// 	  return
-	// 	getData();
-	// }, [attributes])
+	useEffect(() => {
+
+		console.log("------------------>   Live Check")
+		console.log(posts?.length)
+		console.log(account)
+		console.log("------------------>   Live Check")
+
+
+	}, [posts, account])
 
 
 	// useEffect(() => {
 	// 	getData();
 	// }, [])
+
+	console.log("=============   Live Check")
+	console.log(posts)
+	console.log(posts?.length)
+	console.log("=============   Live Check")
+
 
 	return (
 		<div>

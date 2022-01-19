@@ -9,7 +9,6 @@ import Swal from 'sweetalert2';
 import { apiUrl } from '../../utils/constant'
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
-	console.log('post ====', post)
 
 	const [owner, setOwner] = useState(null);
 	const [sellInput, setSellInput] = useState(false);
@@ -165,7 +164,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {
 								return (
-									<img
+									<img key={i}
 										src={
 											post?.rating <= i ? '/assets/imgs/dimStar.png' : '/assets/imgs/star.png'
 										}
@@ -178,7 +177,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 					<div className='text-white center flex-column mt-5 fs-18'>
 						{Object.keys(post?.values).map((key, index) => {
 							return (
-								<div className='mb-4'>
+								<div className='mb-4' key={index}>
 									<span className='me-2'>{key} :</span>
 									<span>{post?.values[key]}</span>
 								</div>

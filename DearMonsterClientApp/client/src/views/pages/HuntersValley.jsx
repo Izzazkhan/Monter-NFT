@@ -101,14 +101,10 @@ const HuntersValley = () => {
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 
 		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
-		console.log("=============================")
-		console.log(DearMonsterContract.methods)
-		console.log("=============================")
-
 		var _owner = await DearMonsterContract.methods.owner().call()
-		setIsOwner(_owner === accounts[0] || accounts[0] === '0xd7EeFFb68C815FFc8D0E77abdd2F5c8Ec65b58C7')
-		console.log('=============  owner address =======\n', _owner)
-		console.log('=============  owner address =======\n', accounts[0])
+
+		setIsOwner(_owner === accounts[0])
+		// setIsOwner(_owner === accounts[0] || accounts[0] === '0xd7EeFFb68C815FFc8D0E77abdd2F5c8Ec65b58C7')
 
 		var maxSupply = await DearMonsterContract.methods.getMaxSupply().call()
 		var maxPurchaseLimit = await DearMonsterContract.methods.getMaxPurchaseLimit().call()
@@ -124,14 +120,16 @@ const HuntersValley = () => {
 				document.getElementById('caveprice').value = _price
 			if (document.getElementById('caveprice_common') !== null)
 				document.getElementById('caveprice_common').innerText = _price
-			console.log(_price)
-			console.log(maxPurchaseLimit)
-			console.log(maxSupply)
 		}, 500)
 
-		var _attributes = await DearMonsterContract.methods.getAttributes().call()
-		console.log('_attributes', _attributes)
-		setAttributes(_attributes)
+
+
+		// var _attributes = await DearMonsterContract.methods.getAttributes().call()
+		// console.log('_attributes', _attributes)
+		// setAttributes(_attributes)
+
+
+
 	}, [window.web3, userId])
 
 	const handlePriceChange = async (e) => {
@@ -202,7 +200,35 @@ const HuntersValley = () => {
 		hiddenElement.click();
 	}
 
-	const exportToExcel = (e) => {
+	useEffect(() => {
+		if(attributes && attributes.length > 0) {
+			exportToExcelFun()
+		}
+	}, [ attributes ])
+
+
+	const exportToExcel = async () => {
+
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		}
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
+		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+
+		var _attributes = await DearMonsterContract.methods.getAttributes().call()
+		setAttributes(_attributes)
+	}
+
+
+	const exportToExcelFun = () => {
 		if (attributes.length == 0) return
 
 		var star_key = document.getElementById("select-star").value;
@@ -242,6 +268,7 @@ const HuntersValley = () => {
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
+
 		getPath(quantity)
 
 		let web3 = window.web3
@@ -253,6 +280,7 @@ const HuntersValley = () => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// if (DearMonsterNetwork && DMSTokenNetwork) {
+
 		if (true) {
 			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
@@ -260,10 +288,10 @@ const HuntersValley = () => {
 			// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)			
 
 			var isMaxSupply = await DearMonsterContract.methods.checkMaxSupply().call()
-			var maxSupply = await DearMonsterContract.methods.getMaxSupply().call()
 			var price = await DearMonsterContract.methods.getPrice().call()
-			var totalSupply = await DearMonsterContract.methods.totalSupply().call()
-			console.log('************ cave price **********', price)
+			// var maxSupply = await DearMonsterContract.methods.getMaxSupply().call()
+			// var totalSupply = await DearMonsterContract.methods.totalSupply().call()
+
 			// todo : uncomment this !!!!!
 			// if (isMaxSupply) {
 			// 	let notify = notification({
@@ -276,7 +304,6 @@ const HuntersValley = () => {
 
 			// var _owner = await DearMonsterContract.methods.owner().call()
 			DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (balance) {
-				console.log('==========balance==========', balance)
 
 				// var tokensOfOwner = await DearMonsterContract.methods.tokensOfOwner(accounts[0]).call()
 				// console.log('=========== tokenOfOwner =========', tokensOfOwner)
@@ -291,22 +318,14 @@ const HuntersValley = () => {
 					notify();
 					return
 				}
+				await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
+				await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 
-				let DearMonsterContractConsole = await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-				console.log("========== DearMonsterContractConsole ==========")
-				console.log(DearMonsterContractConsole)
+				// var _elementPath = await DearMonsterContract.methods.getElementPath().call()
+				// console.log(_elementPath)
 
-
-				let mintDearMonsterConsole = await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-				console.log("========== mintDearMonsterConsole ==========")
-				console.log(mintDearMonsterConsole)
-
-
-				var _elementPath = await DearMonsterContract.methods.getElementPath().call()
-				console.log(_elementPath)
-
-				var _attributes = await DearMonsterContract.methods.getAttributes().call()
-				console.log(_attributes)
+				// var _attributes = await DearMonsterContract.methods.getAttributes().call()
+				// console.log(_attributes)
 
 
 
@@ -323,10 +342,6 @@ const HuntersValley = () => {
 
 				latestIds.forEach(async (item, index) => {
 					let attributesByIndex = await DearMonsterContract.methods.attributes(item).call();
-
-					console.log("=====================")
-					console.log(attributesByIndex)
-					console.log("=====================")
 
 					let params = new URLSearchParams()
 					params.append('owner', attributesByIndex['owner'])
@@ -347,7 +362,7 @@ const HuntersValley = () => {
 					}
 					axios.post(`${apiUrl}/api/mintedMonster`, params, config)
 						.then((res) => {
-							console.log('response =============> monster minted')
+							console.log('monster minted')
 						})
 						.catch((e) => {
 							console.log("Error ----------------")
@@ -355,7 +370,7 @@ const HuntersValley = () => {
 						})
 				})
 
-				setAttributes(_attributes)
+				// setAttributes(_attributes)
 				updateBalance(balance + 1111)
 			})
 
