@@ -1,5 +1,6 @@
 
-let url = "http://34.234.236.236"
+let xurl = "http://34.234.236.236"
+let url = "http://localhost:4000"
 
 
 export const Register = url+'/api/auth/register'
