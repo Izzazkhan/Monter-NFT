@@ -225,10 +225,11 @@ const Header = () => {
 						className={`${active && 'show-navbar flex-lg-column mt-lg-8'
 							} w-lg-auto d-lg-flex d-none flex-lg-row flex-column w-100 mt-8 mt-lg-5 justify-content-between align-items-center`}
 					>
-						{NavbarRoutes.map((route) => {
+						{NavbarRoutes.map((route, index) => {
 							return (
 								!route.hidden ?
 									<Link
+										key={index}
 										to={route.pathForNavabr}
 										className={`header-btn text-warning ${!active && 'me-4'} w-auto mb-5`}
 										onClick={() => setActive(false)}
