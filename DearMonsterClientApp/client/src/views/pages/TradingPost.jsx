@@ -24,7 +24,7 @@ const TradingPost = ({ }) => {
 	const [error, setError] = useState('');
 	const [filterValues, setFilterValues] = useState();
 	const [searchedData, setSearchedData] = useState()
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 6, history.location.pathname);
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30, history.location.pathname);
 
 	useEffect(() => {
 		getTradingData([], '');

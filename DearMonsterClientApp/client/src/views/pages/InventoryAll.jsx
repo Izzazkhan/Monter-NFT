@@ -20,7 +20,7 @@ const Inventory = ({ match }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
-		usePagination(posts, 6, history.location.pathname);
+		usePagination(posts, 30, history.location.pathname);
 
 	const handleConnect = () => {
 		dispatch(connectUserAction());
