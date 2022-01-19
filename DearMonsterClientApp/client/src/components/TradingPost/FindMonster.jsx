@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 
 const FindMonster = ({
-	filterData,
 	sortData,
 	searchData,
 	clearSearchData,
 	clearFilterData,
+	filterDataByStar
 }) => {
 	const [rating, setRating] = React.useState([]);
 	const [levels, setLevels] = React.useState([]);
@@ -15,7 +15,6 @@ const FindMonster = ({
 	const addRating = (e) => {
 		setRating(rating.concat(e.target.value));
 	};
-
 	const removeRating = (e) => {
 		const newRating = rating.filter((rating) => rating !== e.target.value);
 		setRating(newRating);
@@ -32,18 +31,17 @@ const FindMonster = ({
 
 	const handleFiltering = (e) => {
 		e.preventDefault();
-		filterData({ rating, level: levels });
+		filterDataByStar(rating)
 		setIsFilter(true);
 	};
 
 	const handleSearch = (e) => {
 		e.preventDefault();
-		searchData(e.target.value);
 		setSearchValue(e.target.value);
+		searchData(e.target.value);
 		if (e.target.value) {
 			setIsSearch(true);
 		} else {
-			clearSearchData();
 			setIsSearch(false);
 		}
 	};
@@ -56,7 +54,7 @@ const FindMonster = ({
 			<section className='center flex-column mt-9'>
 				<div className='mb-3 w-75 position-relative'>
 					<input
-						type='email'
+						type='text'
 						className='form-control'
 						id='exampleFormControlInput1'
 						placeholder='Search by ID'
@@ -82,7 +80,7 @@ const FindMonster = ({
 				<select
 					className='form-select w-75 mt-1'
 					onChange={(e) => {
-						sortData(e.target.value, 'rating');
+						sortData(e.target.value, 'price');
 					}}
 				>
 					<option selected value='all'>
@@ -94,7 +92,7 @@ const FindMonster = ({
 			</section>
 			<div className='ps-8 mt-6'>
 				<p className='text-white mb-5'>Star Rating</p>
-				{[...Array(3).keys()].map((star, i) => {
+				{[...Array(5).keys()].map((star, i) => {
 					return (
 						<div className='mb-4'>
 							<div className='form-check'>
@@ -121,7 +119,7 @@ const FindMonster = ({
 					);
 				})}
 			</div>
-			<section className='ps-8 mt-6 text-white'>
+			{/* <section className='ps-8 mt-6 text-white'>
 				<p>Level</p>
 
 				<div className='row w-85 mt-5'>
@@ -150,7 +148,7 @@ const FindMonster = ({
 						);
 					})}
 				</div>
-			</section>
+			</section> */}
 
 			<footer className='mt-6'>
 				<div
@@ -163,10 +161,11 @@ const FindMonster = ({
 					<button
 						className='btn center mx-auto mt-5 btn-outline-secondary'
 						onClick={() => {
+							setRating([]);
 							setIsFilter(false);
 							clearFilterData();
 							setLevels([]);
-							setRating([]);
+							setSearchValue('')
 						}}
 					>
 						Clear Filter

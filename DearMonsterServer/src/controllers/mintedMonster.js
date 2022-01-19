@@ -17,7 +17,15 @@ exports.index = async function (req, res) {
             },
             {
                 $unwind: '$monster'
-            }
+            },
+            {
+                $lookup: {
+                    from: 'tradeitems',
+                    foreignField: 'mintedMonsterId',
+                    localField: '_id',
+                    as: 'tradeitem'
+                }
+            },
         ]);
     res.status(200).json({mintedMonster, message: "Minted monsters retrived successfully"});
 };

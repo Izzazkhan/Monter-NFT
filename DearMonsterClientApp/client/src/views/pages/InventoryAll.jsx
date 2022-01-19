@@ -75,22 +75,24 @@ const Inventory = ({ match }) => {
 			.then((res) => {
 				if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 					res.data.mintedMonster.forEach(item => {
-						let post = {}
-						post['mintedId'] = item._id
-						post['monsterId'] = item.monster._id
-						post['id'] = item.tokenId
-						post['title'] = item.monster.title
-						post['img'] = item.monster.img
-						post['rating'] = item.rating
-						post['totalRating'] = item.monster.totalRating
-						post['values'] = {}
-						post.values['Level'] = item.values.Level
-						post.values['EXP'] = item.values.EXP
-						post.values['Element'] = item.values.Element
-						post.values['Energy'] = item.values.Energy
-						// post.values['Price'] = "48000"
-						post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
-						_posts.push(post);
+						if(item.tradeitem.length < 1) {	
+							let post = {}
+							post['mintedId'] = item._id
+							post['monsterId'] = item.monster._id
+							post['id'] = item.tokenId
+							post['title'] = item.monster.title
+							post['img'] = item.monster.img
+							post['rating'] = item.rating
+							post['totalRating'] = item.monster.totalRating
+							post['values'] = {}
+							post.values['Level'] = item.values.Level
+							post.values['EXP'] = item.values.EXP
+							post.values['Element'] = 'None'
+							post.values['Energy'] = item.values.Energy
+							// post.values['Price'] = "48000"
+							post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
+							_posts.push(post);
+						}
 					})
 				}
 				setPosts(_posts)
