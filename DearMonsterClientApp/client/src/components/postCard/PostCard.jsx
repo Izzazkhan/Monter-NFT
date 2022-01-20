@@ -45,11 +45,23 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 			let web3 = window.web3
 			const accounts = await web3.eth.getAccounts()
-			let convertedPrice = Number( Number(post.price) * 10 ** 18 );
-
 			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
 
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
+
+			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
+			let convertedPrice = parseInt( parseInt(post.price) * 10 ** 18 );
+
+			if ( parseInt(balance) <= convertedPrice ) {
+				let notify = notification({
+					type: 'error',
+					message: 'Insufficient fund!',
+				});
+				notify();
+				return
+			}
+
+
 			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] });
 
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")

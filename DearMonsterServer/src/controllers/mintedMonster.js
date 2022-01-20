@@ -1,5 +1,20 @@
 const MintedMonster = require('../models/mintedMonster');
 
+exports.setEnergyTime = async function (req, res) {
+    try {
+
+        let id = req.params.id
+        let { update } = req.body
+        const mintedMonster = await MintedMonster.findByIdAndUpdate(id, {$set: update}, {new: true});
+        
+        res.status(200).json({message: 'Minted Monster energy time updated successfully', mintedMonster});
+
+        
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message})
+    }
+};
+
 exports.index = async function (req, res) {
     const { owner } = req.params;
 
