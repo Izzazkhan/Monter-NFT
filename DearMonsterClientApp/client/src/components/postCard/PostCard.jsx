@@ -51,7 +51,23 @@ const PostCard = ({ className, post, stepImg }) => {
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
 
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
-			let convertedPrice = parseInt( parseInt(post.price) * 10 ** 18 );
+
+			console.log( " =========== post.price =========== ")
+			console.log(post.price)
+
+			console.log( " =========== parseInt(post.price) =========== ")
+			console.log(parseInt(post.price))
+
+
+			console.log( " =========== parseInt(post.price) * 10 =========== ")
+			console.log(parseInt(post.price) * 10)
+
+
+			console.log( " =========== parseInt(post.price) * 10 ** 18 =========== ")
+			console.log(parseInt(post.price) * 10 ** 18)
+
+
+			let convertedPrice = parseInt(post.price) * 10 ** 18;
 
 
 			console.log( " =========== convertedPrice =========== ")
