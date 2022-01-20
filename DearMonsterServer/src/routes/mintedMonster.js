@@ -9,6 +9,8 @@ const router = express.Router();
 
 // const upload = multer().single('profileImage');
 
+router.post('/setEnergyTime/:id', MintedMonster.setEnergyTime);
+
 //INDEX
 router.get('/ownerItems/:owner', MintedMonster.index);
 

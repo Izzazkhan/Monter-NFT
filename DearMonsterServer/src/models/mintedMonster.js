@@ -21,6 +21,9 @@ const MintedMonsterSchema = new mongoose.Schema({
         required: true
     },
     values: {
+        UpdateTime: {
+            type: String,
+        },
         Level: {
             type: String,
         },

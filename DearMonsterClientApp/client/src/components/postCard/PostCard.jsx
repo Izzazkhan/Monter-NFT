@@ -8,6 +8,7 @@ import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
 import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from '../../contracts/DMSToken.json';
 import Swal from 'sweetalert2';
+import { notification } from "../../utils/notification";
 
 
 const PostCard = ({ className, post, stepImg }) => {
@@ -45,11 +46,23 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 			let web3 = window.web3
 			const accounts = await web3.eth.getAccounts()
-			let convertedPrice = Number( Number(post.price) * 10 ** 18 );
 
 			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
 
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
+
+			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
+			let convertedPrice = parseInt( parseInt(post.price) * 10 ** 18 );
+
+			if ( parseInt(balance) <= convertedPrice ) {
+				let notify = notification({
+					type: 'error',
+					message: 'Insufficient fund!',
+				});
+				notify();
+				return
+			}
+
 			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] });
 
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
