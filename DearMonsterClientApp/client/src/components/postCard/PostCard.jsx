@@ -54,7 +54,7 @@ const PostCard = ({ className, post, stepImg }) => {
 			balance = parseInt(balance).toLocaleString('fullwide', { useGrouping: false })
 
 			let convertedPrice = parseInt(post.price) * 10 ** 18;
-			convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
+			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
 
 
 			console.log('buy ----->')
