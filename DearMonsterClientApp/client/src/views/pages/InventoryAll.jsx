@@ -156,7 +156,7 @@ const Inventory = ({ match }) => {
 				<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
 					{pageData.map((post) => {
 						return (
-							<PostCard account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
+							<PostCard getData={getData} account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
 						);
 					})}
 				</div>
