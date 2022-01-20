@@ -61,8 +61,11 @@ const PostCard = ({ className, post, stepImg }) => {
 			console.log(convertedPriceLocale)
 			console.log(balance)
 
+			console.log(web3.utils.toBN(convertedPriceLocale))
+			console.log(web3.utils.toBN(balance))
 
-			if ( balance <= convertedPriceLocale ) {
+
+			if ( web3.utils.toBN(balance) <= web3.utils.toBN(convertedPriceLocale) ) {
 				let notify = notification({
 					type: 'error',
 					message: 'Insufficient fund!',
