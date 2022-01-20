@@ -51,21 +51,11 @@ const PostCard = ({ className, post, stepImg }) => {
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
 
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
-			balance = parseInt(balance).toLocaleString('fullwide', { useGrouping: false })
 
-			let convertedPrice = parseInt(post.price) * 10 ** 18;
+			var convertedPrice = Number(parseInt(post.price) * 10 ** 18);
 			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
 
-
-			console.log('buy ----->')
-			console.log(convertedPriceLocale)
-			console.log(balance)
-
-			console.log(web3.utils.toBN(convertedPriceLocale))
-			console.log(web3.utils.toBN(balance))
-
-
-			if ( web3.utils.toBN(balance) <= web3.utils.toBN(convertedPriceLocale) ) {
+			if (convertedPrice >= balance) {
 				let notify = notification({
 					type: 'error',
 					message: 'Insufficient fund!',
