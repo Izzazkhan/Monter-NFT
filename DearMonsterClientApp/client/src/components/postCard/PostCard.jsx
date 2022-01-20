@@ -51,10 +51,16 @@ const PostCard = ({ className, post, stepImg }) => {
 
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
 
+			
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
-			let convertedPrice = parseInt( parseInt(post.price) * 10 ** 18 );
+			var convertedPrice = Number(parseInt(post.price) * 10 ** 18);
 
-			if ( parseInt(balance) <= convertedPrice ) {
+			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
+
+			console.log(convertedPrice)
+			console.log(balance)
+
+			if (convertedPrice >= balance) {
 				let notify = notification({
 					type: 'error',
 					message: 'Insufficient fund!',
@@ -63,14 +69,15 @@ const PostCard = ({ className, post, stepImg }) => {
 				return
 			}
 
-			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] });
+
+			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
 
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
 			// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
 
-			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] })
+			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
 
 			if (transaction.status) {
 				let params = new URLSearchParams()
