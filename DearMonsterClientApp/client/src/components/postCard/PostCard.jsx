@@ -51,32 +51,18 @@ const PostCard = ({ className, post, stepImg }) => {
 			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
 
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
-
-			console.log( " =========== post.price =========== ")
-			console.log(post.price)
-
-			console.log( " =========== parseInt(post.price) =========== ")
-			console.log(parseInt(post.price))
-
-
-			console.log( " =========== parseInt(post.price) * 10 =========== ")
-			console.log(parseInt(post.price) * 10)
-
-
-			console.log( " =========== parseInt(post.price) * 10 ** 18 =========== ")
-			console.log(parseInt(post.price) * 10 ** 18)
-
+			balance = parseInt(balance).toLocaleString('fullwide', { useGrouping: false })
 
 			let convertedPrice = parseInt(post.price) * 10 ** 18;
+			convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
 
 
-			console.log( " =========== convertedPrice =========== ")
-			console.log(convertedPrice)
-			console.log( " =========== parseInt(balance) =========== ")
-			console.log(parseInt(balance))
+			console.log('buy ----->')
+			console.log(convertedPriceLocale)
+			console.log(balance)
 
 
-			if ( parseInt(balance) <= convertedPrice ) {
+			if ( balance <= convertedPriceLocale ) {
 				let notify = notification({
 					type: 'error',
 					message: 'Insufficient fund!',
@@ -86,14 +72,15 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 
 
-			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] });
+
+			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
 
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 			// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
 
-			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPrice.toString())).send({ from: accounts[0] })
+			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
 
 			if (transaction.status) {
 				let params = new URLSearchParams()
