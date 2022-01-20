@@ -53,6 +53,13 @@ const PostCard = ({ className, post, stepImg }) => {
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
 			let convertedPrice = parseInt( parseInt(post.price) * 10 ** 18 );
 
+
+			console.log( " =========== convertedPrice =========== ")
+			console.log(convertedPrice)
+			console.log( " =========== parseInt(balance) =========== ")
+			console.log(parseInt(balance))
+
+
 			if ( parseInt(balance) <= convertedPrice ) {
 				let notify = notification({
 					type: 'error',
