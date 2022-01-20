@@ -8,6 +8,7 @@ import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
 import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from '../../contracts/DMSToken.json';
 import Swal from 'sweetalert2';
+import { notification } from "../../utils/notification";
 
 
 const PostCard = ({ className, post, stepImg }) => {
