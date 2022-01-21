@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 
 const FindMonster = ({
 	sortData,
@@ -46,6 +46,31 @@ const FindMonster = ({
 		}
 	};
 
+	const clearFilter = () => {
+		const updatedArray = starData.map(element => ({ ...element, checked: false }))
+		setStarData(updatedArray)
+		clearFilterData()
+	}
+
+	const [starData, setStarData] = useState([{ id: 1, checked: false }, { id: 2, checked: false },
+	{ id: 3, checked: false }, { id: 4, checked: false }, { id: 5, checked: false }])
+
+	const handleCheckbox = (e) => {
+		if (e.target.checked) {
+			addRating(e);
+		} else {
+			removeRating(e);
+		}
+
+		const updatedArray = starData.map(item => {
+			if (item.id === Number(e.target.value)) {
+				item.checked = !item.checked;
+			}
+			return item
+		})
+		setStarData(updatedArray)
+	}
+
 	return (
 		<div className='findDearMonster py-6'>
 			<div className='px-5'>
@@ -92,22 +117,17 @@ const FindMonster = ({
 			</section>
 			<div className='ps-8 mt-6'>
 				<p className='text-white mb-5'>Star Rating</p>
-				{[...Array(5).keys()].map((star, i) => {
+				{starData.map((star, i) => {
 					return (
 						<div className='mb-4'>
 							<div className='form-check'>
 								<input
 									className='form-check-input p-2'
 									type='checkbox'
-									value={i + 1}
-									onChange={(e) => {
-										if (e.target.checked) {
-											addRating(e);
-										} else {
-											removeRating(e);
-										}
-									}}
-									id={i}
+									value={star.id}
+									onChange={handleCheckbox}
+									checked={star.checked}
+									id={star.id}
 								/>
 								<label className='form-check-label ms-3' for={i}>
 									{[...Array(i + 1).keys()].map((star, i) => {
@@ -161,11 +181,10 @@ const FindMonster = ({
 					<button
 						className='btn center mx-auto mt-5 btn-outline-secondary'
 						onClick={() => {
-							setRating([]);
-							setIsFilter(false);
-							clearFilterData();
-							setLevels([]);
+							setRating([])
+							setIsFilter(false)
 							setSearchValue('')
+							clearFilter()
 						}}
 					>
 						Clear Filter

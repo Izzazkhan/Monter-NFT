@@ -75,7 +75,7 @@ const Inventory = ({ match }) => {
 			.then((res) => {
 				if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 					res.data.mintedMonster.forEach(item => {
-						if(item.tradeitem.length < 1) {	
+						if (item.tradeitem.length < 1) {
 							let post = {}
 							post['mintedId'] = item._id
 							post['monsterId'] = item.monster._id
@@ -110,7 +110,6 @@ const Inventory = ({ match }) => {
 		console.log(posts?.length)
 		console.log(account)
 		console.log("------------------>   Live Check")
-
 
 	}, [posts, account])
 
