@@ -33,6 +33,8 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 							singleMonster.values['Element'] = 'None'
 							singleMonster.values['Energy'] = item.values.Energy
 							singleMonster.values['Price'] = item.monster.price
+							singleMonster['createdAt'] = item.createdAt
+							singleMonster.values['UpdateTime'] = item.values.UpdateTime
 							singleMonster.values['OwnerID'] = `${account.substring(0, 4)}...${account.slice(-4)}`
 							monsters.push(singleMonster);
 							// }

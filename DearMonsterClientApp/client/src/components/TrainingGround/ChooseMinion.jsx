@@ -72,7 +72,7 @@ const ChooseMinion = ({ minionFight, loading, status }) => {
 		function getMinion() {
 			axios.get(`${apiUrl}/api/minion`)
 				.then((res) => {
-					// console.log('response::', res)
+					console.log('response::', res)
 					setMinions(res.data.minions)
 				})
 				.catch((e) => {

@@ -41,6 +41,9 @@ const TradingPost = ({ }) => {
 						localFilterData.push(item)
 						filterApplied = true
 					}
+					else {
+						filterApplied = true
+					}
 				})
 			}
 
@@ -131,6 +134,8 @@ const TradingPost = ({ }) => {
 				console.log(e)
 			})
 	}
+
+	console.log('filterObject =======', filterObject)
 
 
 	const clearFilterData = () => {

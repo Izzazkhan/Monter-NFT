@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 const PostCard = ({ className, post, stepImg, handleSelect }) => {
+
 	const [minutes, setMinutes] = useState()
 	const [seconds, setSeconds] = useState()
 	const [hours, setHours] = useState()
 
 	const apiCall = (energy, timeType) => {
+		console.log('new Date', new Date())
 		let params = new URLSearchParams()
-		params.append('post.values.Energy', Number(post.values.Energy += energy))
-		if (timeType === 'update') {
-			params.append('post.values.UpdateTime', new Date())
-		}
+		params.append('values.Energy', Number(post.values.Energy += energy))
+		// if (timeType === 'update') {
+		params.append('values.UpdateTime', new Date())
+		// }
 		const config = {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
@@ -27,7 +29,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 	}
 
 	function displayTimer() {
-		console.log('function called')
+		// console.log('function called')
 		// const startTime = new Date(post.values.UpdateTime)
 		// const startTime = new Date(5680000)
 		// const endTime = new Date()
@@ -45,8 +47,11 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 
 		if (Number(post.values.Energy) < 2) {
 			if (post.values.UpdateTime) {
+
 				// Time in minutes
 				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
+				// console.log('calculateUpdateTime:', calculateUpdateTime)
+
 				if (calculateUpdateTime >= 180) {
 					apiCall(2, 'update')
 				}
@@ -59,11 +64,13 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 				}
 			}
 			else {
-				const calculateCreateTime = new Date(Math.abs(new Date(post.values.CreateTime) - new Date())).getMinutes() - 1
+				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
+				// console.log('calculateCreateTime:', calculateCreateTime)
+
 				if (calculateCreateTime >= 180) {
 					apiCall(2, 'create')
 				}
-				else if (calculateCreateTime >= 90) {
+				else if (calculateCreateTime >= 20) {
 					apiCall(1, 'create')
 				}
 				else {

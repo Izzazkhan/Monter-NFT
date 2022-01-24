@@ -183,7 +183,6 @@ const FindMonster = ({
 						onClick={() => {
 							setRating([])
 							setIsFilter(false)
-							setSearchValue('')
 							clearFilter()
 						}}
 					>
