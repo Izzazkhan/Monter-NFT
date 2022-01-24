@@ -1,25 +1,9 @@
 const MintedMonster = require('../models/mintedMonster');
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
 exports.setEnergyTime = async function (req, res) {
     try {
 
         let id = req.params.id
-<<<<<<< HEAD
-        let { update } = req.body
-        const mintedMonster = await MintedMonster.findByIdAndUpdate(id, {$set: update}, {new: true});
-        
-        res.status(200).json({message: 'Minted Monster energy time updated successfully', mintedMonster});
-
-        
-    } catch (error) {
-        res.status(500).json({success: false, message: error.message})
-=======
         let update = req.body
 
         const mintedMonster = await MintedMonster.findByIdAndUpdate(id, { $set: update }, { new: true });
@@ -29,7 +13,6 @@ exports.setEnergyTime = async function (req, res) {
 
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
->>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
     }
 };
 
@@ -37,32 +20,6 @@ exports.index = async function (req, res) {
     const { owner } = req.params;
 
     const mintedMonster = await MintedMonster.aggregate([
-<<<<<<< HEAD
-            {
-                $match: { owner }
-            },
-            {
-                $lookup: {
-                    from: 'monsters',
-                    foreignField: '_id',
-                    localField: 'monsterId',
-                    as: 'monster'
-                }
-            },
-            {
-                $unwind: '$monster'
-            },
-            {
-                $lookup: {
-                    from: 'tradeitems',
-                    foreignField: 'mintedMonsterId',
-                    localField: '_id',
-                    as: 'tradeitem'
-                }
-            },
-        ]);
-    res.status(200).json({mintedMonster, message: "Minted monsters retrived successfully"});
-=======
         {
             $match: { owner }
         },
@@ -87,7 +44,6 @@ exports.index = async function (req, res) {
         },
     ]);
     res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
->>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
 };
 
 
