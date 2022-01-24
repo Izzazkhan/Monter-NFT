@@ -8,9 +8,10 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 	const [hours, setHours] = useState()
 
 	const apiCall = (energy, timeType) => {
-		console.log('new Date', new Date())
+		// console.log('new Date', new Date())
+		let energyCalculate = Number(post.values.Energy) + energy
 		let params = new URLSearchParams()
-		params.append('values.Energy', Number(post.values.Energy += energy))
+		params.append('values.Energy', energyCalculate)
 		// if (timeType === 'update') {
 		params.append('values.UpdateTime', new Date())
 		// }
@@ -46,16 +47,17 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		// console.log('days:::', hours, minutes, seconds, new Date())
 
 		if (Number(post.values.Energy) < 2) {
+
 			if (post.values.UpdateTime) {
 
 				// Time in minutes
 				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-				// console.log('calculateUpdateTime:', calculateUpdateTime)
+				console.log('calculateUpdateTime:', calculateUpdateTime)
 
 				if (calculateUpdateTime >= 180) {
 					apiCall(2, 'update')
 				}
-				else if (calculateUpdateTime >= 90) {
+				else if (calculateUpdateTime >= 1) {
 					apiCall(1, 'update')
 				}
 				else {
@@ -64,6 +66,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 				}
 			}
 			else {
+
 				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
 				// console.log('calculateCreateTime:', calculateCreateTime)
 

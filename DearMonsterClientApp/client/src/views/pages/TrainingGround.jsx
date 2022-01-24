@@ -4,6 +4,7 @@ import ChooseDearMonster from '../../components/TrainingGround/ChooseDearMonster
 import ChooseMinion from '../../components/TrainingGround/ChooseMinion';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
+import Swal from 'sweetalert2';
 
 const TrainingGround = () => {
 	const [time, setTime] = React.useState('0d 0h 0m 0s');
@@ -65,28 +66,35 @@ const TrainingGround = () => {
 	}
 
 	const minionFight = (minion) => {
-		console.log('selected minion', minion)
-		setLoading(true);
-		const random = Math.floor(Math.random() * 100) + 1
-		let status = '';
-		if (random <= minion.values.Win_Rate) {
-			status = 'WIN';
-			setLoading(false);
-			setStatus(status);
-
-			const experienceCalculate = Number(selectedMonster.values.EXP) + Number(minion.values.Exp_Gain)
+		if (selectedMonster.values.Energy >= 1) {
+			console.log('selected minion', minion)
+			setLoading(true);
+			const random = Math.floor(Math.random() * 100) + 1
+			let status = '';
+			if (random <= minion.values.Win_Rate) {
+				status = 'WIN';
+				setLoading(false);
+				setStatus(status);
+				let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
+				let params = new URLSearchParams()
+				params.append('values.EXP', experienceCalculate)
+				apiCall(params)
+			} else {
+				status = 'LOSE';
+				setLoading(false);
+				setStatus(status);
+			}
+			const energyCalculate = selectedMonster.values.Energy - 1
 			let params = new URLSearchParams()
-			params.append('values.EXP', experienceCalculate)
+			params.append('values.Energy', energyCalculate)
 			apiCall(params)
 		} else {
-			status = 'LOSE';
-			setLoading(false);
-			setStatus(status);
+			Swal.fire({
+				icon: 'error',
+				title: 'Energy',
+				text: 'Dear Monster Energy should be greater than 0'
+			})
 		}
-		const energyCalculate = selectedMonster.values.Energy - 1
-		let params = new URLSearchParams()
-		params.append('values.Energy', energyCalculate)
-		apiCall(params)
 	}
 
 

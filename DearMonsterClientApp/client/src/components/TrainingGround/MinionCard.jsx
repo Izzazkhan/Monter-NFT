@@ -18,7 +18,9 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 							return (
 								<div className='mb-5'>
 									<span className='me-2'>{key2} :</span>
-									<span>{post.values[key]}</span>
+									<span>{key2 === 'Win Rate' && post.values[key] === 45 ? '42%-50%' :
+										key2 === 'Win Rate' && post.values[key] === 51 ? '48%-58%' :
+											post.values[key]}</span>
 								</div>
 							);
 						})}
@@ -30,7 +32,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 					className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
 					data-bs-toggle='modal'
 					data-bs-target='#exampleModal'
-					onClick={()=>{
+					onClick={() => {
 						handleFight()
 					}}
 				>

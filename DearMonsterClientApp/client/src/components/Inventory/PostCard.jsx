@@ -13,11 +13,11 @@ import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json'
 import DearMonster from '../../contracts/DearMonster.json';
 import DearMonsterTest from '../../contracts/DearMonsterTest.json';
 
-const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster 
-const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
+const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading
 
-const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress 
-const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
+const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress
 
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
