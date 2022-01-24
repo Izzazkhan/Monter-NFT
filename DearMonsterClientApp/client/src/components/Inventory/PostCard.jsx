@@ -2,16 +2,27 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
-import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
-import DearMonster from '../../contracts/DearMonster.json';
 import axios from 'axios'
 import Swal from 'sweetalert2';
-import { apiUrl } from '../../utils/constant'
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
+import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json';
+
+import DearMonster from '../../contracts/DearMonster.json';
+import DearMonsterTest from '../../contracts/DearMonsterTest.json';
+
+const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster 
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
+
+const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress 
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
+
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 	const [owner, setOwner] = useState(null);
-	const [sellInput, setSellInput] = useState(false);
 	const [sellPrice, setSellPrice] = useState(0);
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
@@ -52,13 +63,11 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const accounts = await web3.eth.getAccounts()
 
 		if (sellPrice > 0) {
-
-			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
-
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
+			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 			// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 			await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
-			
+
 			const transaction = await TradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
 			if (transaction.status) {
 				let params = new URLSearchParams()
@@ -73,6 +82,9 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 				axios.post(`${apiUrl}/api/tradeItem`, params, config)
 					.then((res) => {
 						console.log(res.data)
+
+						// getData(account ? account : owner ? owner : userId)
+
 						Swal.fire({
 							icon: 'success',
 							title: 'Item Added To Sell',
@@ -116,12 +128,12 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const accounts = await web3.eth.getAccounts()
 
 
-		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+		const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
 		// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 		await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
-		
+
 		const transaction = await TradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 
 		console.log('==== removeTrade transaction ====', transaction)
@@ -191,58 +203,64 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 			</main>
 			<footer className='center mt-6'>
 				{account || owner ?
-					post?.onSale ? (
-						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => revokeSellFunction()}>
-							Revoke Sale
-						</div>
-					) : (
-
-						!sellInput ?
-
-							(
-								<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(true)}>
+					(
+						post?.onSale ? (
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => revokeSellFunction()}>
+								Revoke Sale
+							</div>
+						)
+							:
+							<>
+								(
+								<div
+									className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+									data-bs-toggle='modal'
+									data-bs-target='#SellMonster'
+								>
 									Sell
 								</div>
-							)
-							:
-							''
+								<div className='modal fade' id='SellMonster' tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
+									<div className='modal-dialog'>
+										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+											<div className='modal-body p-4'>
+												<p className='mb-4'>Please enter amount for which you want to sell monster</p>
+												<div className='d-flex justify-content-between w-60 mb-4'>
+													<div className='d-flex align-items-center'>
+														<input
+															type='text'
+															name='sellPrice'
+															className='form-control  w-100px'
+															id='sellPrice'
+															value={sellPrice}
+															onChange={priceChangeHandler}
+														/>
+													</div>
+												</div>
+
+											</div>
+											<div className='modal-footer'>
+												<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => sellFunction()}>
+													Sell
+												</div>
+												<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+													Cancel
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								)
+							</>
+
 					)
+
 					:
 					(
 						<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => connectFunction()}>
 							Connect
 						</div>
 					)}
-
-
-				{
-					sellInput ?
-						<>
-							(
-							<div className='d-flex justify-content-between w-60 mb-4'>
-								<div className='d-flex align-items-center'>
-									<input
-										type='text'
-										name='sellPrice'
-										className='form-control  w-100px'
-										id='sellPrice'
-										value={sellPrice}
-										onChange={priceChangeHandler}
-									/>
-								</div>
-							</div>
-
-							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => sellFunction()}>
-								Sell
-							</div>
-							<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' onClick={() => setSellInput(false)}>
-								Cancel
-							</div>
-							)
-						</>
-						:
-						''
-				}
 			</footer>
 		</div>
 	);

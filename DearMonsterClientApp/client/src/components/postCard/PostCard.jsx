@@ -2,13 +2,23 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
-import { apiUrl } from '../../utils/constant'
 import Web3 from 'web3';
-import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
-import DearMonster from '../../contracts/DearMonster.json';
-import DMSToken from '../../contracts/DMSToken.json';
 import Swal from 'sweetalert2';
 import { notification } from "../../utils/notification";
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
+import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json';
+
+import DMSToken from '../../contracts/DMSToken.json';
+import DMSTokenTest from '../../contracts/DMSTokenTest.json';
+
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
+
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
 
 
 const PostCard = ({ className, post, stepImg }) => {
@@ -32,7 +42,7 @@ const PostCard = ({ className, post, stepImg }) => {
 	};
 
 	const purchaseFun = async () => {
-		if(userId || owner) {
+		if (userId || owner) {
 			if (window.ethereum) {
 				window.web3 = new Web3(window.ethereum)
 				await window.ethereum.enable();
@@ -46,19 +56,14 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 			let web3 = window.web3
 			const accounts = await web3.eth.getAccounts()
+			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 
-			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5")
+			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
 
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x4a709e2e07edffc8770f268c373fb9f17e316b9f")
-
-			
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
+
 			var convertedPrice = Number(parseInt(post.price) * 10 ** 18);
-
 			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
-
-			console.log(convertedPrice)
-			console.log(balance)
 
 			if (convertedPrice >= balance) {
 				let notify = notification({
@@ -69,15 +74,14 @@ const PostCard = ({ className, post, stepImg }) => {
 				return
 			}
 
-
 			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
 
-			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0x180b36a4293507bd31f56fd211c7b879f2827286")
+			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 			// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
 			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
 
-			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
+			const transaction = await TradingContract.methods.buyTrade(post.id, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
 
 			if (transaction.status) {
 				let params = new URLSearchParams()

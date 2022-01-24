@@ -117,28 +117,30 @@ const FindMonster = ({
 			</section>
 			<div className='ps-8 mt-6'>
 				<p className='text-white mb-5'>Star Rating</p>
-				{starData.map((star, i) => {
-					return (
-						<div className='mb-4'>
-							<div className='form-check'>
-								<input
-									className='form-check-input p-2'
-									type='checkbox'
-									value={star.id}
-									onChange={handleCheckbox}
-									checked={star.checked}
-									id={star.id}
-								/>
-								<label className='form-check-label ms-3' for={i}>
-									{[...Array(i + 1).keys()].map((star, i) => {
-										return <img src='/assets/imgs/Star.png' alt='' className='me-2' />;
-									})}
-								</label>
+				{
+					starData.map((star, i) => {
+						return (
+							<div className='mb-4'>
+								<div className='form-check'>
+									<input
+										className='form-check-input p-2'
+										type='checkbox'
+										value={star.id}
+										onChange={handleCheckbox}
+										checked={star.checked}
+										id={star.id}
+									/>
+									<label className='form-check-label ms-3' for={i}>
+										{[...Array(i + 1).keys()].map((star, i) => {
+											return <img src='/assets/imgs/Star.png' alt='' className='me-2' />;
+										})}
+									</label>
+								</div>
 							</div>
-						</div>
-					);
-				})}
-			</div>
+						);
+					})
+				}
+			</div >
 			{/* <section className='ps-8 mt-6 text-white'>
 				<p>Level</p>
 
@@ -170,27 +172,29 @@ const FindMonster = ({
 				</div>
 			</section> */}
 
-			<footer className='mt-6'>
+			< footer className='mt-6' >
 				<div
 					className='filterCheckBtn  w-140px mx-auto py-3 center bold cursor'
 					onClick={handleFiltering}
 				>
 					Filter
 				</div>
-				{isFilter && (
-					<button
-						className='btn center mx-auto mt-5 btn-outline-secondary'
-						onClick={() => {
-							setRating([])
-							setIsFilter(false)
-							clearFilter()
-						}}
-					>
-						Clear Filter
-					</button>
-				)}
-			</footer>
-		</div>
+				{
+					isFilter && (
+						<button
+							className='btn center mx-auto mt-5 btn-outline-secondary'
+							onClick={() => {
+								setRating([])
+								setIsFilter(false)
+								clearFilter()
+							}}
+						>
+							Clear Filter
+						</button>
+					)
+				}
+			</footer >
+		</div >
 	);
 };
 

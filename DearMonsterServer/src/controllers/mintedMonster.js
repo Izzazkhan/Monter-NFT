@@ -1,12 +1,16 @@
 const MintedMonster = require('../models/mintedMonster');
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
 exports.setEnergyTime = async function (req, res) {
     try {
 
         let id = req.params.id
+<<<<<<< HEAD
         let { update } = req.body
         const mintedMonster = await MintedMonster.findByIdAndUpdate(id, {$set: update}, {new: true});
         
@@ -15,6 +19,17 @@ exports.setEnergyTime = async function (req, res) {
         
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
+=======
+        let update = req.body
+
+        const mintedMonster = await MintedMonster.findByIdAndUpdate(id, { $set: update }, { new: true });
+
+        res.status(200).json({ message: 'Minted Monster energy time updated successfully', mintedMonster });
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+>>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
     }
 };
 
@@ -22,6 +37,7 @@ exports.index = async function (req, res) {
     const { owner } = req.params;
 
     const mintedMonster = await MintedMonster.aggregate([
+<<<<<<< HEAD
             {
                 $match: { owner }
             },
@@ -46,6 +62,32 @@ exports.index = async function (req, res) {
             },
         ]);
     res.status(200).json({mintedMonster, message: "Minted monsters retrived successfully"});
+=======
+        {
+            $match: { owner }
+        },
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'tradeitems',
+                foreignField: 'mintedMonsterId',
+                localField: '_id',
+                as: 'tradeitem'
+            }
+        },
+    ]);
+    res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
+>>>>>>> 0716626c8d9fe92d413fe39da449c00809383d00
 };
 
 
@@ -54,15 +96,15 @@ exports.store = async (req, res) => {
 
         const { tokenId } = req.body;
         // Must uncomment for verification
-        const mintedMonster = await MintedMonster.findOne({tokenId});
-        if (mintedMonster) return res.status(401).json({message: 'TokenId cannot be duplicate.'});
+        const mintedMonster = await MintedMonster.findOne({ tokenId });
+        if (mintedMonster) return res.status(401).json({ message: 'TokenId cannot be duplicate.' });
 
-        const newMintedMonster = new MintedMonster({...req.body});
+        const newMintedMonster = new MintedMonster({ ...req.body });
         const mintedMonster_ = await newMintedMonster.save();
-        
-        res.status(200).json({message: 'Minted Monster created successfully', mintedMonster_});
+
+        res.status(200).json({ message: 'Minted Monster created successfully', mintedMonster_ });
     } catch (error) {
-        res.status(500).json({success: false, message: error.message})
+        res.status(500).json({ success: false, message: error.message })
     }
 };
 
@@ -71,7 +113,7 @@ exports.show = async function (req, res) {
         const id = req.params.id;
         const mintedMonster = await MintedMonster.aggregate([
             {
-                $match: {  _id : id }
+                $match: { _id: id }
             },
             {
                 $lookup: {
@@ -86,11 +128,11 @@ exports.show = async function (req, res) {
             }
         ]);
 
-        if (!mintedMonster) return res.status(401).json({message: 'MintedMonster does not exist'});
-        
-        res.status(200).json({mintedMonster});
+        if (!mintedMonster) return res.status(401).json({ message: 'MintedMonster does not exist' });
+
+        res.status(200).json({ mintedMonster });
     } catch (error) {
-        res.status(500).json({message: error.message})
+        res.status(500).json({ message: error.message })
     }
 };
 
@@ -99,15 +141,15 @@ exports.update = async function (req, res) {
 
         const id = req.params.id;
         const update = req.body;
-        
+
         // const userId = req.user._id;
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 
-        const mintedMonster = await MintedMonster.findByIdAndUpdate(id, {$set: update}, {new: true});
+        const mintedMonster = await MintedMonster.findByIdAndUpdate(id, { $set: update }, { new: true });
 
         //if there is no image, return success message
-        if (!req.file) return res.status(200).json({mintedMonster, message: 'mintedMonster has been updated'});
+        if (!req.file) return res.status(200).json({ mintedMonster, message: 'mintedMonster has been updated' });
 
         //Attempt to upload to cloudinary
         // const result = await uploader(req);
@@ -116,7 +158,7 @@ exports.update = async function (req, res) {
         // if (!req.file) return res.status(200).json({user: user_, message: 'Minion has been updated'});
 
     } catch (error) {
-        res.status(500).json({message: error.message});
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -131,8 +173,8 @@ exports.destroy = async function (req, res) {
         // if (user_id.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 
         await MintedMonster.findByIdAndDelete(id);
-        res.status(200).json({message: 'MintedMonster has been deleted'});
+        res.status(200).json({ message: 'MintedMonster has been deleted' });
     } catch (error) {
-        res.status(500).json({message: error.message});
+        res.status(500).json({ message: error.message });
     }
 };
