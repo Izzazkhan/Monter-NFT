@@ -9,7 +9,14 @@ import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import evmChains from 'evm-chains';
 import Fortmatic from 'fortmatic';
-import DMSToken from "../../contracts/DMSToken.json";
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DMSToken from '../../contracts/DMSToken.json';
+import DMSTokenTest from '../../contracts/DMSTokenTest.json';
+
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken 
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress 
 
 const Header = () => {
 	const [active, setActive] = useState(false);
@@ -46,7 +53,11 @@ const Header = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)	
-		let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
+		
+		
+		let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
+		
+		
 		DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (bal) {
 			setBlance(Math.floor(bal / (10 ** 18)));
 		})

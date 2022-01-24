@@ -3,16 +3,28 @@ import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import { useSelector } from 'react-redux';
 import { connectUserAction, connectUserSuccess, updateUserBalance } from '../../store/actions/auth/login';
 import { useDispatch } from 'react-redux';
-import { CSVLink } from 'react-csv';
 import Web3 from 'web3';
-import detectEthereumProvider from '@metamask/detect-provider';
 import { notification } from "../../utils/notification";
-// import data from "../../data/Post.json";
-import DearMonster from '../../contracts/DearMonster.json';
-import DMSToken from "../../contracts/DMSToken.json";
 import Swal from 'sweetalert2';
 import axios from 'axios'
-import { apiUrl } from '../../utils/constant'
+
+// import data from "../../data/Post.json";
+import { CSVLink } from 'react-csv';
+import detectEthereumProvider from '@metamask/detect-provider';
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DearMonster from '../../contracts/DearMonster.json';
+import DMSToken from "../../contracts/DMSToken.json";
+import DearMonsterTest from '../../contracts/DearMonsterTest.json';
+import DMSTokenTest from "../../contracts/DMSTokenTest.json";
+
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
+const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
+
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
+const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress 
+
 
 const HuntersValley = () => {
 	const { userId } = useSelector((state) => state.auth);
@@ -100,7 +112,7 @@ const HuntersValley = () => {
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 		var _owner = await DearMonsterContract.methods.owner().call()
 
 		setIsOwner(_owner === accounts[0])
@@ -143,7 +155,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 		await DearMonsterContract.methods.setPrice(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -158,7 +170,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 		await DearMonsterContract.methods.setMaxSupply(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -173,7 +185,7 @@ const HuntersValley = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DearMonsterNetwork = DearMonster.networks[networkId]
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(value)).send({ from: accounts[0] });
 	}
 
@@ -221,7 +233,7 @@ const HuntersValley = () => {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
 		let web3 = window.web3
-		let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 
 		var _attributes = await DearMonsterContract.methods.getAttributes().call()
 		setAttributes(_attributes)
@@ -282,8 +294,8 @@ const HuntersValley = () => {
 		// if (DearMonsterNetwork && DMSTokenNetwork) {
 
 		if (true) {
-			let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
+			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
+			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
 			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 			// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)			
 

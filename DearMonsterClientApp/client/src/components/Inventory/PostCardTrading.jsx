@@ -2,11 +2,20 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
-import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
-import DearMonster from '../../contracts/DearMonster.json';
 import axios from 'axios'
 import Swal from 'sweetalert2';
-import { apiUrl } from '../../utils/constant'
+
+import DearMonster from '../../contracts/DearMonster.json';
+import DearMonsterTest from '../../contracts/DearMonsterTest.json';
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
+import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json';
+
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
+
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
 	console.log('post ====', post)
@@ -117,7 +126,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const accounts = await web3.eth.getAccounts()
 
 
-		const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
+		const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 
 		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
 		// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });

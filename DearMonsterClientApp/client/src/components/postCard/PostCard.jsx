@@ -2,13 +2,23 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import axios from 'axios'
-import { apiUrl } from '../../utils/constant'
 import Web3 from 'web3';
-import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
-import DearMonster from '../../contracts/DearMonster.json';
-import DMSToken from '../../contracts/DMSToken.json';
 import Swal from 'sweetalert2';
 import { notification } from "../../utils/notification";
+
+import { apiUrl, appEnv, addressList } from '../../utils/constant'
+
+import DearMonsterTrading from '../../contracts/DearMonsterTrading.json';
+import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json';
+
+import DMSToken from '../../contracts/DMSToken.json';
+import DMSTokenTest from '../../contracts/DMSTokenTest.json';
+
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken 
+
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress 
 
 
 const PostCard = ({ className, post, stepImg }) => {
@@ -46,9 +56,9 @@ const PostCard = ({ className, post, stepImg }) => {
 			}
 			let web3 = window.web3
 			const accounts = await web3.eth.getAccounts()
-			const TradingContract = new web3.eth.Contract(DearMonsterTrading.abi, "0x88947e431fC724f98525c715ed6F1F3CeF672EB1")
+			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 
-			let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, "0x9bfd1348cf574e3eb2b114cc18374b09ad012c69")
+			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
 
 			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
 
@@ -63,8 +73,6 @@ const PostCard = ({ className, post, stepImg }) => {
 				notify();
 				return
 			}
-
-
 
 			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
 
