@@ -215,11 +215,11 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								<div
 									className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
 									data-bs-toggle='modal'
-									data-bs-target='#SellMonster'
+									data-bs-target={`#SellMonster${post?.id}`}
 								>
 									Sell
 								</div>
-								<div className='modal fade' id='SellMonster' tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
+								<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
 									<div className='modal-dialog'>
 										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
 											<div className='modal-body p-4'>

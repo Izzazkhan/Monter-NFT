@@ -6,6 +6,8 @@ import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 import Swal from 'sweetalert2';
 
+const isCommingSoon = true
+
 const TrainingGround = () => {
 	const [time, setTime] = React.useState('0d 0h 0m 0s');
 	const [loading, setLoading] = React.useState(false);
@@ -109,115 +111,119 @@ const TrainingGround = () => {
 	return (
 		<div>
 			<CurrenPageTitle title='Training Ground'></CurrenPageTitle>
-			{/* <div className='center'>
-				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-					Coming Soon
-				</p>
-			</div> */}
-			<div className='container center mt-8'>
-				<div className='center flex-column'>
-					<div className='border border-warning text-white p-2 rounded-2'>Total Rewards:</div>
-					<section className='mt-5'>
-						<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
-							data-bs-toggle='modal'
-							data-bs-target='#ClaimRewardHistory'>
-							Claim Reward History
-						</div>
-						<div
-							className='modal fade'
-							id='ClaimRewardHistory'
-							tabindex='-1'
-							aria-labelledby='ClaimRewardHistoryLabel'
-							aria-hidden='true'
-						>
-							<div className='modal-dialog'>
-								<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-									<div className='modal-body p-4'>
-										Popup to show last 10 claims amount in DMS, datetime, status, tx id
+			{
+				isCommingSoon ?
+					<div className='center'>
+						<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
+							Coming Soon
+						</p>
+					</div>
+					:
+					<>
+						<div className='container center mt-8'>
+							<div className='center flex-column'>
+								<div className='border border-warning text-white p-2 rounded-2'>Total Rewards:</div>
+								<section className='mt-5'>
+									<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target='#ClaimRewardHistory'>
+										Claim Reward History
 									</div>
-									<div className='modal-footer'>
-										<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-											Close
-										</button>
-										<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-											Confirm
-										</button>
+									<div
+										className='modal fade'
+										id='ClaimRewardHistory'
+										tabindex='-1'
+										aria-labelledby='ClaimRewardHistoryLabel'
+										aria-hidden='true'
+									>
+										<div className='modal-dialog'>
+											<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+												<div className='modal-body p-4'>
+													Popup to show last 10 claims amount in DMS, datetime, status, tx id
+												</div>
+												<div className='modal-footer'>
+													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+														Close
+													</button>
+													<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
+														Confirm
+													</button>
+												</div>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-					</section>
-					<section className='mt-5 d-flex align-items-center '>
-						<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
-							data-bs-toggle='modal'
-							data-bs-target='#ClaimReward'>
-							Claim Reward
-						</div>
-						<div
-							className='modal fade'
-							id='ClaimReward'
-							tabindex='-1'
-							aria-labelledby='ClaimRewardLabel'
-							aria-hidden='true'
-						>
-							<div className='modal-dialog'>
-								<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-									<div className='modal-body p-4'>
-										Condition: 7 days (configurable) from last claim
-										-popup confirmation page
-										-rewards will be airdropped from admin wallet to user wallet to disburse the DMS
+								</section>
+								<section className='mt-5 d-flex align-items-center '>
+									<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target='#ClaimReward'>
+										Claim Reward
 									</div>
-									<div className='modal-footer'>
-										<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-											Close
-										</button>
-										<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-											Confirm
-										</button>
+									<div
+										className='modal fade'
+										id='ClaimReward'
+										tabindex='-1'
+										aria-labelledby='ClaimRewardLabel'
+										aria-hidden='true'
+									>
+										<div className='modal-dialog'>
+											<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+												<div className='modal-body p-4'>
+													Condition: 7 days (configurable) from last claim
+													-popup confirmation page
+													-rewards will be airdropped from admin wallet to user wallet to disburse the DMS
+												</div>
+												<div className='modal-footer'>
+													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+														Close
+													</button>
+													<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
+														Confirm
+													</button>
+												</div>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
-					</section>
+									<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
+								</section>
 
-					<div
-						className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
-						data-bs-toggle='modal'
-						data-bs-target='#EarlyClaimModal'
-					>
-						Early claim
-					</div>
-					<div
-						className='modal fade'
-						id='EarlyClaimModal'
-						tabindex='-1'
-						aria-labelledby='EarlyClaimModalLabel'
-						aria-hidden='true'
-					>
-						<div className='modal-dialog'>
-							<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-								<div className='modal-body p-4'>
-									30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
-									rewards, 70DMS is transferred from admin wallet to user wallet.
+								<div
+									className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+									data-bs-toggle='modal'
+									data-bs-target='#EarlyClaimModal'
+								>
+									Early claim
 								</div>
-								<div className='modal-footer'>
-									<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-										Close
-									</button>
-									<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-										Confirm
-									</button>
+								<div
+									className='modal fade'
+									id='EarlyClaimModal'
+									tabindex='-1'
+									aria-labelledby='EarlyClaimModalLabel'
+									aria-hidden='true'
+								>
+									<div className='modal-dialog'>
+										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+											<div className='modal-body p-4'>
+												30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
+												rewards, 70DMS is transferred from admin wallet to user wallet.
+											</div>
+											<div className='modal-footer'>
+												<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+													Close
+												</button>
+												<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
+													Confirm
+												</button>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-			{/* {dearMonster}
-			{minion} */}
-			<ChooseDearMonster handleonSelect={handleonSelect} />
-			<ChooseMinion minionFight={minionFight} loading={loading} status={status} />
+						<ChooseDearMonster handleonSelect={handleonSelect} />
+						<ChooseMinion minionFight={minionFight} loading={loading} status={status} />
+					</>
+			}
 		</div>
 	);
 };
