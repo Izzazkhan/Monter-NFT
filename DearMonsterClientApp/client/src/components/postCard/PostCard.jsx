@@ -14,11 +14,11 @@ import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json'
 import DMSToken from '../../contracts/DMSToken.json';
 import DMSTokenTest from '../../contracts/DMSTokenTest.json';
 
-const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
-const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken 
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
 
-const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
-const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress 
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
 
 
 const PostCard = ({ className, post, stepImg }) => {
@@ -42,7 +42,7 @@ const PostCard = ({ className, post, stepImg }) => {
 	};
 
 	const purchaseFun = async () => {
-		if(userId || owner) {
+		if (userId || owner) {
 			if (window.ethereum) {
 				window.web3 = new Web3(window.ethereum)
 				await window.ethereum.enable();
@@ -81,7 +81,7 @@ const PostCard = ({ className, post, stepImg }) => {
 			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
 
-			const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
+			const transaction = await TradingContract.methods.buyTrade(post.id, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
 
 			if (transaction.status) {
 				let params = new URLSearchParams()

@@ -39,12 +39,12 @@ const NavigationMenu = (props) => {
                     </ul>
                 </div>
                 <hr /> */}
-                <div className="other-info">
+                {/* <div className="other-info">
                     <a className="btn-default hvr-bounce-in"><span
                         className="icon fas fa-cog"></span>Settings</a>
                     <a className="btn-default hvr-bounce-in"><span className="icon fas fa-sign-out-alt"></span>Log
                         out</a>
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -23,7 +23,7 @@ const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
 
 const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
-const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress 
+const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
 
 
 const HuntersValley = () => {
@@ -213,10 +213,10 @@ const HuntersValley = () => {
 	}
 
 	useEffect(() => {
-		if(attributes && attributes.length > 0) {
+		if (attributes && attributes.length > 0) {
 			exportToExcelFun()
 		}
-	}, [ attributes ])
+	}, [attributes])
 
 
 	const exportToExcel = async () => {

@@ -24,10 +24,10 @@ const TradingPost = ({ }) => {
 	const [error, setError] = useState('');
 	const [filterValues, setFilterValues] = useState();
 	const [searchedData, setSearchedData] = useState()
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30, history.location.pathname);
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 6, history.location.pathname);
 
 	useEffect(() => {
-		getTradingData([], '');
+		getTradingData()
 	}, [])
 
 	useEffect(() => {
@@ -39,6 +39,9 @@ const TradingPost = ({ }) => {
 				data.forEach(item => {
 					if (filterObject.starsArray.includes(`${item.rating}`)) {
 						localFilterData.push(item)
+						filterApplied = true
+					}
+					else {
 						filterApplied = true
 					}
 				})
@@ -94,7 +97,7 @@ const TradingPost = ({ }) => {
 		}
 	}, [filterObject])
 
-	const getTradingData = async (filteringValues, searchedValues) => {
+	const getTradingData = async () => {
 		axios.get(`${apiUrl}/api/tradeItem/allInTrade`)
 			.then((res) => {
 				let _posts = []
@@ -132,10 +135,13 @@ const TradingPost = ({ }) => {
 			})
 	}
 
+	console.log('filterObject =======', filterObject)
+
 
 	const clearFilterData = () => {
-		setFilterValues({})
-		doPagination(data)
+		let tempObj = { ...filterObject }
+		delete tempObj.starsArray
+		setFilterObject(tempObj)
 	}
 
 	const sortData = (order, sortBy = 'price') => {
@@ -230,7 +236,10 @@ const TradingPost = ({ }) => {
 											}) : ""
 										)}
 									</section>
+
 							}
+
+
 						</div>
 						{'error' && pageData?.length == 0 ? (
 							''
