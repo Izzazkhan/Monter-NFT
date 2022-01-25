@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 const PostCard = ({ className, post, stepImg, handleSelect }) => {
+	// console.log('energyCalculate ===', post.values.Energy)
+
 
 	const [minutes, setMinutes] = useState()
 	const [seconds, setSeconds] = useState()
 	const [hours, setHours] = useState()
 
+
 	const apiCall = (energy, timeType) => {
-		// console.log('new Date', new Date())
-		let energyCalculate = Number(post.values.Energy) + energy
+
+		const localEnergy = post.values.Energy === '' ? 0 : post.values.Energy
+		let energyCalculate = Number(localEnergy) + energy
+
 		let params = new URLSearchParams()
 		params.append('values.Energy', energyCalculate)
 		// if (timeType === 'update') {
@@ -30,7 +35,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 	}
 
 	function displayTimer() {
-		// console.log('function called')
+		console.log('function called')
 		// const startTime = new Date(post.values.UpdateTime)
 		// const startTime = new Date(5680000)
 		// const endTime = new Date()
@@ -46,52 +51,51 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		// setHours(hours)
 		// console.log('days:::', hours, minutes, seconds, new Date())
 
-		if (Number(post.values.Energy) < 2) {
 
-			if (post.values.UpdateTime) {
 
-				// Time in minutes
-				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-				console.log('calculateUpdateTime:', calculateUpdateTime)
+		if (post.values.UpdateTime) {
+			// Time in minutes
+			const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
+			// console.log('calculateUpdateTime:', calculateUpdateTime)
 
-				if (calculateUpdateTime >= 180) {
-					apiCall(2, 'update')
-				}
-				else if (calculateUpdateTime >= 1) {
-					apiCall(1, 'update')
-				}
-				else {
-					const remainingTime = 90 - calculateUpdateTime
-					setTimeout(displayTimer, 1000 * 60 * remainingTime)
-				}
+			if (calculateUpdateTime >= 180) {
+				apiCall(2, 'update')
 			}
-			else {
+			else if (calculateUpdateTime >= 90) {
+				apiCall(1, 'update')
+			}
+		}
+		else {
+			const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
+			// console.log('calculateCreateTime:', calculateCreateTime)
 
-				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
-				// console.log('calculateCreateTime:', calculateCreateTime)
-
-				if (calculateCreateTime >= 180) {
-					apiCall(2, 'create')
-				}
-				else if (calculateCreateTime >= 20) {
-					apiCall(1, 'create')
-				}
-				else {
-					const remainingTime = 90 - calculateCreateTime
-					setTimeout(displayTimer, 1000 * 60 * remainingTime)
-				}
+			if (calculateCreateTime >= 180) {
+				apiCall(2, 'create')
+			}
+			else if (calculateCreateTime >= 90) {
+				apiCall(1, 'create')
 			}
 		}
 	}
 
 
 	useEffect(() => {
-		// let interval
-		// interval = setInterval(displayTimer, 1000)
-		// return () => {
-		// 	clearInterval(interval)
-		// }
-		displayTimer()
+		if (Number(post.values.Energy) < 2) {
+			let remainingTime
+			if (post.values.UpdateTime) {
+				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
+				remainingTime = 90 - calculateUpdateTime
+			}
+			else {
+				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
+				remainingTime = 90 - calculateCreateTime
+			}
+			let interval
+			interval = setInterval(displayTimer, 1000 * 60 * remainingTime)
+			return () => {
+				clearInterval(interval)
+			}
+		}
 	}, [])
 
 	return (
