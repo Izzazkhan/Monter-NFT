@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import ChooseDearMonster from '../../components/TrainingGround/ChooseDearMonster';
 import ChooseMinion from '../../components/TrainingGround/ChooseMinion';
@@ -16,9 +16,9 @@ const TrainingGround = () => {
 	const [status, setStatus] = React.useState('')
 	const [selectedMonster, setSelectedMonster] = React.useState({})
 	const { userId } = useSelector((state) => state.auth);
-	console.log('userId::', userId)
+	// console.log('userId::', userId)
 	const [account, setAccount] = useState();
-
+	const [earnerData, setEarnerData] = useState();
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -35,12 +35,24 @@ const TrainingGround = () => {
 		let web3 = window.web3
 		// Load account
 		let accounts = await web3.eth.getAccounts()
-		console.log('acount:::', accounts)
-		setAccount(accounts[0]);
+		// console.log('acount:::', accounts)
+		setAccount(accounts[0])
+		function getAmount() {
+			axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
+				.then((response) => {
+					console.log('user earning ::', response)
+					if (response.data.earnerData) {
+						setEarnerData(response.data.earnerData)
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+		}
+		getAmount()
 	}, [window.web3, userId])
 
-
-
+	console.log('earnerData::', earnerData)
 
 	// const timer = useMemo(() => {
 	// 	// get next 10 days from now
@@ -100,7 +112,7 @@ const TrainingGround = () => {
 			setLoading(true);
 			const random = Math.floor(Math.random() * 100) + 1
 			let status = '';
-			if (random <= minion.values.Win_Rate) {
+			if (random <= minion.values.Win_Rate) { // random <= minion.values.Win_Rate
 				status = 'WIN';
 				setLoading(false);
 				setStatus(status);
@@ -144,18 +156,56 @@ const TrainingGround = () => {
 					}
 				}
 
-				// const config = {
-				// 	headers: {
-				// 		'Content-Type': 'application/x-www-form-urlencoded'
-				// 	}
-				// }
-				// axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
-				// 	.then((response) => {
-				// 		console.log('api response::', response)
-				// 	})
-				// 	.catch((error) => {
-				// 		console.log(error)
-				// 	})
+				const config = {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				}
+
+				axios.get(`${apiUrl}/api/userEarning/${account}`)
+					.then((response) => {
+						// console.log('user earning ::', response)
+						if (response.data.earnerData) {
+							const updateAmount = response.data.earnerData.totalAmount + amount
+							const updateParams = new URLSearchParams()
+							updateParams.append('earnerAddress', account)
+							updateParams.append('totalAmount', updateAmount)
+
+							axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+								.then((response) => {
+									console.log('update earning ::', response)
+									Swal.fire({
+										icon: 'success',
+										title: 'Earned Reward Updated',
+										text: 'Earned Reward has been updated'
+									})
+								})
+								.catch((error) => {
+									console.log(error)
+								})
+						}
+						else {
+							const earnerParam = new URLSearchParams()
+							earnerParam.append('earnerAddress', account)
+							earnerParam.append('totalAmount', amount)
+							earnerParam.append('lastClaim', new Date())
+							axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
+								.then((response) => {
+									console.log('add earning ::', response)
+									Swal.fire({
+										icon: 'success',
+										title: 'Reward Earned',
+										text: 'Reward has been Earned'
+									})
+								})
+								.catch((error) => {
+									console.log(error)
+								})
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
 
 			} else {
 				status = 'LOSE';
@@ -172,6 +222,62 @@ const TrainingGround = () => {
 				title: 'Energy',
 				text: 'Dear Monster Energy should be greater than 0'
 			})
+		}
+	}
+
+	const claimRewardHandler = async () => {
+		const config = {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		}
+		try {
+			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}`)
+			console.log('withdraw request:::::', getWithdrawRequest.data)
+
+			if (getWithdrawRequest.data.withdrawRequest.length === 0) {
+				try {
+					const rewardParam = new URLSearchParams()
+					rewardParam.append('requesterAddress', account)
+					rewardParam.append('amount', earnerData.totalAmount)
+					// const calculateDate = Math.abs((new Date(getWithdrawRequest.data.withdrawRequests[0].createdAt) - new Date()) / (1000 * 60 * 60 * 24))
+					// console.log('calculateDate::', calculateDate)
+					// if (calculateDate >= 7) {
+					try {
+						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						if (postWithdraw) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Reward Claim',
+								text: 'Reward has been claimed'
+							})
+						}
+
+					} catch (error) {
+						console.log(error)
+					}
+					// }
+					// else {
+					// 	Swal.fire({
+					// 		icon: 'error',
+					// 		title: 'Reward Claim',
+					// 		text: 'Please wait for 7 days to claim reward'
+					// 	})
+					// }
+
+				} catch (error) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Reward Claim',
+						text: 'There is no reward to be claimed'
+					})
+				}
+			}
+			else {
+				console.log('Already withdraw request')
+			}
+		} catch (error) {
+			console.log(error)
 		}
 	}
 
@@ -198,7 +304,7 @@ const TrainingGround = () => {
 				<>
 					<div className='container center mt-8'>
 						<div className='center flex-column'>
-							<div className='border border-warning text-white p-2 rounded-2'>Total Rewards:</div>
+							<div className='border border-warning text-white p-2 rounded-2'>Total Rewards: {earnerData ? earnerData.totalAmount : 0}</div>
 							<section className='mt-5'>
 								<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
 									data-bs-toggle='modal'
@@ -232,10 +338,10 @@ const TrainingGround = () => {
 							<section className='mt-5 d-flex align-items-center '>
 								<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
 									data-bs-toggle='modal'
-									data-bs-target='#ClaimReward'>
+									data-bs-target='#ClaimReward' onClick={claimRewardHandler}>
 									Claim Reward
 								</div>
-								<div
+								{/* <div
 									className='modal fade'
 									id='ClaimReward'
 									tabindex='-1'
@@ -259,7 +365,7 @@ const TrainingGround = () => {
 											</div>
 										</div>
 									</div>
-								</div>
+								</div> */}
 								<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
 							</section>
 

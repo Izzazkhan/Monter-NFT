@@ -56,7 +56,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		if (post.values.UpdateTime) {
 			// Time in minutes
 			const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-			// console.log('calculateUpdateTime:', calculateUpdateTime)
+			console.log('calculateUpdateTime:', calculateUpdateTime)
 
 			if (calculateUpdateTime >= 180) {
 				apiCall(2, 'update')
@@ -67,7 +67,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		}
 		else {
 			const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
-			// console.log('calculateCreateTime:', calculateCreateTime)
+			console.log('calculateCreateTime:', calculateCreateTime)
 
 			if (calculateCreateTime >= 180) {
 				apiCall(2, 'create')
@@ -90,6 +90,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
 				remainingTime = 90 - calculateCreateTime
 			}
+			console.log('remainingTime::', remainingTime)
 			let interval
 			interval = setInterval(displayTimer, 1000 * 60 * remainingTime)
 			return () => {

@@ -6,12 +6,15 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from "redux-thunk";
 import MonsterReducer from './redux/monsters/reducer'
 import MinionsReducer from './redux/minions/reducer'
+import WithdrawRequestReducer from './redux/withdrawRequest/reducer'
+
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 const rootReducer = combineReducers({
   MonsterReducer,
-  MinionsReducer
+  MinionsReducer,
+  WithdrawRequestReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
