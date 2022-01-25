@@ -8,6 +8,11 @@ const monster = require('./monster');
 const minion = require('./minion');
 const mintedMonster = require('./mintedMonster');
 const tradeItem = require('./tradeItem');
+
+const userEarning = require('./userEarning');
+const withdrawRequest = require('./withdrawRequest');
+
+
 const authenticate = require('../middlewares/authenticate');
 
 router.get('/', (req, res) => {
@@ -28,5 +33,7 @@ router.use('/minion', minion);
 router.use('/monster', monster);
 router.use('/mintedMonster', mintedMonster);
 router.use('/tradeItem', tradeItem);
+router.use('/userEarning', userEarning);
+router.use('/withdrawRequest', withdrawRequest);
 
 module.exports = router
