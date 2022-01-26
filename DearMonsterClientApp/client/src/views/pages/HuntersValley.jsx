@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import { useSelector } from 'react-redux';
-import { connectUserAction, connectUserSuccess, updateUserBalance } from '../../store/actions/auth/login';
+import { connectUserSuccess, updateUserBalance, startLoading, stopLoading } from '../../store/actions/auth/login';
 import { useDispatch } from 'react-redux';
 import Web3 from 'web3';
 import { notification } from "../../utils/notification";
@@ -18,6 +18,7 @@ import DearMonster from '../../contracts/DearMonster.json';
 import DMSToken from "../../contracts/DMSToken.json";
 import DearMonsterTest from '../../contracts/DearMonsterTest.json';
 import DMSTokenTest from "../../contracts/DMSTokenTest.json";
+
 
 const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
@@ -42,7 +43,37 @@ const HuntersValley = () => {
 	const [numberList, setNumberList] = useState([]);
 	const [data, setData] = useState([]);
 	const dispatch = useDispatch();
+	const headers = ['Token ID', 'Wallet'];
 
+
+	useEffect(() => {
+
+		let localNumberlist = []
+
+		const prob_1 = 53
+		const prob_2 = 35
+		const prob_3 = 10
+		const prob_4 = 1.5
+		const prob_5 = 0.5
+
+		const prob_1_10 = 530
+		const prob_2_10 = 350
+		const prob_3_10 = 100
+		const prob_4_10 = 15
+		const prob_5_10 = 5
+
+		for (let i = 0; i < 1000; i++) {
+			if (i < prob_1_10) { localNumberlist[i] = 1 }
+			else if (i >= prob_1_10 && i < (prob_1_10 + prob_2_10)) { localNumberlist[i] = 2 }
+			else if (i >= (prob_1_10 + prob_2_10) && i < (prob_1_10 + prob_2_10 + prob_3_10)) { localNumberlist[i] = 3 }
+			else if (i >= (prob_1_10 + prob_2_10 + prob_3_10) && i < (prob_1_10 + prob_2_10 + prob_3_10 + prob_4_10)) { localNumberlist[i] = 4 }
+			else { localNumberlist[i] = 5 }
+		}
+		setNumberList([...localNumberlist])
+
+		getMonstersData()
+
+	}, [])
 
 	const getMonstersData = () => {
 		axios.get(`${apiUrl}/api/monster`)
@@ -63,8 +94,6 @@ const HuntersValley = () => {
 		}
 	}, [data])
 
-
-	const headers = ['Token ID', 'Wallet'];
 	const star_mappings = {
 		'Star 1': 1,
 		'Star 2': 2,
@@ -92,6 +121,7 @@ const HuntersValley = () => {
 	}
 
 	useEffect(async () => {
+
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -133,15 +163,6 @@ const HuntersValley = () => {
 			if (document.getElementById('caveprice_common') !== null)
 				document.getElementById('caveprice_common').innerText = _price
 		}, 500)
-
-
-
-		// var _attributes = await DearMonsterContract.methods.getAttributes().call()
-		// console.log('_attributes', _attributes)
-		// setAttributes(_attributes)
-
-
-
 	}, [window.web3, userId])
 
 	const handlePriceChange = async (e) => {
@@ -218,7 +239,6 @@ const HuntersValley = () => {
 		}
 	}, [attributes])
 
-
 	const exportToExcel = async () => {
 
 		if (window.ethereum) {
@@ -238,7 +258,6 @@ const HuntersValley = () => {
 		var _attributes = await DearMonsterContract.methods.getAttributes().call()
 		setAttributes(_attributes)
 	}
-
 
 	const exportToExcelFun = () => {
 		if (attributes.length == 0) return
@@ -269,6 +288,8 @@ const HuntersValley = () => {
 	}
 
 	const handlePurchase = async () => {
+
+		dispatch(startLoading(true))
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -280,24 +301,15 @@ const HuntersValley = () => {
 		else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
-
 		getPath(quantity)
-
 		let web3 = window.web3
-		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
-
-		// let networkId = await web3.eth.net.getId()
-		// let DearMonsterNetwork = DearMonster.networks[networkId]
-		// let DMSTokenNetwork = DMSToken.networks[networkId]
-		// if (DearMonsterNetwork && DMSTokenNetwork) {
 
 		if (true) {
 			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
-			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
-			// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)			
+				
 
 			var isMaxSupply = await DearMonsterContract.methods.checkMaxSupply().call()
 			var price = await DearMonsterContract.methods.getPrice().call()
@@ -305,14 +317,14 @@ const HuntersValley = () => {
 			// var totalSupply = await DearMonsterContract.methods.totalSupply().call()
 
 			// todo : uncomment this !!!!!
-			// if (isMaxSupply) {
-			// 	let notify = notification({
-			// 		type: 'error',
-			// 		message: 'Not enough NFTs!',
-			// 	});
-			// 	notify();
-			// 	return
-			// }
+			if (isMaxSupply) {
+				let notify = notification({
+					type: 'error',
+					message: 'Not enough NFTs!',
+				});
+				notify();
+				return
+			}
 
 			// var _owner = await DearMonsterContract.methods.owner().call()
 			DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (balance) {
@@ -327,99 +339,74 @@ const HuntersValley = () => {
 						type: 'error',
 						message: 'Insufficient fund!',
 					});
+					dispatch(stopLoading(false))
 					notify();
 					return
 				}
-				await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-				await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-
-				// var _elementPath = await DearMonsterContract.methods.getElementPath().call()
-				// console.log(_elementPath)
-
-				// var _attributes = await DearMonsterContract.methods.getAttributes().call()
-				// console.log(_attributes)
 
 
+				try {
+					await DMSTokenContract.methods.approve(DearMonsterContract._address, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
+					await DearMonsterContract.methods.mintDearMonster(path, ratings, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 
-				Swal.fire({
-					icon: 'success',
-					title: 'Cave Minted Successfully',
-					text: 'Please check Inventory for minted Cave!'
-				})
+					let tokensOfOwnerFromContract = await DearMonsterContract.methods.tokensOfOwner(account).call();
+					let latestIds = tokensOfOwnerFromContract.slice((tokensOfOwnerFromContract.length - quantity), tokensOfOwnerFromContract.length)
 
+					latestIds.forEach(async (item, index) => {
+						let attributesByIndex = await DearMonsterContract.methods.attributes(item).call();
 
-				let tokensOfOwnerFromContract = await DearMonsterContract.methods.tokensOfOwner(account).call();
-				let latestIds = tokensOfOwnerFromContract.slice((tokensOfOwnerFromContract.length - quantity), tokensOfOwnerFromContract.length)
-
-
-				latestIds.forEach(async (item, index) => {
-					let attributesByIndex = await DearMonsterContract.methods.attributes(item).call();
-
-					let params = new URLSearchParams()
-					params.append('owner', attributesByIndex['owner'])
-					params.append('tokenId', parseInt(item))
-					params.append('rating', parseInt(attributesByIndex['star']))
-					params.append('monsterId', monsterIdsState[index])
+						let params = new URLSearchParams()
+						params.append('owner', attributesByIndex['owner'])
+						params.append('tokenId', parseInt(item))
+						params.append('rating', parseInt(attributesByIndex['star']))
+						params.append('monsterId', monsterIdsState[index])
 
 
-					params.append('values.Level', attributesByIndex['level'])
-					params.append('values.EXP', attributesByIndex['exp'])
-					params.append('values.Element', attributesByIndex['element'])
-					params.append('values.Energy', attributesByIndex['energy'])
+						params.append('values.Level', attributesByIndex['level'])
+						params.append('values.EXP', attributesByIndex['exp'])
+						params.append('values.Element', attributesByIndex['element'])
+						params.append('values.Energy', attributesByIndex['energy'])
 
-					const config = {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
+						const config = {
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded'
+							}
 						}
-					}
-					axios.post(`${apiUrl}/api/mintedMonster`, params, config)
-						.then((res) => {
-							console.log('monster minted')
-						})
-						.catch((e) => {
-							console.log("Error ----------------")
-							console.log(e)
-						})
-				})
+						axios.post(`${apiUrl}/api/mintedMonster`, params, config)
+							.then((res) => {
 
+								dispatch(stopLoading(false))
+								Swal.fire({
+									icon: 'success',
+									title: 'Cave Minted Successfully',
+									text: 'Please check Inventory for minted Cave!'
+								})
+							})
+							.catch((e) => {
+								dispatch(stopLoading(false))
+								Swal.fire({
+									icon: 'error',
+									title: 'Error',
+									text: 'Something went wrong, Please contact admin!'
+								})
+								console.log(e)
+							})
+					})
+				} catch (e){
+					dispatch(stopLoading(false))
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'Transaction was rejected from Metamask'
+					})
+					console.log("Error ----------------")
+					console.log(e)
+				}
 				// setAttributes(_attributes)
 				updateBalance(balance + 1111)
 			})
-
 		}
 	}
-
-	useEffect(() => {
-		let localNumberlist = []
-
-		const prob_1 = 53
-		const prob_2 = 35
-		const prob_3 = 10
-		const prob_4 = 1.5
-		const prob_5 = 0.5
-
-		const prob_1_10 = 530
-		const prob_2_10 = 350
-		const prob_3_10 = 100
-		const prob_4_10 = 15
-		const prob_5_10 = 5
-
-		for (let i = 0; i < 1000; i++) {
-			if (i < prob_1_10) { localNumberlist[i] = 1 }
-			else if (i >= prob_1_10 && i < (prob_1_10 + prob_2_10)) { localNumberlist[i] = 2 }
-			else if (i >= (prob_1_10 + prob_2_10) && i < (prob_1_10 + prob_2_10 + prob_3_10)) { localNumberlist[i] = 3 }
-			else if (i >= (prob_1_10 + prob_2_10 + prob_3_10) && i < (prob_1_10 + prob_2_10 + prob_3_10 + prob_4_10)) { localNumberlist[i] = 4 }
-			else { localNumberlist[i] = 5 }
-		}
-		setNumberList([...localNumberlist])
-
-		getMonstersData()
-
-	}, [])
-
-	// useEffect(() => {
-	// 	getPath();
-	// }, [quantity])
 
 	function getPath(items) {
 		let paths = [];

@@ -1,14 +1,25 @@
 const WithdrawRequest = require('../models/withdrawRequest');
 
 
+exports.userWithdrawRequest = async function (req, res) {
+
+    const wallet = req.params.wallet;
+
+    console.log('wallet')
+    console.log(wallet)
+
+    const withdrawRequest = await WithdrawRequest.find({ isResolved: false, requesterAddress: wallet });
+    res.status(200).json({withdrawRequest});
+};
+
 exports.index = async function (req, res) {
     const withdrawRequest = await WithdrawRequest.find({});
     res.status(200).json({withdrawRequest});
 };
 
 exports.pending = async function (req, res) {
-    const monsters = await WithdrawRequest.find({ isResolved: false });
-    res.status(200).json({monsters});
+    const withdrawRequests = await WithdrawRequest.find({ isResolved: false });
+    res.status(200).json({withdrawRequests});
 };
 
 

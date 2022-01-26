@@ -5,9 +5,9 @@ exports.show = async function (req, res) {
     try {
         const earnerAddress = req.params.earnerAddress;
 
-        const earnerData = await UserEarning.find({earnerAddress});
+        const earnerData = await UserEarning.findOne({earnerAddress});
 
-        if (!earnerData) return res.status(401).json({message: 'record against earnerData does not exist'});
+        // if (!earnerData) return res.status(401).json({message: 'record against earnerData does not exist'});
         
         res.status(200).json({earnerData});
     } catch (error) {
@@ -16,6 +16,10 @@ exports.show = async function (req, res) {
 };
 
 exports.store = async (req, res) => {
+
+    console.log("req.body")
+    console.log(req.body)
+
     try {
         const userEarning = new UserEarning({...req.body});
         const userEarning_ = await userEarning.save();
@@ -32,9 +36,10 @@ exports.update = async function (req, res) {
         const earnerAddress = req.params.earnerAddress;
         const update = req.body;
 
+
         let query = {earnerAddress}
         let updateData = {$set: update}
-        let options = { returnNewDocument: true, upsert: true }
+        let options = { new: true, upsert: true }
         
         const userEarning = await UserEarning.findOneAndUpdate(query, updateData, options);
 

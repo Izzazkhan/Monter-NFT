@@ -5,25 +5,50 @@ import NavLinks from '../../components/Inventory/NavLinks';
 import PostCard from '../../components/Inventory/PostCard';
 import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserAction, connectUserSuccess } from './../../store/actions/auth/login';
+import { connectUserSuccess } from './../../store/actions/auth/login';
 import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
 const Inventory = ({ match }) => {
-	const [posts, setPosts] = React.useState([]);
+	const dispatch = useDispatch();
+	const history = useHistory();
+
 	const { userId } = useSelector((state) => state.auth);
+
+	const [posts, setPosts] = useState([]);
 	const [account, setAccount] = useState();
 	const [paths, setPaths] = useState([]);
 	const [attributes, setAttributes] = useState([]);
-	const dispatch = useDispatch();
-	const history = useHistory();
+
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
 		usePagination(posts, 30, history.location.pathname);
 
-	const handleConnect = () => {
-		dispatch(connectUserAction());
+	const handleConnect = async () => {
+
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		} else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		} else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+
+		await window.ethereum.request({
+			method: "wallet_requestPermissions",
+			params: [{
+				eth_accounts: {}
+			}]
+		});
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		setAccount(accounts[0]);
+		dispatch(connectUserSuccess(accounts[0]))
+
 	};
 
 	useEffect(() => {
@@ -49,7 +74,7 @@ const Inventory = ({ match }) => {
 
 	useEffect(() => {
 		getCave();
-	}, [])
+	}, [userId])
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -104,38 +129,29 @@ const Inventory = ({ match }) => {
 			})
 	}
 
-	useEffect(() => {
-
-		console.log("------------------>   Live Check")
-		console.log(posts?.length)
-		console.log(account)
-		console.log("------------------>   Live Check")
-
-	}, [posts, account])
-
-
-	// useEffect(() => {
-	// 	getData();
-	// }, [])
-
-	console.log("=============   Live Check")
-	console.log(posts)
-	console.log(posts?.length)
-	console.log("=============   Live Check")
-
-
 	return (
 		<div>
 			<CurrenPageTitle title='Inventory'></CurrenPageTitle>
 			<NavLinks match={match} />
-			{posts.length > 0 ? '' :
+			{userId ?
 				<div className='container'>
 					<div className='center'>
-						{account ? (
-							<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-								You Don't have any inventory
-							</p>
-						) : (
+						{
+							posts.length < 1 ? (
+								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+									You Don't have any inventory
+								</p>
+							)
+								:
+								''
+
+						}
+					</div>
+				</div>
+				:
+				(
+					<div className='container'>
+						<div className='center'>
 							<div>
 								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 									Please connect to see Inventory
@@ -147,34 +163,41 @@ const Inventory = ({ match }) => {
 									Connect
 								</div>
 							</div>
+						</div>
+					</div>
+				)
+			}
+
+			{
+				userId ?
+
+					<div className='container mt-10 px-md-auto px-8'>
+						<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
+							{pageData.map((post) => {
+								return (
+									<PostCard getData={getData} account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
+								);
+							})}
+						</div>
+						{pageData.length == 0 ? (
+							''
+						) : (
+							<footer className='center pb-8 pt-4'>
+								<img
+									src='/assets/imgs/ArrowLeft.png '
+									className='cursor'
+									onClick={previousPage}
+								/>
+								<p className='text-white fs-22 mx-5'>
+									{currentPage}/{totalPages}
+								</p>
+								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+							</footer>
 						)}
 					</div>
-				</div>
-			}
-			<div className='container mt-10 px-md-auto px-8'>
-				<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
-					{pageData.map((post) => {
-						return (
-							<PostCard getData={getData} account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
-						);
-					})}
-				</div>
-				{pageData.length == 0 ? (
+					:
 					''
-				) : (
-					<footer className='center pb-8 pt-4'>
-						<img
-							src='/assets/imgs/ArrowLeft.png '
-							className='cursor'
-							onClick={previousPage}
-						/>
-						<p className='text-white fs-22 mx-5'>
-							{currentPage}/{totalPages}
-						</p>
-						<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
-					</footer>
-				)}
-			</div>
+			}
 		</div>
 	);
 };

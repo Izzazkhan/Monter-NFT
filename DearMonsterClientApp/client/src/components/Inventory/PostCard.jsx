@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess } from '../../store/actions/auth/login';
+import { connectUserSuccess, startLoading, stopLoading } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import axios from 'axios'
 import Swal from 'sweetalert2';
@@ -48,6 +48,9 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 	}
 
 	const sellFunction = async () => {
+
+		dispatch(startLoading(true))
+
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -66,44 +69,63 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 			// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
-			await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 
-			const transaction = await TradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
-			if (transaction.status) {
-				let params = new URLSearchParams()
-				params.append('seller', account ? account : owner ? owner : userId)
-				params.append('mintedMonsterId', post.mintedId)
-				params.append('price', sellPrice)
-				const config = {
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
+
+
+			try {
+				await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
+				const transaction = await TradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
+
+				if (transaction.status) {
+					let params = new URLSearchParams()
+					params.append('seller', account ? account : owner ? owner : userId)
+					params.append('mintedMonsterId', post.mintedId)
+					params.append('price', sellPrice)
+					const config = {
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
 					}
-				}
-				axios.post(`${apiUrl}/api/tradeItem`, params, config)
-					.then((res) => {
-						console.log(res.data)
-
-						// getData(account ? account : owner ? owner : userId)
-
-						Swal.fire({
-							icon: 'success',
-							title: 'Item Added To Sell',
-							text: 'Please check Inventory Trading for items on trade!'
+					axios.post(`${apiUrl}/api/tradeItem`, params, config)
+						.then((res) => {
+							getData(userId)
+							dispatch(stopLoading(false))
+							Swal.fire({
+								icon: 'success',
+								title: 'Item Added To Sell',
+								text: 'Please check Inventory Trading for items on trade!'
+							})
 						})
+						.catch((e) => {
+							console.log(e)
+							dispatch(stopLoading(false))
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: 'Oops, Something went wrong'
+							})
+						})
+				} else {
+					dispatch(stopLoading(false))
+					Swal.fire({
+						icon: 'error',
+						title: 'Transaction',
+						text: 'Something went wrong, Please contact admin'
 					})
-					.catch((e) => {
-						console.log("Error ----------------")
-						console.log(e)
-					})
-			} else {
+				}
+			} catch (e) {
+				dispatch(stopLoading(false))
 				Swal.fire({
 					icon: 'error',
-					title: 'Transaction',
-					text: 'Transaction error'
+					title: 'Error',
+					text: 'Transaction was rejected from Metamask'
 				})
+				console.log("Error ----------------")
+				console.log(e)
 			}
 		}
 		else {
+			dispatch(stopLoading(false))
 			Swal.fire({
 				icon: 'error',
 				title: 'Invalid Price',
@@ -136,7 +158,6 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 		const transaction = await TradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 
-		console.log('==== removeTrade transaction ====', transaction)
 		if (transaction.status) {
 			axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`)
 				.then((res) => {
@@ -221,24 +242,36 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								</div>
 								<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
 									<div className='modal-dialog'>
-										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+										<div style={{padding: "35px"}} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+
+											<div className='modal-header p-4 border-bottom-0' style={{ border: "none"}}> <h3 style={{color: "black"}}> Sell DearMonster </h3>
+											</div>
 											<div className='modal-body p-4'>
-												<p className='mb-4'>Please enter amount for which you want to sell monster</p>
-												<div className='d-flex justify-content-between w-60 mb-4'>
-													<div className='d-flex align-items-center'>
+												<p className='mb-4' style={{fontSize:"17px",fontWeight:"400", color: "black"}}>
+													Your NFT will be listed in Trading Post at this price. In order to get it back, you'll have to revoke the sale.
+												</p>
+												<div className='align-items-center d-flex justify-content-between mb-4' >
+													<div> <h4 style={{color: "black"}}>Sell at</h4> </div>
+													<div className='d-flex align-items-center w-60' style={{padding:"15px 15px 23px 3px"}}> 
+														<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 														<input
 															type='text'
 															name='sellPrice'
-															className='form-control  w-100px'
+															className='form-control  w-200px'
 															id='sellPrice'
 															value={sellPrice}
 															onChange={priceChangeHandler}
 														/>
+														
 													</div>
+													
+												</div>
+												<div style={{float:"right"}}> 
+													<p style={{maxWidth:"210px",fontSize:"13px", color: "black"}}>Note that there will be a 5% transaction fee.</p>
 												</div>
 
 											</div>
-											<div className='modal-footer'>
+											<div className='modal-footer border-top-0 mb-5'>
 												<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => sellFunction()}>
 													Sell
 												</div>

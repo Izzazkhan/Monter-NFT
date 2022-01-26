@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { NavbarRoutes } from '../../routes/';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { connectUserAction, connectUserSuccess } from '../../store/actions/auth/login';
+import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
@@ -19,23 +19,27 @@ const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
 const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress 
 
 const Header = () => {
-	const [active, setActive] = useState(false);
-	const [blance, setBlance] = useState(0);
 
 	const dispatch = useDispatch();
+
 	const { userId } = useSelector((state) => state.auth);
 	const { balance } = useSelector((state) => state.auth);
-	const [account, setAccount] = useState([]);
+
 	let [provider, setProvider] = useState(null);
-	const [web3, setWeb3] = useState(0);
+	const [active, setActive] = useState(false);
+	const [blance, setBlance] = useState(0);
 	const [web3Modal, setWeb3Modal] = useState(null);
+	
 	const [walletConnected, setWalletConnected] = useState(false);
+	const [account, setAccount] = useState([]);
+	const [web3, setWeb3] = useState(0);
 
 	useEffect(async () => {
 		init();
 	}, []);
 
 	useEffect(async () => {
+
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -64,10 +68,6 @@ const Header = () => {
 	}, [userId, balance]);
 
 	function init() {
-		console.log("Initializing example");
-		console.log("WalletConnectProvider is", WalletConnectProvider);
-		console.log("Fortmatic is", Fortmatic);
-		console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
 
 		// Tell Web3modal what providers we have available.
 		// Built-in web browser provider (only one can exist as a time)
@@ -85,9 +85,7 @@ const Header = () => {
 			providerOptions, // required
 			disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
 		});
-
 		setWeb3Modal(web3_Modal);
-
 		console.log("Web3Modal instance is", web3Modal);
 	}
 
@@ -97,74 +95,19 @@ const Header = () => {
 		const web3 = new Web3(provider);
 		setWeb3(web3);
 
-		// // Get list of accounts of the connected wallet
 		const accounts_temp = await web3.eth.getAccounts();
 
-
-		// const tokenInstance_temp = new web3.eth.Contract(
-		// 	BVToken.abi,
-		// 	BVToken.networks[networkId_temp] && BVToken.networks[networkId_temp].address,
-		// );
-		// tokenInstance_temp.options.address = "0xaBAf0eDE82Db96fcFee3091d11c6c35D60EF5463";
-		// setTokenInstance(tokenInstance_temp);
-
-		// const publicSaleInstance_temp = new web3.eth.Contract(
-		// 	PublicSale.abi,
-		// 	PublicSale.networks[networkId_temp] && PublicSale.networks[networkId_temp].address,
-		// );
-		// console.log(2)
-		// publicSaleInstance_temp.options.address = "0x018c09FCe2357C505c3890e15906194e3f656fB4";
-		// setPublicSaleInstance(publicSaleInstance_temp);
-		// console.log(publicSaleInstance_temp)
-
-		// // MetaMask does not give you all accounts, only the selected account
 		console.log("Got accounts", accounts_temp);
 		setAccount(accounts_temp[0])
 		dispatch(connectUserSuccess(accounts_temp[0]))
-		// // Go through all accounts and get their ETH balance
-		// const rowResolvers = accounts.map(async (address) => {
-		// 	const balance = await web3.eth.getBalance(address);
-		// 	// ethBalance is a BigNumber instance
-		// 	// https://github.com/indutny/bn.js/
-		// 	const ethBalance = web3.utils.fromWei(balance, "ether");
-		// 	const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
-		// 	// Fill in the templated row and put in the document
-		// 	// const clone = template.content.cloneNode(true);
-		// 	// clone.querySelector(".address").textContent = address;
-		// 	// clone.querySelector(".balance").textContent = humanFriendlyBalance;
-		// 	// accountContainer.appendChild(clone);
-		// 	console.log(address);
-		// 	console.log(humanFriendlyBalance);
-		// });
-
-		// // Because rendering account does its own RPC commucation
-		// // with Ethereum node, we do not want to display any results
-		// // until data for all accounts is loaded
-		// await Promise.all(rowResolvers);
-		// // Display fully loaded UI for wallet data
-		// // document.querySelector("#prepare").style.display = "none";
-		// // document.querySelector("#connected").style.display = "block";
+		
 		setWalletConnected(true);
 	}
 
 	async function refreshAccountData() {
-
-		// If any current data is displayed when
-		// the user is switching acounts in the wallet
-		// immediate hide this data
-		// document.querySelector("#connected").style.display = "none";
-		// document.querySelector("#prepare").style.display = "block";
 		setWalletConnected(false);
-		// Disable button while UI is loading.
-		// fetchAccountData() will take a while as it communicates
-		// with Ethereum node via JSON-RPC and loads chain data
-		// over an API call.
-		// document.querySelector("#btn-connect").setAttribute("disabled", "disabled")
 		await fetchAccountData();
-		// document.querySelector("#btn-connect").removeAttribute("disabled")
 	}
-
-
 
 	async function onConnect() {
 
@@ -175,22 +118,13 @@ const Header = () => {
 			console.log("Could not get a wallet connection", e);
 			return;
 		}
-
-		console.log(provider);
 		setProvider(provider);
-		console.log(provider);
-		console.log('provider accounts changed')
-		// Subscribe to accounts change
 		provider.on("accountsChanged", (accounts) => {
 			fetchAccountData();
 		});
-		console.log('provider chain changed')
-		// Subscribe to chainId change
 		provider.on("chainChanged", (chainId) => {
 			fetchAccountData();
 		});
-		console.log('provider network changed')
-		// Subscribe to networkId change
 		provider.on("networkChanged", (networkId) => {
 			fetchAccountData();
 		});

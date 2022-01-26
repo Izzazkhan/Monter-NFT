@@ -1,5 +1,5 @@
 // create a reducer for login
-import { CONNECT_USER_START, CONNECT_USER_SUCCESS, CONNECT_USER_ERROR, UPDATE_USER_BALANCE } from '../types';
+import { CONNECT_USER_START, CONNECT_USER_SUCCESS, CONNECT_USER_ERROR, UPDATE_USER_BALANCE, START_LOADING, STOP_LOADING } from '../types';
 
 const initialState = {
 	isAuthenticated: false,
@@ -7,6 +7,7 @@ const initialState = {
 	error: '',
 	userId: '',
 	balance: 0,
+	loading: false
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -38,6 +39,18 @@ export const authReducer = (state = initialState, action) => {
 			return {
 				...state,
 				balance: action.balance,
+			};
+
+		case START_LOADING:
+			return {
+				...state,
+				loading: action.payload,
+			};
+
+		case STOP_LOADING:
+			return {
+				...state,
+				loading: action.payload,
 			};
 
 		default:

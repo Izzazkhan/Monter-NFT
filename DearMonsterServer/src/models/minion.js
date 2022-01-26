@@ -31,6 +31,10 @@ const MinionSchema = new mongoose.Schema({
             type: Number,
             required: true,
         },
+        Lose_Exp_Gain: {
+            type: Number,
+            required: true,
+        },
         Exp_Gain: {
             type: Number,
             required: true,

@@ -5,6 +5,9 @@ const WithdrawRequest = require('../controllers/withdrawRequest');
 const router = express.Router();
 
 //INDEX
+router.get('/userWithdrawRequest/:wallet', WithdrawRequest.userWithdrawRequest);
+
+//INDEX
 router.get('/', WithdrawRequest.index);
 
 //PENDING
