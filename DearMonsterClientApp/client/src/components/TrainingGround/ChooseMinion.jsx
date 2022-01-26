@@ -60,11 +60,7 @@ const data = [
 	},
 ];
 
-const ChooseMinion = ({ minionFight, loading, status }) => {
-	// const [loading, setLoading] = React.useState(false);
-	// const [status, setStatus] = React.useState('')
-	// console.log('fight modal', loading, status)
-
+const ChooseMinion = ({ minionFight, loading, status, totalReward }) => {
 
 	const [minions, setMinions] = useState([])
 
@@ -72,7 +68,6 @@ const ChooseMinion = ({ minionFight, loading, status }) => {
 		function getMinion() {
 			axios.get(`${apiUrl}/api/minion`)
 				.then((res) => {
-					console.log('response::', res)
 					setMinions(res.data.minions)
 				})
 				.catch((e) => {
@@ -83,20 +78,6 @@ const ChooseMinion = ({ minionFight, loading, status }) => {
 		getMinion()
 	}, [])
 
-	const handleFight = () => {
-		// setLoading(true);
-		// const random = Math.random();
-		// let status = '';
-		// if (random < 0.5) {
-		// 	status = 'WIN';
-		// } else {
-		// 	status = 'LOSE';
-		// }
-		// setTimeout(() => {
-		// 	setLoading(false);
-		// 	setStatus(status);
-		// }, 1000);
-	}
 
 	const handleMinionFight = (minion) => {
 		minionFight(minion)
@@ -138,21 +119,20 @@ const ChooseMinion = ({ minionFight, loading, status }) => {
 							<SplideSlide>
 								<MinionCard post={post} handleFight={() => handleMinionFight(post)} />
 							</SplideSlide>
-						);
-						return;
+						)
 					})}
 				</Splide>
 			</div>
-			<FightModal loading={loading} status={status} />
+			<FightModal loading={loading} status={status} totalReward={totalReward} />
 		</div>
 	);
 }
 
 
-const FightModal = ({ loading, status }) => {
+const FightModal = ({ loading, status, totalReward }) => {
 	return (
 		<div
-			className='modal  fade'
+			className='modal  fade false'
 			id='exampleModal'
 			tabindex='-1'
 			aria-labelledby='exampleModalLabel'
@@ -160,7 +140,13 @@ const FightModal = ({ loading, status }) => {
 		>
 			<div className='modal-dialog'>
 				<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
-					<div className='modal-body center fs-25'>{loading ? <Loading /> : `${status} `}</div>
+					<div className='modal-body center fs-25'>{loading ? <Loading /> :
+						<div>
+							<span>{status}</span> <br />
+							<span>{totalReward && `${totalReward} Reward has been earned`}</span>
+						</div>
+					}
+					</div>
 				</div>
 			</div>
 		</div>

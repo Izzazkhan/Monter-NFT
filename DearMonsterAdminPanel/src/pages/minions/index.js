@@ -24,6 +24,7 @@ function Minions(props) {
             props.deleteMinions(id)
         }
     }
+    console.log('=====', props)
 
     return (
         <>
@@ -35,13 +36,14 @@ function Minions(props) {
                         <table className="table">
                             <thead className="table__head">
                                 <tr>
-                                    <th>ID</th>
+                                    {/* <th>ID</th> */}
                                     <th>Title</th>
                                     <th>Image</th>
                                     <th>Rating</th>
                                     <th>Total Rating</th>
                                     <th>Experience Gain</th>
-                                    <th>Reward Estimated</th>
+                                    <th>Experience Lose</th>
+                                    {/* <th>Reward Estimated</th> */}
                                     <th>Win Rate</th>
                                     <th>Action(s)</th>
                                 </tr>
@@ -53,13 +55,14 @@ function Minions(props) {
                                     && props.minions.minions.map((data, index) => {
                                         return <tr key={(index + 1)}>
                                             {/* <td>{(index + 1)}</td> */}
-                                            <td>{data._id}</td>
+                                            {/* <td>{data._id}</td> */}
                                             <td>{data.title}</td>
                                             <td>{data.img}</td>
                                             <td>{data.rating}</td>
                                             <td>{data.totalRating}</td>
                                             <td>{data.values.Exp_Gain}</td>
-                                            <td>{data.values.Reward_Estimated}</td>
+                                            <td>{data.values.Lose_Exp_Gain}</td>
+                                            {/* <td>{data.values.Reward_Estimated}</td> */}
                                             <td>{data.values.Win_Rate}</td>
 
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>

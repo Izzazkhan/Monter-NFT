@@ -18,15 +18,19 @@ function MinionForm(props) {
         totalRating: '',
         price: '',
         Win_Rate: '',
-        Reward_Estimated: '',
-        Exp_Gain: ''
+        Reward_Estimated: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+        Exp_Gain: '',
+        Lose_Exp_Gain: ''
     })
 
     // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
 
+
     useEffect(() => {
         if (props.location.state !== undefined) {
             const propsData = props.location.state.data
+            const rewardEstimated = JSON.parse(propsData.values.Reward_Estimated)
+
             setState({
                 ...state,
                 _id: propsData._id,
@@ -36,11 +40,15 @@ function MinionForm(props) {
                 totalRating: propsData.totalRating,
                 price: propsData.price,
                 Win_Rate: propsData.values.Win_Rate,
-                Reward_Estimated: propsData.values.Reward_Estimated,
+                Reward_Estimated: { 1: rewardEstimated['1'], 2: rewardEstimated['2'], 3: rewardEstimated['3'], 4: rewardEstimated['4'], 5: rewardEstimated['5'] },
                 Exp_Gain: propsData.values.Exp_Gain,
+                Lose_Exp_Gain: propsData.values.Lose_Exp_Gain
             })
         }
     }, [])
+
+    console.log('state =====', state)
+
 
     // handleSubmit(e) {
     //     e.preventDefault();
@@ -69,7 +77,9 @@ function MinionForm(props) {
 
     const validateForm = () => {
         let isValid = false
-        if (state.title && state.img && state.rating && state.totalRating && state.price && state.Win_Rate && state.Reward_Estimated && state.Exp_Gain) {
+        if (state.title && state.img && state.rating && state.totalRating && state.price && state.Win_Rate && state.Lose_Exp_Gain &&
+            // state.Reward_Estimated && 
+            state.Exp_Gain) {
             isValid = true
         }
         return isValid
@@ -94,10 +104,19 @@ function MinionForm(props) {
         setState({ ...state, [e.target.name]: e.target.value })
     }
 
+    const handleRewardChange = (e) => {
+        setState({ ...state, Reward_Estimated: { ...state.Reward_Estimated, [e.target.name]: e.target.value } })
+
+    }
+
+    console.log('=====', state)
+
+
+
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
-        if (field !== '_id') {
+        if (field !== '_id' && field !== 'Reward_Estimated') {
             return (
                 <div className="form-group col-md-6" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
@@ -112,8 +131,27 @@ function MinionForm(props) {
 
     });
 
+    const rewardEstimated = Object.entries(state.Reward_Estimated).map((item, i) => {
+        const field = item[0]
+        const value = item[1]
+        return (
+            <div className="form-group col-md-6" key={i}>
+                <label className="control-label">{`Level ${field}`}</label>
+                <input type="text" required="required" className="form-control" onChange={handleRewardChange}
+                    name={field} value={value}
+                    placeholder={`Enter ${field}`}
+                // type='number'
+                />
+            </div>
+        )
+
+    })
+
     const clearData = () => {
-        setState({ title: '', img: '', rating: '', totalRating: '', price: '', Win_Rate: '', Reward_Estimated: '', Exp_Gain: '' })
+        setState({
+            title: '', img: '', rating: '', totalRating: '', price: '', Win_Rate: '',
+            Lose_Exp_Gain: '', Reward_Estimated: { 1: '', 2: '', 3: '', 4: '', 5: '' }, Exp_Gain: ''
+        })
     }
 
     return (
@@ -125,6 +163,11 @@ function MinionForm(props) {
                         <div className="row">
                             {InputField}
                         </div>
+
+                        <div className="row">
+                            {rewardEstimated}
+                        </div>
+
 
                         {/* <div className="row">
                             <div className="form-group col-md-6">

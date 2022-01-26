@@ -8,9 +8,11 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 	const [minutes, setMinutes] = useState()
 	const [seconds, setSeconds] = useState()
 	const [hours, setHours] = useState()
+	const [remainingTime, setRemainingTime] = useState(1)
 
 
-	const apiCall = (energy, timeType) => {
+
+	const apiCall = (energy, calculateTime) => {
 
 		const localEnergy = post.values.Energy === '' ? 0 : post.values.Energy
 		let energyCalculate = Number(localEnergy) + energy
@@ -18,7 +20,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		let params = new URLSearchParams()
 		params.append('values.Energy', energyCalculate)
 		// if (timeType === 'update') {
-		params.append('values.UpdateTime', new Date())
+		params.append('values.UpdateTime', calculateTime)
 		// }
 		const config = {
 			headers: {
@@ -34,7 +36,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 			})
 	}
 
-	function displayTimer() {
+	function displayTimer(calculateTime) {
 		console.log('function called')
 		// const startTime = new Date(post.values.UpdateTime)
 		// const startTime = new Date(5680000)
@@ -51,49 +53,113 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		// setHours(hours)
 		// console.log('days:::', hours, minutes, seconds, new Date())
 
-
-
-		if (post.values.UpdateTime) {
+		if (post.values.UpdateTime !== 'undefined') {
 			// Time in minutes
-			const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-			console.log('calculateUpdateTime:', calculateUpdateTime)
+			let calculateUpdateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+			calculateUpdateTimeInMinutes = Math.abs(Math.round(calculateUpdateTimeInMinutes / 60000))
 
-			if (calculateUpdateTime >= 180) {
-				apiCall(2, 'update')
+			console.log('calculateUpdateTimeInMinutes:', calculateUpdateTimeInMinutes)
+
+			if (calculateUpdateTimeInMinutes >= 180) {
+				if (Number(post.values.Energy) === 0) {
+					apiCall(2, calculateTime)
+				} else {
+					apiCall(1, calculateTime)
+				}
 			}
-			else if (calculateUpdateTime >= 90) {
-				apiCall(1, 'update')
+			else if (calculateUpdateTimeInMinutes >= 90) {
+				apiCall(1, calculateTime)
 			}
 		}
 		else {
-			const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
-			console.log('calculateCreateTime:', calculateCreateTime)
+			let calculateCreateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
+			calculateCreateTimeInMinutes = Math.abs(Math.round(calculateCreateTimeInMinutes / 60000))
 
-			if (calculateCreateTime >= 180) {
-				apiCall(2, 'create')
+			console.log('calculateCreateTimeInMinutes:', calculateCreateTimeInMinutes)
+			if (calculateCreateTimeInMinutes >= 180) {
+				if (Number(post.values.Energy) === 0) {
+					apiCall(2, calculateTime)
+				} else {
+					apiCall(1, calculateTime)
+				}
 			}
-			else if (calculateCreateTime >= 90) {
-				apiCall(1, 'create')
+			else if (calculateCreateTimeInMinutes >= 90) {
+				apiCall(1, calculateTime)
 			}
 		}
 	}
 
 
+	const timer = () => {
+		let calcRemainingTime = new Date()
+		// console.log('calcRemainingTime::1', calcRemainingTime)
+
+		if (post.values.UpdateTime !== 'undefined') {
+			let calculateUpdateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+			calculateUpdateTimeInMinutes = Math.abs(Math.round(calculateUpdateTimeInMinutes / 60000))
+			// console.log('calculateUpdateTimeInMinutes::', calculateUpdateTimeInMinutes)
+
+			if (calculateUpdateTimeInMinutes >= 180) {
+				displayTimer(new Date())
+			}
+			else if (calculateUpdateTimeInMinutes > 90) {
+				const oneHalfHours = 1500 * 60 * 60
+				const UpdateTime = new Date(post.values.UpdateTime)
+				const calculateTime = new Date(UpdateTime.getTime() + oneHalfHours)
+				calcRemainingTime = (new Date()).getTime() - calculateTime.getTime()
+				calcRemainingTime = Math.abs(Math.round(calcRemainingTime / 60000))
+				calcRemainingTime = 180 - calcRemainingTime
+				setRemainingTime(calcRemainingTime)
+				displayTimer(calculateTime)
+			}
+			else if (calculateUpdateTimeInMinutes === 90) {
+				displayTimer(new Date())
+			}
+			else if (calculateUpdateTimeInMinutes < 90) {
+				calcRemainingTime = calculateUpdateTimeInMinutes
+				calcRemainingTime = 90 - calcRemainingTime
+				setRemainingTime(calcRemainingTime)
+			}
+		}
+		else {
+			let calculateCreateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
+			calculateCreateTimeInMinutes = Math.abs(Math.round(calculateCreateTimeInMinutes / 60000))
+			// console.log('calculateCreateTimeInMinutes::', calculateCreateTimeInMinutes)
+
+			if (calculateCreateTimeInMinutes >= 180) {
+				displayTimer(new Date())
+			}
+			else if (calculateCreateTimeInMinutes > 90) {
+				const oneHalfHours = 1500 * 60 * 60
+				const createdAt = new Date(post.createdAt)
+				const calculateTime = new Date(createdAt.getTime() + oneHalfHours)
+				calcRemainingTime = (new Date()).getTime() - calculateTime.getTime()
+				calcRemainingTime = Math.abs(Math.round(calcRemainingTime / 60000))
+				calcRemainingTime = 180 - calcRemainingTime
+				setRemainingTime(calcRemainingTime)
+				displayTimer(calculateTime)
+			}
+			else if (calculateCreateTimeInMinutes === 90) {
+				displayTimer(new Date())
+			}
+			else if (calculateCreateTimeInMinutes < 90) {
+				calcRemainingTime = calculateCreateTimeInMinutes
+				calcRemainingTime = 90 - calcRemainingTime
+				setRemainingTime(calcRemainingTime)
+			}
+
+		}
+		// console.log('calcRemainingTime::', calcRemainingTime)
+	}
+
 	useEffect(() => {
 		if (Number(post.values.Energy) < 2) {
-			let remainingTime
-			if (post.values.UpdateTime) {
-				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-				remainingTime = 90 - calculateUpdateTime
-			}
-			else {
-				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
-				remainingTime = 90 - calculateCreateTime
-			}
-			console.log('remainingTime::', remainingTime)
+			let timeInterval
+			timeInterval = setInterval(timer, 1000)
 			let interval
-			interval = setInterval(displayTimer, 1000 * 60 * remainingTime)
+			interval = setInterval(displayTimer, 1000 * 60 * remainingTime, new Date())
 			return () => {
+				clearInterval(timeInterval)
 				clearInterval(interval)
 			}
 		}

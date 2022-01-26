@@ -73,7 +73,7 @@ export const getWithdrawRequest = (token) => dispatch => {
 
 export const markResolved = (id) => dispatch => {
     const params = new URLSearchParams()
-    params.append('isResolved', false)
+    params.append('isResolved', true)
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
