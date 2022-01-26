@@ -24,7 +24,7 @@ const TradingPost = ({ }) => {
 	const [error, setError] = useState('');
 	const [filterValues, setFilterValues] = useState();
 	const [searchedData, setSearchedData] = useState()
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 6, history.location.pathname);
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30, history.location.pathname);
 
 	useEffect(() => {
 		getTradingData()
@@ -204,7 +204,7 @@ const TradingPost = ({ }) => {
 												<h3>{error}</h3>
 											</div>
 										) : (
-											filteredData.length > 0 ? filteredData.map((post) => {
+											pageData.length > 0 ? pageData.map((post) => {
 												return (
 													<PostCard
 														post={post}
@@ -222,7 +222,7 @@ const TradingPost = ({ }) => {
 												<h3>{error}</h3>
 											</div>
 										) : (
-											data.length > 0 ? data.map((post) => {
+											pageData.length > 0 ? pageData.map((post) => {
 												return (
 													<PostCard
 														post={post}
