@@ -317,14 +317,14 @@ const HuntersValley = () => {
 			// var totalSupply = await DearMonsterContract.methods.totalSupply().call()
 
 			// todo : uncomment this !!!!!
-			// if (isMaxSupply) {
-			// 	let notify = notification({
-			// 		type: 'error',
-			// 		message: 'Not enough NFTs!',
-			// 	});
-			// 	notify();
-			// 	return
-			// }
+			if (isMaxSupply) {
+				let notify = notification({
+					type: 'error',
+					message: 'Not enough NFTs!',
+				});
+				notify();
+				return
+			}
 
 			// var _owner = await DearMonsterContract.methods.owner().call()
 			DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (balance) {
