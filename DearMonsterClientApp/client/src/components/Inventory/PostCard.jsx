@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess } from '../../store/actions/auth/login';
+import { connectUserSuccess, startLoading, stopLoading } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import axios from 'axios'
 import Swal from 'sweetalert2';
@@ -13,11 +13,11 @@ import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json'
 import DearMonster from '../../contracts/DearMonster.json';
 import DearMonsterTest from '../../contracts/DearMonsterTest.json';
 
-const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster 
-const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading 
+const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
+const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading
 
-const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress 
-const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress 
+const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
+const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress
 
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
@@ -48,6 +48,9 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 	}
 
 	const sellFunction = async () => {
+
+		dispatch(startLoading(true))
+
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -66,44 +69,63 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 			// await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
-			await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
 
-			const transaction = await TradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
-			if (transaction.status) {
-				let params = new URLSearchParams()
-				params.append('seller', account ? account : owner ? owner : userId)
-				params.append('mintedMonsterId', post.mintedId)
-				params.append('price', sellPrice)
-				const config = {
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
+
+
+			try {
+				await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
+				const transaction = await TradingContract.methods.putTrade(post.id, sellPrice).send({ from: accounts[0] })
+
+				if (transaction.status) {
+					let params = new URLSearchParams()
+					params.append('seller', account ? account : owner ? owner : userId)
+					params.append('mintedMonsterId', post.mintedId)
+					params.append('price', sellPrice)
+					const config = {
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
 					}
-				}
-				axios.post(`${apiUrl}/api/tradeItem`, params, config)
-					.then((res) => {
-						console.log(res.data)
-
-						// getData(account ? account : owner ? owner : userId)
-
-						Swal.fire({
-							icon: 'success',
-							title: 'Item Added To Sell',
-							text: 'Please check Inventory Trading for items on trade!'
+					axios.post(`${apiUrl}/api/tradeItem`, params, config)
+						.then((res) => {
+							getData(userId)
+							dispatch(stopLoading(false))
+							Swal.fire({
+								icon: 'success',
+								title: 'Item Added To Sell',
+								text: 'Please check Inventory Trading for items on trade!'
+							})
 						})
+						.catch((e) => {
+							console.log(e)
+							dispatch(stopLoading(false))
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: 'Oops, Something went wrong'
+							})
+						})
+				} else {
+					dispatch(stopLoading(false))
+					Swal.fire({
+						icon: 'error',
+						title: 'Transaction',
+						text: 'Something went wrong, Please contact admin'
 					})
-					.catch((e) => {
-						console.log("Error ----------------")
-						console.log(e)
-					})
-			} else {
+				}
+			} catch (e) {
+				dispatch(stopLoading(false))
 				Swal.fire({
 					icon: 'error',
-					title: 'Transaction',
-					text: 'Transaction error'
+					title: 'Error',
+					text: 'Transaction was rejected from Metamask'
 				})
+				console.log("Error ----------------")
+				console.log(e)
 			}
 		}
 		else {
+			dispatch(stopLoading(false))
 			Swal.fire({
 				icon: 'error',
 				title: 'Invalid Price',
@@ -136,7 +158,6 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 		const transaction = await TradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 
-		console.log('==== removeTrade transaction ====', transaction)
 		if (transaction.status) {
 			axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`)
 				.then((res) => {

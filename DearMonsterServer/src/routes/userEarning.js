@@ -11,7 +11,7 @@ router.get('/:earnerAddress', UserEarning.show);
 router.post('/', UserEarning.store);
 
 //UPDATE
-router.put('/:id', UserEarning.update);
+router.put('/:earnerAddress', UserEarning.update);
 
 //DELETE
 router.delete('/:id', UserEarning.destroy);

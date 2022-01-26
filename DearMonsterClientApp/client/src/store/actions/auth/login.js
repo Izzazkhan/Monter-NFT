@@ -1,5 +1,23 @@
-import { CONNECT_USER_START, CONNECT_USER_SUCCESS, CONNECT_USER_ERROR, UPDATE_USER_BALANCE } from '../../types';
+import { 
+	CONNECT_USER_START, 
+	CONNECT_USER_SUCCESS, 
+	CONNECT_USER_ERROR, 
+	UPDATE_USER_BALANCE,
+	START_LOADING,
+	STOP_LOADING,
+} from '../../types';
 import {notification} from "../../../utils/notification";
+
+
+export const startLoading = (loading) => ({
+	type: START_LOADING,
+	payload: loading,
+});
+
+export const stopLoading = (loading) => ({
+	type: STOP_LOADING,
+	payload: loading
+});
 
 export const connectUserStart = () => ({
 	type: CONNECT_USER_START,

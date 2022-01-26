@@ -135,9 +135,6 @@ const TradingPost = ({ }) => {
 			})
 	}
 
-	console.log('filterObject =======', filterObject)
-
-
 	const clearFilterData = () => {
 		let tempObj = { ...filterObject }
 		delete tempObj.starsArray
