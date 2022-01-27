@@ -42,7 +42,7 @@ const TrainingGround = () => {
 		function getAmount() {
 			axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 				.then((response) => {
-					console.log('user earning ::', response)
+					// console.log('user earning ::', response)
 					if (response.data.earnerData) {
 						setEarnerData(response.data.earnerData)
 					}
@@ -55,7 +55,7 @@ const TrainingGround = () => {
 		function getWithdrawRequest() {
 			axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
 				.then((response) => {
-					console.log('withdraw resolvedrequest:::::', response)
+					// console.log('withdraw resolvedrequest:::::', response)
 					if (response.data.withdrawRequest) {
 						setResolvedRewardRequest(response.data.withdrawRequest)
 					}
@@ -198,7 +198,7 @@ const TrainingGround = () => {
 				status = 'LOSE';
 				setLoading(false)
 				setStatus(status)
-				let experienceCalculate = Number(selectedMonster.values.EXP) - minion.values.Lose_Exp_Gain
+				let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
 				let params = new URLSearchParams()
 				params.append('values.EXP', experienceCalculate)
 				apiCall(params)
@@ -225,6 +225,8 @@ const TrainingGround = () => {
 			}
 
 		} else {
+			// setLoading(false)
+			setStatus('')
 			Swal.fire({
 				icon: 'error',
 				title: 'Energy',
@@ -331,7 +333,7 @@ const TrainingGround = () => {
 								<div
 									className='modal fade'
 									id='ClaimRewardHistory'
-									tabindex='-1'
+									tabIndex='-1'
 									aria-labelledby='ClaimRewardHistoryLabel'
 									aria-hidden='true'
 								>
@@ -361,7 +363,7 @@ const TrainingGround = () => {
 								{/* <div
 									className='modal fade'
 									id='ClaimReward'
-									tabindex='-1'
+									tabIndex='-1'
 									aria-labelledby='ClaimRewardLabel'
 									aria-hidden='true'
 								>
@@ -396,7 +398,7 @@ const TrainingGround = () => {
 							<div
 								className='modal fade'
 								id='EarlyClaimModal'
-								tabindex='-1'
+								tabIndex='-1'
 								aria-labelledby='EarlyClaimModalLabel'
 								aria-hidden='true'
 							>

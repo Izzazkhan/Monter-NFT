@@ -52,7 +52,7 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 		getDearMonster()
 	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
 
-	console.log('monsters::', monsters)
+	// console.log('monsters::', monsters)
 
 	const onSelect = (monster) => {
 		handleonSelect(monster)
@@ -94,8 +94,9 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 					>
 						{monsters.map((post, i) => {
 							return (
-								<SplideSlide>
+								<SplideSlide key={i}>
 									<PostCard
+
 										post={post}
 										stepImg='/assets/imgs/droganBord.png'
 										handleSelect={() => onSelect(post)}

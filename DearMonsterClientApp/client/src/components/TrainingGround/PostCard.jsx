@@ -175,7 +175,7 @@ const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEn
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {
 								return (
-									<img
+									<img key={i}
 										src={
 											post?.rating <= i ? '/assets/imgs/dimStar.png' : '/assets/imgs/star.png'
 										}
@@ -189,7 +189,7 @@ const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEn
 						{Object.keys(post?.values).map((key, index) => {
 							if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'Price' || key == 'EXP') {
 								return (
-									<div className='mb-4'>
+									<div className='mb-4' key={index}>
 										<span className='me-2'>{key} :</span>
 										<span>{post?.values[key]}</span>
 									</div>

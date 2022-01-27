@@ -92,7 +92,6 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 						// else {
 						// 	rewardEstimated = 0
 						// }
-
 					})
 				}
 				return {
@@ -140,16 +139,18 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 						},
 					}}
 				>
-					{minions.map((post) => {
+					{minions.map((post, index) => {
 						return (
-							<SplideSlide>
+							<SplideSlide key={index}>
 								<MinionCard post={post} handleFight={() => handleMinionFight(post)} />
 							</SplideSlide>
 						)
 					})}
 				</Splide>
 			</div>
+			{/* {status !== '' &&  */}
 			<FightModal loading={loading} status={status} totalReward={totalReward} />
+			{/* } */}
 		</div>
 	);
 }
@@ -160,7 +161,7 @@ const FightModal = ({ loading, status, totalReward }) => {
 		<div
 			className='modal  fade false'
 			id='exampleModal'
-			tabindex='-1'
+			tabIndex='-1'
 			aria-labelledby='exampleModalLabel'
 			aria-hidden='true'
 		>

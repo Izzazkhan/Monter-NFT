@@ -17,7 +17,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 							const key2 = key.split('_').join(' ');
 							if (key != 'Reward_Estimated') {
 								return (
-									<div className='mb-5'>
+									<div className='mb-5' key={index}>
 										<span className='me-2'>{key2} :</span>
 										<span>{key2 === 'Win Rate' && post.values[key] === 45 ? '42%-50%' :
 											key2 === 'Win Rate' && post.values[key] === 51 ? '48%-58%' :
