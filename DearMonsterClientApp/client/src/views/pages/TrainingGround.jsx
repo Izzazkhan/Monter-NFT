@@ -20,8 +20,7 @@ const TrainingGround = () => {
 	const [earnerData, setEarnerData] = useState({})
 	const [totalReward, setTotalReward] = useState('')
 	const [updateMonsterAfterFight, setUpdateMonsterAfterFight] = useState(false)
-
-
+	const [resolvedRewardRequest, setResolvedRewardRequest] = useState({})
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -53,20 +52,37 @@ const TrainingGround = () => {
 				})
 		}
 		getAmount()
+		function getWithdrawRequest() {
+			axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
+				.then((response) => {
+					console.log('withdraw resolvedrequest:::::', response)
+					if (response.data.withdrawRequest) {
+						setResolvedRewardRequest(response.data.withdrawRequest)
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+		}
+		getWithdrawRequest()
 	}, [window.web3, userId, totalReward])
 
-	// console.log('totalReward::', totalReward)
 
 	const timer = () => {
+		// console.log('resolvedRewardRequestresolvedRewardRequest', resolvedRewardRequest)
 		// get next 10 days from now
-		const countDownDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+		// const countDownDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+		const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
 		// let x = setInterval(() => {
 		let now = new Date().getTime();
-		let distance = countDownDate - now;
-		let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-		let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-		let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		let distance = countDownDate - now
+		// console.log('distancedistance', distance)
+
+
+		let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+		let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
+		let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
+		let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
 		if (minutes <= 0) {
 			setTime(`${seconds}s`);
 		} else if (hours <= 0) {
@@ -76,10 +92,10 @@ const TrainingGround = () => {
 		} else {
 			setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
 		}
-		if (distance < 0) {
-			// clearInterval(x);
-			setTime('EXPIRED');
-		}
+		// if (distance < 0) {
+		// 	// clearInterval(x);
+		// 	setTime('EXPIRED');
+		// }
 		// }, 1000);
 	}
 
@@ -90,12 +106,14 @@ const TrainingGround = () => {
 		return () => {
 			clearInterval(interval)
 		}
-	}, []);
+	}, [resolvedRewardRequest]);
 
 	const handleonSelect = (monster) => {
 		console.log('selected monster::', monster)
 		setSelectedMonster(monster)
 	}
+
+	// console.log('timeeeeeee', time)
 
 	const apiCall = (params) => {
 		const config = {
@@ -115,7 +133,7 @@ const TrainingGround = () => {
 
 	const minionFight = (minion) => {
 		if (selectedMonster.values.Energy >= 1) {
-			console.log('selected minion', JSON.parse(minion.values.Reward_Estimated))
+			console.log('selected minion', (minion))
 			setLoading(true);
 			const random = Math.floor(Math.random() * 100) + 1
 			let status = '';
@@ -180,7 +198,7 @@ const TrainingGround = () => {
 				status = 'LOSE';
 				setLoading(false)
 				setStatus(status)
-				let experienceCalculate = Number(selectedMonster.values.EXP) - minion.values.Reward_Estimated
+				let experienceCalculate = Number(selectedMonster.values.EXP) - minion.values.Lose_Exp_Gain
 				let params = new URLSearchParams()
 				params.append('values.EXP', experienceCalculate)
 				apiCall(params)
@@ -226,39 +244,58 @@ const TrainingGround = () => {
 			console.log('withdraw request:::::', getWithdrawRequest.data)
 
 			if (getWithdrawRequest.data.withdrawRequest.length === 0) {
-				try {
-					const rewardParam = new URLSearchParams()
-					rewardParam.append('requesterAddress', account)
-					rewardParam.append('amount', earnerData.totalAmount)
-					const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-					if (postWithdraw) {
+				// console.log('resolvedRewardRequest.createdAt', resolvedRewardRequest.createdAt)
+				// let diffInDays = Math.abs(new Date(resolvedRewardRequest.createdAt) - new Date())
+				// let diffInDays = Math.abs((new Date(resolvedRewardRequest.createdAt) - new Date()) / (1000 * 60 * 60 * 24))
+				// diffInDays = diffInDays / (1000 * 60 * 60 * 24)
+
+				const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
+				let now = new Date().getTime();
+				let distance = lastTime - now
+				let diffInDays = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+
+				// let diffInDays = time.split(' ')[0]
+				// console.log('diffInDays:::', diffInDays)
+				if (diffInDays >= 7) {
+					try {
+						const rewardParam = new URLSearchParams()
+						rewardParam.append('requesterAddress', account)
+						rewardParam.append('amount', earnerData.totalAmount)
+						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						if (postWithdraw) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Reward Claim',
+								text: 'Reward has been claimed'
+							})
+						}
+					} catch (error) {
 						Swal.fire({
-							icon: 'success',
+							icon: 'error',
 							title: 'Reward Claim',
-							text: 'Reward has been claimed'
+							text: 'There is no reward to be claimed'
 						})
 					}
-				} catch (error) {
+				}
+				else {
 					Swal.fire({
 						icon: 'error',
 						title: 'Reward Claim',
-						text: 'There is no reward to be claimed'
+						text: 'You can claim reward after 7 days from the last claim'
 					})
 				}
 			}
 			else {
-				// const calculateDate = Math.abs((new Date(getWithdrawRequest.data.withdrawRequests[0].createdAt) - new Date()) / (1000 * 60 * 60 * 24))
-				// console.log('calculateDate::', calculateDate)
-				// if (calculateDate >= 7) {
-				console.log('Already withdraw request')
+				Swal.fire({
+					icon: 'error',
+					title: 'Reward Claim',
+					text: 'You need to resolve the claim before'
+				})
 			}
 		} catch (error) {
 			console.log(error)
 		}
 	}
-
-	console.log('updateMonsterAfterFight::', updateMonsterAfterFight)
-
 
 
 	const dearMonster = useMemo(() => {
@@ -267,8 +304,8 @@ const TrainingGround = () => {
 
 
 	const minion = useMemo(() => {
-		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} />
-	}, [status, loading, minionFight, totalReward])
+		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster} />
+	}, [status, loading, minionFight, totalReward, selectedMonster])
 
 	return (
 		<div>

@@ -90,14 +90,14 @@ function MinionForm(props) {
             props.editMinions(state)
             // dispatch(editMinions(state))
         }
-        else if (validateForm()) {
-            props.addMinions(state)
-            props.history.push('/minions')
-        }
-        else {
-            alert('Enter Complete Minion Details');
-        }
-        clearData();
+        // else if (validateForm()) {
+        props.addMinions(state)
+        props.history.push('/minions')
+        // }
+        // else {
+        //     alert('Enter Complete Minion Details');
+        // }
+        // clearData();
     }
 
     const handleChange = (e) => {
@@ -108,9 +108,6 @@ function MinionForm(props) {
         setState({ ...state, Reward_Estimated: { ...state.Reward_Estimated, [e.target.name]: e.target.value } })
 
     }
-
-    console.log('=====', state)
-
 
 
     const InputField = Object.entries(state).map((item, i) => {

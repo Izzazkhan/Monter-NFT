@@ -60,7 +60,7 @@ const data = [
 	},
 ];
 
-const ChooseMinion = ({ minionFight, loading, status, totalReward }) => {
+const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonster }) => {
 
 	const [minions, setMinions] = useState([])
 
@@ -78,6 +78,32 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward }) => {
 		getMinion()
 	}, [])
 
+	useEffect(() => {
+		if (minions.length && selectedMonster) {
+			const rewardMapped = minions.map(item => {
+				let rewardEstimated
+				if (item.values) {
+					Object.entries(JSON.parse(item.values.Reward_Estimated)).map((item, i) => {
+						const field = item[0]
+						const value = item[1]
+						if (Number(field) === Number(selectedMonster.values.Level)) {
+							rewardEstimated = Number(value)
+						}
+						// else {
+						// 	rewardEstimated = 0
+						// }
+
+					})
+				}
+				return {
+					...item,
+					rewardEstimated
+				}
+			})
+			setMinions(rewardMapped)
+		}
+
+	}, [selectedMonster])
 
 	const handleMinionFight = (minion) => {
 		minionFight(minion)
