@@ -6,6 +6,8 @@ import store from './store/store';
 import Loading from './components/common/PageLoading';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './scss/bootstrap.scss';
+
+
 ReactDOM.render(
 	<>
 		<Suspense fallback={<Loading />}>

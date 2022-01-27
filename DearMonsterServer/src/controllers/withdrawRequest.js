@@ -12,6 +12,19 @@ exports.userWithdrawRequest = async function (req, res) {
     res.status(200).json({withdrawRequest});
 };
 
+
+exports.userResolvedWithdrawRequest = async function (req, res) {
+
+    const wallet = req.params.wallet;
+
+    const withdrawRequest = await WithdrawRequest.findOne({ isResolved: true, requesterAddress: wallet }, null, { sort: { 'created_at' : -1 }});
+
+    console.log("withdrawRequest")
+    console.log(withdrawRequest)
+
+    res.status(200).json({withdrawRequest});
+};
+
 exports.index = async function (req, res) {
     const withdrawRequest = await WithdrawRequest.find({});
     res.status(200).json({withdrawRequest});
