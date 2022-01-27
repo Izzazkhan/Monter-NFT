@@ -69,7 +69,7 @@ export const editMinions = (data) => dispatch => {
     params.append('values.Win_Rate', Number(data.Win_Rate))
     params.append('values.Lose_Exp_Gain', Number(data.Lose_Exp_Gain))
     params.append('values.Reward_Estimated', JSON.stringify(data.Reward_Estimated))
-    params.append('values.Reward_Estimated', Number(data.Reward_Estimated))
+    // params.append('values.Reward_Estimated', Number(data.Reward_Estimated))
     params.append('values.Exp_Gain', Number(data.Exp_Gain))
     const config = {
         headers: {

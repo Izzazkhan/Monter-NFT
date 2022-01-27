@@ -5,9 +5,11 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
-const ChooseDearMonster = ({ handleonSelect }) => {
+const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 
 	const [monsters, setMonsters] = useState([])
+	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
+
 
 	useEffect(() => {
 		function getDearMonster() {
@@ -48,7 +50,7 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 				})
 		}
 		getDearMonster()
-	}, [])
+	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
 
 	console.log('monsters::', monsters)
 
@@ -97,6 +99,8 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 										post={post}
 										stepImg='/assets/imgs/droganBord.png'
 										handleSelect={() => onSelect(post)}
+										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
+										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
 									/>
 								</SplideSlide>
 							);

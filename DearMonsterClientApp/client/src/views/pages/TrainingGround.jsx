@@ -19,6 +19,8 @@ const TrainingGround = () => {
 	const [account, setAccount] = useState()
 	const [earnerData, setEarnerData] = useState({})
 	const [totalReward, setTotalReward] = useState('')
+	const [updateMonsterAfterFight, setUpdateMonsterAfterFight] = useState(false)
+
 
 
 	useEffect(async () => {
@@ -104,21 +106,20 @@ const TrainingGround = () => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
 				console.log('api response::', response)
+				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
 			})
 			.catch((error) => {
 				console.log(error)
 			})
 	}
 
-	// const reward = {minionA: [{ level: 1, amount: 25 }, { level: 2, amount: 40 }, { level: 3, amount: 76 }, { level: 4, amount: 210 }, { level: 5, amount: 500 }]}
-
 	const minionFight = (minion) => {
 		if (selectedMonster.values.Energy >= 1) {
-			console.log('selected minion', minion)
+			console.log('selected minion', JSON.parse(minion.values.Reward_Estimated))
 			setLoading(true);
 			const random = Math.floor(Math.random() * 100) + 1
 			let status = '';
-			if (random <= minion.values.Win_Rate) { // random <= minion.values.Win_Rate
+			if (random <= minion.values.Win_Rate) {
 				status = 'WIN';
 				setLoading(false);
 				setStatus(status);
@@ -127,87 +128,53 @@ const TrainingGround = () => {
 				params.append('values.EXP', experienceCalculate)
 				apiCall(params)
 				let amount = 0
-				if (minion.values.Win_Rate === 45) {
-					if (Number(selectedMonster.values.Level) === 1) {
-						amount = 25
+				Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
+					const field = item[0]
+					const value = item[1]
+					if (Number(field) === Number(selectedMonster.values.Level)) {
+						amount = Number(value)
 					}
-					else if (Number(selectedMonster.values.Level) === 2) {
-						amount = 40
-					}
-					else if (Number(selectedMonster.values.Level) === 3) {
-						amount = 76
-					}
-					else if (Number(selectedMonster.values.Level) === 4) {
-						amount = 210
-					}
-					else if (Number(selectedMonster.values.Level) === 5) {
-						amount = 500
-					}
-				}
-				else if (minion.values.Win_Rate === 51) {
-					if (Number(selectedMonster.values.Level) === 1) {
-						amount = 10
-					}
-					else if (Number(selectedMonster.values.Level) === 2) {
-						amount = 16
-					}
-					else if (Number(selectedMonster.values.Level) === 3) {
-						amount = 30.4
-					}
-					else if (Number(selectedMonster.values.Level) === 4) {
-						amount = 84
-					}
-					else if (Number(selectedMonster.values.Level) === 5) {
-						amount = 200
-					}
-				}
 
+				})
 				const config = {
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
 				}
 
-				axios.get(`${apiUrl}/api/userEarning/${account}`)
-					.then((response) => {
-						console.log('user earning ::', response)
-						if (response.data.earnerData) {
-							const updateAmount = response.data.earnerData.totalAmount + amount
-							const updateParams = new URLSearchParams()
-							updateParams.append('earnerAddress', account)
-							updateParams.append('totalAmount', updateAmount)
+				if (earnerData) {
+					const updateAmount = earnerData.totalAmount + amount
+					const updateParams = new URLSearchParams()
+					updateParams.append('earnerAddress', account)
+					updateParams.append('totalAmount', updateAmount)
 
-							axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
-								.then((response) => {
-									console.log('update earning ::', response)
-									if (response.data.userEarning) {
-										setTotalReward(response.data.userEarning.totalAmount)
-									}
-								})
-								.catch((error) => {
-									console.log(error)
-								})
-						}
-						else {
-							const earnerParam = new URLSearchParams()
-							earnerParam.append('earnerAddress', account)
-							earnerParam.append('totalAmount', amount)
-							earnerParam.append('lastClaim', new Date())
-							axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
-								.then((response) => {
-									console.log('add earning ::', response)
-									if (response.data.userEarning) {
-										setTotalReward(response.data.userEarning.totalAmount)
-									}
-								})
-								.catch((error) => {
-									console.log(error)
-								})
-						}
-					})
-					.catch((error) => {
-						console.log(error)
-					})
+					axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+						.then((response) => {
+							console.log('update earning ::', response)
+							if (response.data.userEarning) {
+								setTotalReward(response.data.userEarning.totalAmount)
+							}
+						})
+						.catch((error) => {
+							console.log(error)
+						})
+				}
+				else {
+					const earnerParam = new URLSearchParams()
+					earnerParam.append('earnerAddress', account)
+					earnerParam.append('totalAmount', amount)
+					earnerParam.append('lastClaim', new Date())
+					axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
+						.then((response) => {
+							console.log('add earning ::', response)
+							if (response.data.userEarning) {
+								setTotalReward(response.data.userEarning.totalAmount)
+							}
+						})
+						.catch((error) => {
+							console.log(error)
+						})
+				}
 
 			} else {
 				status = 'LOSE';
@@ -290,11 +257,13 @@ const TrainingGround = () => {
 		}
 	}
 
+	console.log('updateMonsterAfterFight::', updateMonsterAfterFight)
+
 
 
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonster handleonSelect={handleonSelect} />
-	}, [])
+		return <ChooseDearMonster handleonSelect={handleonSelect} updateMonsterAfterFight={updateMonsterAfterFight} />
+	}, [updateMonsterAfterFight])
 
 
 	const minion = useMemo(() => {
