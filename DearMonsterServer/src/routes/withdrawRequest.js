@@ -8,6 +8,8 @@ const router = express.Router();
 router.get('/userWithdrawRequest/:wallet', WithdrawRequest.userWithdrawRequest);
 
 //INDEX
+router.get('/userResolvedWithdrawRequest/:wallet', WithdrawRequest.userResolvedWithdrawRequest);
+//INDEX
 router.get('/', WithdrawRequest.index);
 
 //PENDING

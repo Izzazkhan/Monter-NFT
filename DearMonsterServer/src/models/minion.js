@@ -28,7 +28,7 @@ const MinionSchema = new mongoose.Schema({
             required: true,
         },
         Reward_Estimated: {
-            type: Number,
+            type: String,
             required: true,
         },
         Lose_Exp_Gain: {

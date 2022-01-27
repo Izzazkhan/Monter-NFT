@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Routes } from '../routes'
 import Header from '../components/common/Header'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+// import "../../src/style.css";
 
 import { Oval } from 'react-loader-spinner';
 
