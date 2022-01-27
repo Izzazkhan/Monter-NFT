@@ -115,7 +115,7 @@ const TrainingGround = () => {
 
 	// console.log('timeeeeeee', time)
 
-	const apiCall = (params) => {
+	const energyExperienceUpdate = (params) => {
 		const config = {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
@@ -132,62 +132,100 @@ const TrainingGround = () => {
 	}
 
 	const minionFight = (minion) => {
-		if (selectedMonster.values.Energy >= 1) {
-			console.log('selected minion', (minion))
-			setLoading(true);
-			const random = Math.floor(Math.random() * 100) + 1
-			let status = '';
-			if (random <= minion.values.Win_Rate) {
-				status = 'WIN';
-				setLoading(false);
-				setStatus(status);
-				let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
+		if (Object.keys(selectedMonster).length === 0) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Fight',
+				text: 'Please select Dear Monster before'
+			})
+		}
+		else {
+			if (selectedMonster.values.Energy >= 1) {
+				console.log('selected minion', (minion))
+				setLoading(true);
+				const random = Math.floor(Math.random() * 100) + 1
+				let status = '';
+				if (random <= minion.values.Win_Rate) {
+					status = 'WIN';
+					setLoading(false);
+					setStatus(status);
+					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
+					let params = new URLSearchParams()
+					params.append('values.EXP', experienceCalculate)
+					energyExperienceUpdate(params)
+					let amount = 0
+					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
+						const field = item[0]
+						const value = item[1]
+						if (Number(field) === Number(selectedMonster.values.Level)) {
+							amount = Number(value)
+						}
+
+					})
+					const config = {
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					}
+
+					if (earnerData) {
+						const updateAmount = earnerData.totalAmount + amount
+						const updateParams = new URLSearchParams()
+						updateParams.append('earnerAddress', account)
+						updateParams.append('totalAmount', updateAmount)
+
+						axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+							.then((response) => {
+								console.log('update earning ::', response)
+								if (response.data.userEarning) {
+									setTotalReward(response.data.userEarning.totalAmount)
+								}
+							})
+							.catch((error) => {
+								console.log(error)
+							})
+					}
+					else {
+						const earnerParam = new URLSearchParams()
+						earnerParam.append('earnerAddress', account)
+						earnerParam.append('totalAmount', amount)
+						earnerParam.append('lastClaim', new Date())
+						axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
+							.then((response) => {
+								console.log('add earning ::', response)
+								if (response.data.userEarning) {
+									setTotalReward(response.data.userEarning.totalAmount)
+								}
+							})
+							.catch((error) => {
+								console.log(error)
+							})
+					}
+
+				} else {
+					status = 'LOSE';
+					setLoading(false)
+					setStatus(status)
+					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
+					let params = new URLSearchParams()
+					params.append('values.EXP', experienceCalculate)
+					energyExperienceUpdate(params)
+				}
+				const energyCalculate = selectedMonster.values.Energy - 1
 				let params = new URLSearchParams()
-				params.append('values.EXP', experienceCalculate)
-				apiCall(params)
-				let amount = 0
-				Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
-					const field = item[0]
-					const value = item[1]
-					if (Number(field) === Number(selectedMonster.values.Level)) {
-						amount = Number(value)
+				params.append('values.Energy', energyCalculate)
+				energyExperienceUpdate(params)
+				if (Number(selectedMonster.values.Energy) === 2) {
+					let params = new URLSearchParams()
+					params.append('values.UpdateTime', new Date())
+					const config = {
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
 					}
-
-				})
-				const config = {
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
-					}
-				}
-
-				if (earnerData) {
-					const updateAmount = earnerData.totalAmount + amount
-					const updateParams = new URLSearchParams()
-					updateParams.append('earnerAddress', account)
-					updateParams.append('totalAmount', updateAmount)
-
-					axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+					axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 						.then((response) => {
-							console.log('update earning ::', response)
-							if (response.data.userEarning) {
-								setTotalReward(response.data.userEarning.totalAmount)
-							}
-						})
-						.catch((error) => {
-							console.log(error)
-						})
-				}
-				else {
-					const earnerParam = new URLSearchParams()
-					earnerParam.append('earnerAddress', account)
-					earnerParam.append('totalAmount', amount)
-					earnerParam.append('lastClaim', new Date())
-					axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
-						.then((response) => {
-							console.log('add earning ::', response)
-							if (response.data.userEarning) {
-								setTotalReward(response.data.userEarning.totalAmount)
-							}
+							console.log('update time at fight', response)
 						})
 						.catch((error) => {
 							console.log(error)
@@ -195,43 +233,14 @@ const TrainingGround = () => {
 				}
 
 			} else {
-				status = 'LOSE';
-				setLoading(false)
-				setStatus(status)
-				let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
-				let params = new URLSearchParams()
-				params.append('values.EXP', experienceCalculate)
-				apiCall(params)
+				// setLoading(false)
+				setStatus('')
+				Swal.fire({
+					icon: 'error',
+					title: 'Energy',
+					text: 'Dear Monster Energy should be greater than 0'
+				})
 			}
-			const energyCalculate = selectedMonster.values.Energy - 1
-			let params = new URLSearchParams()
-			params.append('values.Energy', energyCalculate)
-			apiCall(params)
-			if (Number(selectedMonster.values.Energy) === 2) {
-				let params = new URLSearchParams()
-				params.append('values.UpdateTime', new Date())
-				const config = {
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
-					}
-				}
-				axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
-					.then((response) => {
-						console.log('update time at fight', response)
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-			}
-
-		} else {
-			// setLoading(false)
-			setStatus('')
-			Swal.fire({
-				icon: 'error',
-				title: 'Energy',
-				text: 'Dear Monster Energy should be greater than 0'
-			})
 		}
 	}
 
