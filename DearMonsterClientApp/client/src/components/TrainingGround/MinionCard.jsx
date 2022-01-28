@@ -15,13 +15,25 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 					<div className='text-white center flex-column mt-8 fs-15'>
 						{Object.keys(post.values).map((key, index) => {
 							const key2 = key.split('_').join(' ');
-							return (
-								<div className='mb-5'>
-									<span className='me-2'>{key2} :</span>
-									<span>{post.values[key]}</span>
-								</div>
-							);
+							if (key != 'Reward_Estimated') {
+								return (
+									<div className='mb-5' key={index}>
+										<span className='me-2'>{key2} :</span>
+										<span>{key2 === 'Win Rate' && post.values[key] === 45 ? '42%-50%' :
+											key2 === 'Win Rate' && post.values[key] === 51 ? '48%-58%' :
+												post.values[key]}</span>
+									</div>
+								)
+							}
 						})}
+						{
+							post.rewardEstimated &&
+							<div className='mb-5'>
+								<span className='me-2'>{'Reward Estimated'} :</span>
+								<span>{post.rewardEstimated}</span>
+							</div>
+						}
+
 					</div>
 				</div>
 			</main>
@@ -30,7 +42,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 					className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
 					data-bs-toggle='modal'
 					data-bs-target='#exampleModal'
-					onClick={()=>{
+					onClick={() => {
 						handleFight()
 					}}
 				>

@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
-const PostCard = ({ className, post, stepImg, handleSelect }) => {
+const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
+	// console.log('energyCalculate ===', post)
+
 
 	const [minutes, setMinutes] = useState()
 	const [seconds, setSeconds] = useState()
 	const [hours, setHours] = useState()
+	const [remainingTime, setRemainingTime] = useState(1)
+	const [timeInMinute, setTimeInMinute] = useState(1)
 
-	const apiCall = (energy, timeType) => {
-		console.log('new Date', new Date())
+
+
+	const apiCall = (energy, calculateTime) => {
+
+		const localEnergy = post.values.Energy === '' ? 0 : post.values.Energy
+		let energyCalculate = Number(localEnergy) + energy
+
 		let params = new URLSearchParams()
-		params.append('values.Energy', Number(post.values.Energy += energy))
+		params.append('values.Energy', energyCalculate)
 		// if (timeType === 'update') {
-		params.append('values.UpdateTime', new Date())
+		params.append('values.UpdateTime', calculateTime)
 		// }
 		const config = {
 			headers: {
@@ -21,14 +30,15 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		}
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${post.mintedId}`, params, config)
 			.then((response) => {
-				console.log('api response::', response)
+				console.log('Energy update::', response)
+				setUpdateMonsterAfterEnergyChange(!updateMonsterAfterEnergyChange)
 			})
 			.catch((error) => {
 				console.log(error)
 			})
 	}
 
-	function displayTimer() {
+	function displayTimer(calculateTime) {
 		// console.log('function called')
 		// const startTime = new Date(post.values.UpdateTime)
 		// const startTime = new Date(5680000)
@@ -45,51 +55,110 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 		// setHours(hours)
 		// console.log('days:::', hours, minutes, seconds, new Date())
 
-		if (Number(post.values.Energy) < 2) {
-			if (post.values.UpdateTime) {
+		if (post.values.UpdateTime !== 'undefined') {
+			// Time in minutes
+			let calculateUpdateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+			calculateUpdateTimeInMinutes = Math.abs(Math.round(calculateUpdateTimeInMinutes / 60000))
 
-				// Time in minutes
-				const calculateUpdateTime = new Date(Math.abs(new Date(post.values.UpdateTime) - new Date())).getMinutes() - 1
-				// console.log('calculateUpdateTime:', calculateUpdateTime)
+			// console.log('calculateUpdateTimeInMinutes:', calculateUpdateTimeInMinutes)
 
-				if (calculateUpdateTime >= 180) {
-					apiCall(2, 'update')
-				}
-				else if (calculateUpdateTime >= 90) {
-					apiCall(1, 'update')
-				}
-				else {
-					const remainingTime = 90 - calculateUpdateTime
-					setTimeout(displayTimer, 1000 * 60 * remainingTime)
+			if (calculateUpdateTimeInMinutes >= 180) {
+				if (Number(post.values.Energy) === 0) {
+					apiCall(2, calculateTime)
+				} else {
+					apiCall(1, calculateTime)
 				}
 			}
-			else {
-				const calculateCreateTime = new Date(Math.abs(new Date(post.createdAt) - new Date())).getMinutes() - 1
-				// console.log('calculateCreateTime:', calculateCreateTime)
+			else if (calculateUpdateTimeInMinutes >= 90) {
+				apiCall(1, calculateTime)
+			}
+		}
+		else {
+			let calculateCreateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
+			calculateCreateTimeInMinutes = Math.abs(Math.round(calculateCreateTimeInMinutes / 60000))
 
-				if (calculateCreateTime >= 180) {
-					apiCall(2, 'create')
+			// console.log('calculateCreateTimeInMinutes:', calculateCreateTimeInMinutes)
+			if (calculateCreateTimeInMinutes >= 180) {
+				if (Number(post.values.Energy) === 0) {
+					apiCall(2, calculateTime)
+				} else {
+					apiCall(1, calculateTime)
 				}
-				else if (calculateCreateTime >= 20) {
-					apiCall(1, 'create')
-				}
-				else {
-					const remainingTime = 90 - calculateCreateTime
-					setTimeout(displayTimer, 1000 * 60 * remainingTime)
-				}
+			}
+			else if (calculateCreateTimeInMinutes >= 90) {
+				apiCall(1, calculateTime)
 			}
 		}
 	}
 
 
+	const timer = () => {
+		let calcRemainingTime = new Date()
+		// console.log('calcRemainingTime::1', calcRemainingTime)
+
+		let calculateTimeInMinutes
+		if (post.values.UpdateTime !== 'undefined') {
+			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+		}
+		else {
+			calculateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
+		}
+
+		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
+		console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
+		setTimeInMinute(calculateTimeInMinutes)
+
+		if (calculateTimeInMinutes > 90 && calculateTimeInMinutes < 180) {
+			const oneHalfHours = 1500 * 60 * 60
+			const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+			const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
+			calcRemainingTime = (new Date()).getTime() - calculateTime.getTime()
+			calcRemainingTime = Math.abs(Math.round(calcRemainingTime / 60000))
+			calcRemainingTime = 180 - calcRemainingTime
+			setRemainingTime(calcRemainingTime)
+		}
+
+		else if (calculateTimeInMinutes < 90) {
+			calcRemainingTime = calculateTimeInMinutes
+			// console.log('displayTimer3', calcRemainingTime)
+			calcRemainingTime = 90 - calcRemainingTime
+			// console.log('displayTimer4', calcRemainingTime)
+			setRemainingTime(calcRemainingTime)
+		}
+		// console.log('calcRemainingTime::', calcRemainingTime)
+	}
+
+
 	useEffect(() => {
-		// let interval
-		// interval = setInterval(displayTimer, 1000)
-		// return () => {
-		// 	clearInterval(interval)
-		// }
-		displayTimer()
-	}, [])
+		if (Number(post.values.Energy) < 2) {
+			if (timeInMinute >= 180) {
+				displayTimer(new Date())
+			}
+			else if (timeInMinute > 90) {
+				const oneHalfHours = 1500 * 60 * 60
+				const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+				const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
+				displayTimer(calculateTime)
+			}
+			else if (timeInMinute === 90) {
+				displayTimer(new Date())
+			}
+		}
+	}, [updateMonsterAfterEnergyChange]) // timeInMinute
+
+	useEffect(() => {
+		if (Number(post.values.Energy) < 2) {
+			let timeInterval
+			timeInterval = setInterval(timer, 1000)
+			let interval
+			// console.log('remainingTimeremainingTime', remainingTime)
+			interval = setInterval(displayTimer, 1000 * 60 * remainingTime, new Date())
+			return () => {
+				clearInterval(timeInterval)
+				clearInterval(interval)
+			}
+		}
+	}, [remainingTime])
 
 	return (
 		<div className={`${className}`}>
@@ -106,7 +175,7 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {
 								return (
-									<img
+									<img key={i}
 										src={
 											post?.rating <= i ? '/assets/imgs/dimStar.png' : '/assets/imgs/star.png'
 										}
@@ -118,9 +187,9 @@ const PostCard = ({ className, post, stepImg, handleSelect }) => {
 					</div>
 					<div className='text-white center flex-column mt-5 fs-18'>
 						{Object.keys(post?.values).map((key, index) => {
-							if (key == 'level' || key == 'element' || key == 'offchain_Exp') {
+							if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'Price' || key == 'EXP') {
 								return (
-									<div className='mb-4'>
+									<div className='mb-4' key={index}>
 										<span className='me-2'>{key} :</span>
 										<span>{post?.values[key]}</span>
 									</div>

@@ -5,9 +5,10 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
-const ChooseDearMonster = ({ handleonSelect }) => {
+const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 
 	const [monsters, setMonsters] = useState([])
+	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
 
 	useEffect(() => {
 		function getDearMonster() {
@@ -20,6 +21,25 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 						res.data.mintedMonster.forEach(item => {
 							// if (item.tradeitem.length < 1) {
 							let singleMonster = {}
+							let level
+							if (Number(item.values.EXP) < 450) {
+								level = '1'
+							}
+							if (Number(item.values.EXP) === 450) {
+								level = '2'
+							}
+							else if (Number(item.values.EXP) === 1200) {
+								level = '3'
+							}
+							else if (Number(item.values.EXP) === 3000) {
+								level = '4'
+							}
+							else if (Number(item.values.EXP) === 8000) {
+								level = '5'
+							}
+							else if (Number(item.values.EXP) === 15000) {
+								level = '6'
+							}
 							singleMonster['mintedId'] = item._id
 							singleMonster['monsterId'] = item.monster._id
 							singleMonster['id'] = item.tokenId
@@ -28,7 +48,7 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 							singleMonster['rating'] = item.rating
 							singleMonster['totalRating'] = item.monster.totalRating
 							singleMonster['values'] = {}
-							singleMonster.values['Level'] = item.values.Level
+							singleMonster.values['Level'] = level
 							singleMonster.values['EXP'] = item.values.EXP
 							singleMonster.values['Element'] = 'None'
 							singleMonster.values['Energy'] = item.values.Energy
@@ -48,7 +68,7 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 				})
 		}
 		getDearMonster()
-	}, [])
+	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
 
 	console.log('monsters::', monsters)
 
@@ -92,11 +112,14 @@ const ChooseDearMonster = ({ handleonSelect }) => {
 					>
 						{monsters.map((post, i) => {
 							return (
-								<SplideSlide>
+								<SplideSlide key={i}>
 									<PostCard
+
 										post={post}
 										stepImg='/assets/imgs/droganBord.png'
 										handleSelect={() => onSelect(post)}
+										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
+										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
 									/>
 								</SplideSlide>
 							);

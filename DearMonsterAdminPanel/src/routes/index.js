@@ -6,6 +6,11 @@ import Dashboard from '../pages/Dashboard/index'
 import MonstersForm from '../pages/monsters/form'
 import Minions from '../pages/minions/index'
 import MinionsForm from '../pages/minions/form'
+import WithdrawRequest from '../pages/withdrawRequest/index'
+import AdditionaReward from '../pages/bonus/index'
+import AdditionaRewardForm from '../pages/bonus/form'
+
+
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
 import LoginPage from '../pages/Authentication/Login'
@@ -35,6 +40,10 @@ const MainRoutes = (props) => {
                         <Route exact path={'/minions'} component={Minions} />
                         <Route exact path={'/minions/create'} component={MinionsForm} />
                         <Route exact path={'/minions/edit'} component={MinionsForm} />
+                        <Route exact path={'/withdraw-request'} component={WithdrawRequest} />
+                        <Route exact path={'/additional-reward'} component={AdditionaReward} />
+                        <Route exact path={'/additional-reward/create'} component={AdditionaRewardForm} />
+                        <Route exact path={'/additional-reward/edit'} component={AdditionaRewardForm} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
                             <Route path="/login" component={LoginPage} /> */}
                         <Route path="*" component={NotFound} />
