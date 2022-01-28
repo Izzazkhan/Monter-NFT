@@ -105,7 +105,7 @@ const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEn
 		}
 
 		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
-		// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
+		console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
 		setTimeInMinute(calculateTimeInMinutes)
 
 		if (calculateTimeInMinutes > 90 && calculateTimeInMinutes < 180) {
