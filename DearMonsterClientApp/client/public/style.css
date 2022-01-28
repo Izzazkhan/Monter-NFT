@@ -1,12 +1,12 @@
 @font-face {
      font-family: 'comic-sans';
-     src: url('./assets/fonts/comici.ttf');
+     src: url('/assets/fonts/comici.ttf');
  }
 
- @font-face {
+ /* @font-face {
      font-family: 'Comic Sans MS';
      src: url('./assets/fonts/comicz.ttf');
- }
+ } */
 
  .bold {
      font-family: 'Comic Sans MS';

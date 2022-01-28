@@ -45,7 +45,7 @@ const metaMaskConnection = async () => {
       subObj.Element = response['element']
       subObj.Energy = response['energy']
 
-      tempMonsterObject.levels = { ...subObj }
+      tempMonsterObject.values = { ...subObj }
 
 
       console.log("===================")
