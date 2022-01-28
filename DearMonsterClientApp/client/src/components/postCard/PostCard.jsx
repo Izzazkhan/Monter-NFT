@@ -96,7 +96,8 @@ const PostCard = ({ className, post, stepImg }) => {
 					params.append('buyer', userId ? userId : owner)
 					params.append('tradeId', post.tradeId)
 					params.append('mintedId', post.mintedId)
-
+					params.append('Energy', '0')
+					params.append('UpdateTime', new Date())
 					const config = {
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
