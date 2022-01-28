@@ -159,13 +159,13 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 const FightModal = ({ loading, status, totalReward }) => {
 	return (
 		<div
-			className='modal  fade false'
+			className='modal fade false'
 			id='exampleModal'
 			tabIndex='-1'
 			aria-labelledby='exampleModalLabel'
 			aria-hidden='true'
 		>
-			<div className='modal-dialog'>
+			<div className='modal-dialog instructionsBoard'>
 				<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
 					<div className='modal-body center fs-25'>{loading ? <Loading /> :
 						<div>

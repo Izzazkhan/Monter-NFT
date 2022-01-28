@@ -6,7 +6,8 @@ import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 import Swal from 'sweetalert2';
 import Web3 from 'web3';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { connectUserSuccess } from './../../store/actions/auth/login';
 
 const isCommingSoon = true
 const config = {
@@ -16,6 +17,9 @@ const config = {
 }
 
 const TrainingGround = () => {
+
+	const dispatch = useDispatch();
+
 	const [time, setTime] = React.useState('0d 0h 0m 0s')
 	const [loading, setLoading] = React.useState(false)
 	const [status, setStatus] = React.useState('')
@@ -26,6 +30,7 @@ const TrainingGround = () => {
 	const [totalReward, setTotalReward] = useState('')
 	const [updateMonsterAfterFight, setUpdateMonsterAfterFight] = useState(false)
 	const [resolvedRewardRequest, setResolvedRewardRequest] = useState({})
+	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -44,46 +49,55 @@ const TrainingGround = () => {
 		let accounts = await web3.eth.getAccounts()
 		// console.log('acount:::', accounts)
 		setAccount(accounts[0])
-		function getAmount() {
-			axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
-				.then((response) => {
-					console.log('user earning ::', response)
-					if (response.data.earnerData) {
-						setEarnerData(response.data.earnerData)
-					}
-				})
-				.catch((error) => {
-					console.log(error)
-				})
+
+		if(userId){
+			function getAmount() {
+				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
+					.then((response) => {
+						if (response.data.earnerData) {
+							setEarnerData(response.data.earnerData)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+			getAmount()
+			function getWithdrawRequest() {
+				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
+					.then((response) => {
+						if (response.data.withdrawRequest) {
+							setResolvedRewardRequest(response.data.withdrawRequest)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+			getWithdrawRequest()
+
+			function getOpenWithdrawRequest() {
+				axios.get(`${apiUrl}/api/withdrawRequest/pending/${accounts[0]}`)
+					.then((response) => {
+						if (response.data.openWithdrawRequest) {
+							setNonResolvedRewardRequest(response.data.openWithdrawRequest)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+			getOpenWithdrawRequest()
 		}
-		getAmount()
-		function getWithdrawRequest() {
-			axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
-				.then((response) => {
-					// console.log('withdraw resolvedrequest:::::', response)
-					if (response.data.withdrawRequest) {
-						setResolvedRewardRequest(response.data.withdrawRequest)
-					}
-				})
-				.catch((error) => {
-					console.log(error)
-				})
-		}
-		getWithdrawRequest()
+
 	}, [window.web3, userId, totalReward])
 
 
 	const timer = () => {
 		if (Object.keys(resolvedRewardRequest).length !== 0) {
-			// console.log('resolvedRewardRequestresolvedRewardRequest', resolvedRewardRequest)
-			// get next 10 days from now
-			// const countDownDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
 			const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
-			// let x = setInterval(() => {
 			let now = new Date().getTime();
 			let distance = countDownDate - now
-			// console.log('distancedistance', distance)
-
 
 			let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
 			let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
@@ -92,17 +106,12 @@ const TrainingGround = () => {
 			if (minutes <= 0) {
 				setTime(`${seconds}s`);
 			} else if (hours <= 0) {
-				setTime(`${minutes}m ${seconds}s`);
+				setTime(`${minutes - 1}m ${seconds}s`);
 			} else if (days <= 0) {
-				setTime(`${hours}h ${minutes}m ${seconds}s`);
+				setTime(`${hours - 1}h ${minutes - 1}m ${seconds}s`);
 			} else {
-				setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+				setTime(`${days - 1}d ${hours - 1}h ${minutes - 1}m ${seconds}s`);
 			}
-			// if (distance < 0) {
-			// 	// clearInterval(x);
-			// 	setTime('EXPIRED');
-			// }
-			// }, 1000);
 		}
 	}
 
@@ -116,7 +125,6 @@ const TrainingGround = () => {
 	}, [resolvedRewardRequest]);
 
 	const handleonSelect = (monster) => {
-		console.log('selected monster::', monster)
 		setSelectedMonster(monster)
 	}
 
@@ -140,17 +148,17 @@ const TrainingGround = () => {
 		axios
 			.get(`${apiUrl}/api/levelBonus`)
 			.then((res) => {
-				console.log('==========bonus', res.data.levelBonus)
 				additionalReward = res.data.levelBonus[0][`${selectedMonster.values.Level}`]
-				console.log('additionalRewardadditionalReward:', additionalReward)
 				additionalReward = additionalReward / 100
 				let updateAmount
-				if (earnerData) {
+
+				if (earnerData && Object.keys(earnerData).length > 0) {
 					updateAmount = earnerData.totalAmount + amount + additionalReward
 				}
 				else {
 					updateAmount = amount + additionalReward
 				}
+
 				const updateParams = new URLSearchParams()
 				updateParams.append('earnerAddress', account)
 				updateParams.append('totalAmount', updateAmount)
@@ -186,15 +194,37 @@ const TrainingGround = () => {
 				setLoading(true);
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
-				if (true) { // random <= minion.values.Win_Rate
+				if (minion.values.Win_Rate) {
 					status = 'WIN';
 					setLoading(false);
 					setStatus(status);
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
+
+					let localLevel = '1'
+
+					if (Number(experienceCalculate) < 450) {
+						localLevel = '1'
+					}
+					if (Number(experienceCalculate) >= 450 && Number(experienceCalculate) < 1200) {
+						localLevel = '2'
+					}
+					else if (Number(experienceCalculate) >= 1200 && Number(experienceCalculate) < 3000) {
+						localLevel = '3'
+					}
+					else if (Number(experienceCalculate) >= 3000 && Number(experienceCalculate) < 8000) {
+						localLevel = '4'
+					}
+					else if (Number(experienceCalculate) >= 8000 && Number(experienceCalculate) < 15000) {
+						localLevel = '5'
+					}
+					else if (Number(experienceCalculate) >= 15000) {
+						localLevel = '6'
+					}
+
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
+					params.append('values.Level', localLevel)
 					energyExperienceUpdate(params)
-
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
@@ -202,7 +232,6 @@ const TrainingGround = () => {
 						if (Number(field) === Number(selectedMonster.values.Level)) {
 							amount = Number(value)
 						}
-
 					})
 					rewardUpdateCall(amount)
 
@@ -211,8 +240,32 @@ const TrainingGround = () => {
 					setLoading(false)
 					setStatus(status)
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
+
+					let localLevel = '1'
+
+					if (Number(experienceCalculate) < 450) {
+						localLevel = '1'
+					}
+					if (Number(experienceCalculate) >= 450 && Number(experienceCalculate) < 1200) {
+						localLevel = '2'
+					}
+					else if (Number(experienceCalculate) >= 1200 && Number(experienceCalculate) < 3000) {
+						localLevel = '3'
+					}
+					else if (Number(experienceCalculate) >= 3000 && Number(experienceCalculate) < 8000) {
+						localLevel = '4'
+					}
+					else if (Number(experienceCalculate) >= 8000 && Number(experienceCalculate) < 15000) {
+						localLevel = '5'
+					}
+					else if (Number(experienceCalculate) >= 15000) {
+						localLevel = '6'
+					}
+
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
+					params.append('values.Level', localLevel)
+
 					const experienceUpdate = energyExperienceUpdate(params)
 					console.log('experienceUpdate::', experienceUpdate)
 				}
@@ -244,70 +297,111 @@ const TrainingGround = () => {
 		}
 	}
 
+
+	const handleConnect = async () => {
+
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		} else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		} else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+
+		await window.ethereum.request({
+			method: "wallet_requestPermissions",
+			params: [{
+				eth_accounts: {}
+			}]
+		});
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		setAccount(accounts[0]);
+
+		dispatch(connectUserSuccess(accounts[0]))
+
+	};
+
 	const claimRewardHandler = async () => {
 
 		try {
 			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}`)
-			console.log('withdraw request:::::', getWithdrawRequest.data)
-
-			if (getWithdrawRequest.data.withdrawRequest.length === 0) {
-				// console.log('resolvedRewardRequest.createdAt', resolvedRewardRequest.createdAt)
-				// let diffInDays = Math.abs(new Date(resolvedRewardRequest.createdAt) - new Date())
-				// let diffInDays = Math.abs((new Date(resolvedRewardRequest.createdAt) - new Date()) / (1000 * 60 * 60 * 24))
-				// diffInDays = diffInDays / (1000 * 60 * 60 * 24)
-
-				const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
-				let now = new Date().getTime();
-				let distance = lastTime - now
-				let diffInDays = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
-
-				// let diffInDays = time.split(' ')[0]
-				// console.log('diffInDays:::', diffInDays)
-				if (diffInDays >= 7) {
-					try {
-						const rewardParam = new URLSearchParams()
-						rewardParam.append('requesterAddress', account)
-						rewardParam.append('amount', earnerData.totalAmount)
-						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-						if (postWithdraw) {
-							Swal.fire({
-								icon: 'success',
-								title: 'Reward Claim',
-								text: 'Reward has been claimed'
-							})
-						}
-					} catch (error) {
-						Swal.fire({
-							icon: 'error',
-							title: 'Reward Claim',
-							text: 'There is no reward to be claimed'
-						})
-					}
-				}
-				else {
+			if ( getWithdrawRequest?.data?.withdrawRequest?.length > 0 ) {
+				if(Object.keys(nonResolvedRewardRequest).length > 0) {
 					Swal.fire({
 						icon: 'error',
-						title: 'Reward Claim',
-						text: 'You can claim reward after 7 days from the last claim'
+						title: 'Reward Claim Already Exist',
+						text: 'You have already pending calims, please wait'
+					})
+					return
+				} else {
+					if(Object.keys(resolvedRewardRequest).length > 0) {
+						const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
+						let now = new Date().getTime();
+						let distance = lastTime - now
+						let diffInDays = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+
+						if (diffInDays >= 7) {
+							try {
+								const rewardParam = new URLSearchParams()
+								rewardParam.append('requesterAddress', account)
+								rewardParam.append('amount', earnerData.totalAmount)
+								const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+								if (postWithdraw) {
+									Swal.fire({
+										icon: 'success',
+										title: 'Reward Claim Requested',
+										text: 'Reward request has been created'
+									})
+								}
+							} catch (error) {
+								Swal.fire({
+									icon: 'error',
+									title: 'Error',
+									text: 'Oops, Something went wrong, Please contact admin'
+								})
+							}
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Reward Claim',
+								text: 'You can claim reward after 7 days from the last claim'
+							})
+						}
+					}
+				}
+			} else {
+				try {
+					const rewardParam = new URLSearchParams()
+					rewardParam.append('requesterAddress', account)
+					rewardParam.append('amount', earnerData.totalAmount)
+					const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+					if (postWithdraw) {
+						Swal.fire({
+							icon: 'success',
+							title: 'Reward Claim Requested',
+							text: 'Reward request has been created'
+						})
+					}
+				} catch (error) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Reward Claim Failed',
+						text: 'Reward request claim failed, please try again'
 					})
 				}
-			}
-			else {
-				Swal.fire({
-					icon: 'error',
-					title: 'Reward Claim',
-					text: 'You need to resolve the claim before'
-				})
 			}
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonster handleonSelect={handleonSelect} updateMonsterAfterFight={updateMonsterAfterFight} />
-	}, [updateMonsterAfterFight])
+		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster} updateMonsterAfterFight={updateMonsterAfterFight} />
+	}, [updateMonsterAfterFight, selectedMonster])
 
 
 	const minion = useMemo(() => {
@@ -318,119 +412,104 @@ const TrainingGround = () => {
 		<div>
 			<CurrenPageTitle title='Training Ground'></CurrenPageTitle>
 			{
-				// isCommingSoon ?
-				// 	<div className='center'>
-				// 		<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-				// 			Coming Soon
-				// 		</p>
-				// 	</div>
-				// 	:
-				<>
-					<div className='container center mt-8'>
-						<div className='center flex-column'>
-							<div className='border border-warning text-white p-2 rounded-2'>Total Rewards: {earnerData ? earnerData.totalAmount : 0}</div>
-							<section className='mt-5'>
-								<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+				userId ?
+					<>
+						<div className='container center mt-8'>
+							<div className='center flex-column'>
+								<div className='border border-warning text-white p-2 rounded-2'>
+									Total Rewards: {earnerData && Object.keys(earnerData).length > 0 ? earnerData.totalAmount : 0}
+									<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
+								</div>
+								<section className='mt-5'>
+									<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target='#ClaimRewardHistory'>
+										Claim Reward History
+									</div>
+									<div
+										className='modal fade'
+										id='ClaimRewardHistory'
+										tabIndex='-1'
+										aria-labelledby='ClaimRewardHistoryLabel'
+										aria-hidden='true'
+									>
+										<div className='modal-dialog'>
+											<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
+												<div className='modal-body p-4'>
+													{/* Popup to show last 10 claims amount in DMS, datetime, status, tx id */}
+													Coming Soon
+												</div>
+												<div className='modal-footer'>
+													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+														Close
+													</button>
+													{/* <button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
+													Confirm
+												</button> */}
+												</div>
+											</div>
+										</div>
+									</div>
+								</section>
+								<section className='mt-5 d-flex align-items-center '>
+									<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target='#ClaimReward' onClick={claimRewardHandler}>
+										Claim Reward
+									</div>
+									<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
+								</section>
+
+								<div
+									className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
 									data-bs-toggle='modal'
-									data-bs-target='#ClaimRewardHistory'>
-									Claim Reward History
+									data-bs-target='#EarlyClaimModal'
+								>
+									Early claim
 								</div>
 								<div
 									className='modal fade'
-									id='ClaimRewardHistory'
+									id='EarlyClaimModal'
 									tabIndex='-1'
-									aria-labelledby='ClaimRewardHistoryLabel'
+									aria-labelledby='EarlyClaimModalLabel'
 									aria-hidden='true'
 								>
 									<div className='modal-dialog'>
 										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
 											<div className='modal-body p-4'>
-												{/* Popup to show last 10 claims amount in DMS, datetime, status, tx id */}
+												{/* 30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
+											rewards, 70DMS is transferred from admin wallet to user wallet. */}
 												Coming Soon
 											</div>
 											<div className='modal-footer'>
 												<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
 													Close
 												</button>
-												<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-													Confirm
-												</button>
 											</div>
-										</div>
-									</div>
-								</div>
-							</section>
-							<section className='mt-5 d-flex align-items-center '>
-								<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
-									data-bs-toggle='modal'
-									data-bs-target='#ClaimReward' onClick={claimRewardHandler}>
-									Claim Reward
-								</div>
-								{/* <div
-									className='modal fade'
-									id='ClaimReward'
-									tabIndex='-1'
-									aria-labelledby='ClaimRewardLabel'
-									aria-hidden='true'
-								>
-									<div className='modal-dialog'>
-										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-											<div className='modal-body p-4'>
-												Condition: 7 days (configurable) from last claim
-												-popup confirmation page
-												-rewards will be airdropped from admin wallet to user wallet to disburse the DMS
-											</div>
-											<div className='modal-footer'>
-												<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-													Close
-												</button>
-												<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-													Confirm
-												</button>
-											</div>
-										</div>
-									</div>
-								</div> */}
-								<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
-							</section>
-
-							<div
-								className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
-								data-bs-toggle='modal'
-								data-bs-target='#EarlyClaimModal'
-							>
-								Early claim
-							</div>
-							<div
-								className='modal fade'
-								id='EarlyClaimModal'
-								tabIndex='-1'
-								aria-labelledby='EarlyClaimModalLabel'
-								aria-hidden='true'
-							>
-								<div className='modal-dialog'>
-									<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-										<div className='modal-body p-4'>
-											{/* 30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
-											rewards, 70DMS is transferred from admin wallet to user wallet. */}
-											Coming Soon
-										</div>
-										<div className='modal-footer'>
-											<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-												Close
-											</button>
-											<button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-												Confirm
-											</button>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						{dearMonster}
+						{minion}
+					</>
+					:
+					<div className='container'>
+						<div className='center'>
+							<div>
+								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+									Please connect to see Inventory
+								</p>
+								<div
+									onClick={handleConnect}
+									className={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
+								>
+									Connect
+								</div>
+							</div>
+						</div>
 					</div>
-					{dearMonster}
-					{minion}
-				</>
 			}
 		</div>
 	);

@@ -13,7 +13,7 @@ router.get('/userResolvedWithdrawRequest/:wallet', WithdrawRequest.userResolvedW
 router.get('/', WithdrawRequest.index);
 
 //PENDING
-router.get('/pending', WithdrawRequest.pending);
+router.get('/pending/:wallet', WithdrawRequest.pending);
 
 //STORE
 router.post('/', WithdrawRequest.store);

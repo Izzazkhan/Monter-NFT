@@ -8,7 +8,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 					<img src={post.img} className='w-md h-lg' />
 				</div>
 				<div
-					className='findDearMonster h-md2 pt-4 pb-5 '
+					className='findDearMonster pt-4 pb-5 '
 					style={{ marginTop: '-50px', width: '300px' }}
 				>
 					<p className='text-center mt-3  fs-18 bold'>{post.title}</p>
