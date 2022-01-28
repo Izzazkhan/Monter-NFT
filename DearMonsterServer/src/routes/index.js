@@ -8,6 +8,7 @@ const monster = require('./monster');
 const minion = require('./minion');
 const mintedMonster = require('./mintedMonster');
 const tradeItem = require('./tradeItem');
+const levelBonus = require('./levelBonus');
 
 const userEarning = require('./userEarning');
 const withdrawRequest = require('./withdrawRequest');
@@ -35,5 +36,6 @@ router.use('/mintedMonster', mintedMonster);
 router.use('/tradeItem', tradeItem);
 router.use('/userEarning', userEarning);
 router.use('/withdrawRequest', withdrawRequest);
+router.use('/levelBonus', levelBonus);
 
 module.exports = router

@@ -44,18 +44,3 @@ const MinionSchema = new mongoose.Schema({
 
 
 module.exports = mongoose.model('Minions', MinionSchema);
-
-
-// {
-//     id: '#123212',
-//     title: 'Monster A',
-//     img: '/assets/gif/4 Monster characters (1)/1. Monster animated.gif',
-//     rating: '2',
-//     totalRating: 3,
-//     values: {
-//         Win_Rate: '~70%',
-//         Reward_Estimated: 'None',
-//         Exp_Gain: 'A34500',
-//     },
-//     price: '3,000',
-// },

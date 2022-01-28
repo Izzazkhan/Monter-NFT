@@ -98,6 +98,9 @@ exports.update = async function (req, res) {
         const id = req.params.id;
         const update = req.body;
 
+        console.log("========")
+        console.log(update)
+
         // const userId = req.user._id;
         // Must uncomment for verification
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
