@@ -81,7 +81,7 @@ export const editDearMonsters = (data) => dispatch => {
 
 export const deleteDearMonsters = (id) => dispatch => {
 
-    
+
     axios.delete(`${Monster}/${id}`)
         .then((res) => {
             console.log('response delete', res)

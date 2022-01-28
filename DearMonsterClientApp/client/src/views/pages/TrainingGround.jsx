@@ -9,6 +9,11 @@ import Web3 from 'web3';
 import { useSelector } from 'react-redux';
 
 const isCommingSoon = true
+const config = {
+	headers: {
+		'Content-Type': 'application/x-www-form-urlencoded'
+	}
+}
 
 const TrainingGround = () => {
 	const [time, setTime] = React.useState('0d 0h 0m 0s')
@@ -42,7 +47,7 @@ const TrainingGround = () => {
 		function getAmount() {
 			axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 				.then((response) => {
-					// console.log('user earning ::', response)
+					console.log('user earning ::', response)
 					if (response.data.earnerData) {
 						setEarnerData(response.data.earnerData)
 					}
@@ -69,34 +74,36 @@ const TrainingGround = () => {
 
 
 	const timer = () => {
-		// console.log('resolvedRewardRequestresolvedRewardRequest', resolvedRewardRequest)
-		// get next 10 days from now
-		// const countDownDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
-		const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
-		// let x = setInterval(() => {
-		let now = new Date().getTime();
-		let distance = countDownDate - now
-		// console.log('distancedistance', distance)
+		if (Object.keys(resolvedRewardRequest).length !== 0) {
+			// console.log('resolvedRewardRequestresolvedRewardRequest', resolvedRewardRequest)
+			// get next 10 days from now
+			// const countDownDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+			const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
+			// let x = setInterval(() => {
+			let now = new Date().getTime();
+			let distance = countDownDate - now
+			// console.log('distancedistance', distance)
 
 
-		let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
-		let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
-		let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
-		let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
-		if (minutes <= 0) {
-			setTime(`${seconds}s`);
-		} else if (hours <= 0) {
-			setTime(`${minutes}m ${seconds}s`);
-		} else if (days <= 0) {
-			setTime(`${hours}h ${minutes}m ${seconds}s`);
-		} else {
-			setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+			let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+			let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
+			let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
+			let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
+			if (minutes <= 0) {
+				setTime(`${seconds}s`);
+			} else if (hours <= 0) {
+				setTime(`${minutes}m ${seconds}s`);
+			} else if (days <= 0) {
+				setTime(`${hours}h ${minutes}m ${seconds}s`);
+			} else {
+				setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+			}
+			// if (distance < 0) {
+			// 	// clearInterval(x);
+			// 	setTime('EXPIRED');
+			// }
+			// }, 1000);
 		}
-		// if (distance < 0) {
-		// 	// clearInterval(x);
-		// 	setTime('EXPIRED');
-		// }
-		// }, 1000);
 	}
 
 	useEffect(() => {
@@ -116,18 +123,52 @@ const TrainingGround = () => {
 	// console.log('timeeeeeee', time)
 
 	const energyExperienceUpdate = (params) => {
-		const config = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		}
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
 				console.log('api response::', response)
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
+				return response.data.mintedMonster
 			})
 			.catch((error) => {
 				console.log(error)
+			})
+	}
+
+	const rewardUpdateCall = (amount) => {
+
+		let additionalReward
+		axios
+			.get(`${apiUrl}/api/levelBonus`)
+			.then((res) => {
+				console.log('==========bonus', res.data.levelBonus)
+				additionalReward = res.data.levelBonus[0][`${selectedMonster.values.Level}`]
+				console.log('additionalRewardadditionalReward:', additionalReward)
+				additionalReward = additionalReward / 100
+				let updateAmount
+				if (earnerData) {
+					updateAmount = earnerData.totalAmount + amount + additionalReward
+				}
+				else {
+					updateAmount = amount + additionalReward
+				}
+				const updateParams = new URLSearchParams()
+				updateParams.append('earnerAddress', account)
+				updateParams.append('totalAmount', updateAmount)
+
+				axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+					.then((response) => {
+						console.log('add or update earning ::', response)
+						if (response.data.userEarning) {
+							setTotalReward(response.data.userEarning.totalAmount)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+
+			})
+			.catch((e) => {
+				console.log("error: ", e);
 			})
 	}
 
@@ -145,7 +186,7 @@ const TrainingGround = () => {
 				setLoading(true);
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
-				if (random <= minion.values.Win_Rate) {
+				if (true) { // random <= minion.values.Win_Rate
 					status = 'WIN';
 					setLoading(false);
 					setStatus(status);
@@ -153,6 +194,7 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					energyExperienceUpdate(params)
+
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
@@ -162,45 +204,7 @@ const TrainingGround = () => {
 						}
 
 					})
-					const config = {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
-						}
-					}
-
-					if (earnerData) {
-						const updateAmount = earnerData.totalAmount + amount
-						const updateParams = new URLSearchParams()
-						updateParams.append('earnerAddress', account)
-						updateParams.append('totalAmount', updateAmount)
-
-						axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
-							.then((response) => {
-								console.log('update earning ::', response)
-								if (response.data.userEarning) {
-									setTotalReward(response.data.userEarning.totalAmount)
-								}
-							})
-							.catch((error) => {
-								console.log(error)
-							})
-					}
-					else {
-						const earnerParam = new URLSearchParams()
-						earnerParam.append('earnerAddress', account)
-						earnerParam.append('totalAmount', amount)
-						earnerParam.append('lastClaim', new Date())
-						axios.post(`${apiUrl}/api/userEarning`, earnerParam, config)
-							.then((response) => {
-								console.log('add earning ::', response)
-								if (response.data.userEarning) {
-									setTotalReward(response.data.userEarning.totalAmount)
-								}
-							})
-							.catch((error) => {
-								console.log(error)
-							})
-					}
+					rewardUpdateCall(amount)
 
 				} else {
 					status = 'LOSE';
@@ -209,7 +213,8 @@ const TrainingGround = () => {
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
-					energyExperienceUpdate(params)
+					const experienceUpdate = energyExperienceUpdate(params)
+					console.log('experienceUpdate::', experienceUpdate)
 				}
 				const energyCalculate = selectedMonster.values.Energy - 1
 				let params = new URLSearchParams()
@@ -218,11 +223,6 @@ const TrainingGround = () => {
 				if (Number(selectedMonster.values.Energy) === 2) {
 					let params = new URLSearchParams()
 					params.append('values.UpdateTime', new Date())
-					const config = {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
-						}
-					}
 					axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 						.then((response) => {
 							console.log('update time at fight', response)
@@ -233,7 +233,7 @@ const TrainingGround = () => {
 				}
 
 			} else {
-				// setLoading(false)
+				setLoading(false)
 				setStatus('')
 				Swal.fire({
 					icon: 'error',
@@ -245,11 +245,7 @@ const TrainingGround = () => {
 	}
 
 	const claimRewardHandler = async () => {
-		const config = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		}
+
 		try {
 			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}`)
 			console.log('withdraw request:::::', getWithdrawRequest.data)
@@ -349,7 +345,8 @@ const TrainingGround = () => {
 									<div className='modal-dialog'>
 										<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
 											<div className='modal-body p-4'>
-												Popup to show last 10 claims amount in DMS, datetime, status, tx id
+												{/* Popup to show last 10 claims amount in DMS, datetime, status, tx id */}
+												Coming Soon
 											</div>
 											<div className='modal-footer'>
 												<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
@@ -414,8 +411,9 @@ const TrainingGround = () => {
 								<div className='modal-dialog'>
 									<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
 										<div className='modal-body p-4'>
-											30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
-											rewards, 70DMS is transferred from admin wallet to user wallet.
+											{/* 30% tax -Allows the user to claim rewards with a 30% penalty. Ie for 100
+											rewards, 70DMS is transferred from admin wallet to user wallet. */}
+											Coming Soon
 										</div>
 										<div className='modal-footer'>
 											<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>

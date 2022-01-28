@@ -10,7 +10,6 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
 
-
 	useEffect(() => {
 		function getDearMonster() {
 			let monsters = []
@@ -22,6 +21,25 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 						res.data.mintedMonster.forEach(item => {
 							// if (item.tradeitem.length < 1) {
 							let singleMonster = {}
+							let level
+							if (Number(item.values.EXP) < 450) {
+								level = '1'
+							}
+							if (Number(item.values.EXP) === 450) {
+								level = '2'
+							}
+							else if (Number(item.values.EXP) === 1200) {
+								level = '3'
+							}
+							else if (Number(item.values.EXP) === 3000) {
+								level = '4'
+							}
+							else if (Number(item.values.EXP) === 8000) {
+								level = '5'
+							}
+							else if (Number(item.values.EXP) === 15000) {
+								level = '6'
+							}
 							singleMonster['mintedId'] = item._id
 							singleMonster['monsterId'] = item.monster._id
 							singleMonster['id'] = item.tokenId
@@ -30,7 +48,7 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 							singleMonster['rating'] = item.rating
 							singleMonster['totalRating'] = item.monster.totalRating
 							singleMonster['values'] = {}
-							singleMonster.values['Level'] = item.values.Level
+							singleMonster.values['Level'] = level
 							singleMonster.values['EXP'] = item.values.EXP
 							singleMonster.values['Element'] = 'None'
 							singleMonster.values['Energy'] = item.values.Energy
@@ -52,7 +70,7 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 		getDearMonster()
 	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
 
-	// console.log('monsters::', monsters)
+	console.log('monsters::', monsters)
 
 	const onSelect = (monster) => {
 		handleonSelect(monster)
