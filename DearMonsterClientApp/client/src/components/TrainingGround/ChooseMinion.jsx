@@ -79,7 +79,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 	}, [])
 
 	useEffect(() => {
-		if (minions.length && selectedMonster) {
+		if (minions.length && Object.keys(selectedMonster).length > 0) {
 			const rewardMapped = minions.map(item => {
 				let rewardEstimated
 				if (item.values) {

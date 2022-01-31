@@ -25,7 +25,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 							if (Number(item.values.EXP) < 450) {
 								level = '1'
 							}
-							if (Number(item.values.EXP) >= 450 && Number(item.values.EXP) < 1200 ) {
+							if (Number(item.values.EXP) >= 450 && Number(item.values.EXP) < 1200) {
 								level = '2'
 							}
 							else if (Number(item.values.EXP) >= 1200 && Number(item.values.EXP) < 3000) {
@@ -69,6 +69,8 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 		}
 		getDearMonster()
 	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
+
+	console.log('== monsters ==', monsters)
 
 	const onSelect = (monster) => {
 		handleonSelect(monster)
