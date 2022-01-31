@@ -24,45 +24,45 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 					// console.log('response::', res)
 					if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 						res.data.mintedMonster.forEach(item => {
-							// if (item.tradeitem.length < 1) {
-							let singleMonster = {}
-							let level
-							if (Number(item.values.EXP) < 450) {
-								level = '1'
+							if (item.tradeitem.length < 1) {
+								let singleMonster = {}
+								let level
+								if (Number(item.values.EXP) < 450) {
+									level = '1'
+								}
+								if (Number(item.values.EXP) >= 450 && Number(item.values.EXP) < 1200) {
+									level = '2'
+								}
+								else if (Number(item.values.EXP) >= 1200 && Number(item.values.EXP) < 3000) {
+									level = '3'
+								}
+								else if (Number(item.values.EXP) >= 3000 && Number(item.values.EXP) < 8000) {
+									level = '4'
+								}
+								else if (Number(item.values.EXP) >= 8000 && Number(item.values.EXP) < 15000) {
+									level = '5'
+								}
+								else if (Number(item.values.EXP) >= 15000) {
+									level = '6'
+								}
+								singleMonster['mintedId'] = item._id
+								singleMonster['monsterId'] = item.monster._id
+								singleMonster['id'] = item.tokenId
+								singleMonster['title'] = item.monster.title
+								singleMonster['img'] = item.monster.img
+								singleMonster['rating'] = item.rating
+								singleMonster['totalRating'] = item.monster.totalRating
+								singleMonster['values'] = {}
+								singleMonster.values['Level'] = level
+								singleMonster.values['EXP'] = item.values.EXP
+								singleMonster.values['Element'] = 'None'
+								singleMonster.values['Energy'] = item.values.Energy
+								singleMonster.values['Price'] = item.monster.price
+								singleMonster['createdAt'] = item.createdAt
+								singleMonster.values['UpdateTime'] = item.values.UpdateTime
+								singleMonster.values['OwnerID'] = `${userId.substring(0, 4)}...${userId.slice(-4)}`
+								monsters.push(singleMonster);
 							}
-							if (Number(item.values.EXP) >= 450 && Number(item.values.EXP) < 1200) {
-								level = '2'
-							}
-							else if (Number(item.values.EXP) >= 1200 && Number(item.values.EXP) < 3000) {
-								level = '3'
-							}
-							else if (Number(item.values.EXP) >= 3000 && Number(item.values.EXP) < 8000) {
-								level = '4'
-							}
-							else if (Number(item.values.EXP) >= 8000 && Number(item.values.EXP) < 15000) {
-								level = '5'
-							}
-							else if (Number(item.values.EXP) >= 15000) {
-								level = '6'
-							}
-							singleMonster['mintedId'] = item._id
-							singleMonster['monsterId'] = item.monster._id
-							singleMonster['id'] = item.tokenId
-							singleMonster['title'] = item.monster.title
-							singleMonster['img'] = item.monster.img
-							singleMonster['rating'] = item.rating
-							singleMonster['totalRating'] = item.monster.totalRating
-							singleMonster['values'] = {}
-							singleMonster.values['Level'] = level
-							singleMonster.values['EXP'] = item.values.EXP
-							singleMonster.values['Element'] = 'None'
-							singleMonster.values['Energy'] = item.values.Energy
-							singleMonster.values['Price'] = item.monster.price
-							singleMonster['createdAt'] = item.createdAt
-							singleMonster.values['UpdateTime'] = item.values.UpdateTime
-							singleMonster.values['OwnerID'] = `${userId.substring(0, 4)}...${userId.slice(-4)}`
-							monsters.push(singleMonster);
-							// }
 						})
 					}
 					setMonsters(monsters)
