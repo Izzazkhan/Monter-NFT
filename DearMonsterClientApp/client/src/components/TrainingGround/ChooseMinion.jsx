@@ -170,7 +170,7 @@ const FightModal = ({ loading, status, totalReward }) => {
 					<div className='modal-body center fs-25'>{loading ? <Loading /> :
 						<div>
 							<span>{status}</span> <br />
-							<span>{totalReward && `${totalReward} Reward has been earned`}</span>
+							<span>{totalReward && `Your total reward is: ${parseInt(totalReward)}`}</span>
 						</div>
 					}
 					</div>

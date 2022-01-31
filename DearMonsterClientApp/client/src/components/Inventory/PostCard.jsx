@@ -83,7 +83,8 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 					params.append('price', sellPrice)
 					const config = {
 						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
+							'Content-Type': 'application/x-www-form-urlencoded',
+							'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 						}
 					}
 					axios.post(`${apiUrl}/api/tradeItem`, params, config)
@@ -159,18 +160,20 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		const transaction = await TradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 
 		if (transaction.status) {
-			axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`)
-				.then((res) => {
-					console.log('response delete', res)
-					Swal.fire({
-						icon: 'success',
-						title: 'Item Removed From Trading',
-						text: 'Please check Inventory Trading for items on trade!'
-					})
+			axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`, {
+				headers: {
+					'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+				}
+			}).then((res) => {
+				console.log('response delete', res)
+				Swal.fire({
+					icon: 'success',
+					title: 'Item Removed From Trading',
+					text: 'Please check Inventory Trading for items on trade!'
 				})
-				.catch((e) => {
-					console.log("error: ", e);
-				})
+			}).catch((e) => {
+				console.log("error: ", e);
+			})
 		}
 		else {
 			Swal.fire({
@@ -242,17 +245,17 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								</div>
 								<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
 									<div className='modal-dialog'>
-										<div style={{padding: "35px"}} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+										<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
-											<div className='modal-header p-4 border-bottom-0' style={{ border: "none"}}> <h3 style={{color: "black"}}> Sell DearMonster </h3>
+											<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Sell DearMonster </h3>
 											</div>
 											<div className='modal-body p-4'>
-												<p className='mb-4' style={{fontSize:"17px",fontWeight:"400", color: "black"}}>
+												<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
 													Your NFT will be listed in Trading Post at this price. In order to get it back, you'll have to revoke the sale.
 												</p>
 												<div className='align-items-center d-flex justify-content-between mb-4' >
-													<div> <h4 style={{color: "black"}}>Sell at</h4> </div>
-													<div className='d-flex align-items-center w-60' style={{padding:"15px 15px 23px 3px"}}> 
+													<div> <h4 style={{ color: "black" }}>Sell at</h4> </div>
+													<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
 														<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 														<input
 															type='text'
@@ -262,12 +265,12 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 															value={sellPrice}
 															onChange={priceChangeHandler}
 														/>
-														
+
 													</div>
-													
+
 												</div>
-												<div style={{float:"right"}}> 
-													<p style={{maxWidth:"210px",fontSize:"13px", color: "black"}}>Note that there will be a 5% transaction fee.</p>
+												<div style={{ float: "right" }}>
+													<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
 												</div>
 
 											</div>

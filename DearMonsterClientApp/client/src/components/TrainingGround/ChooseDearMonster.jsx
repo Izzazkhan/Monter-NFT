@@ -70,8 +70,6 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 		getDearMonster()
 	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
 
-	console.log('== monsters ==', monsters)
-
 	const onSelect = (monster) => {
 		handleonSelect(monster)
 	}

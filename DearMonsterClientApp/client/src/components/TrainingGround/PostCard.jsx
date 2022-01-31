@@ -23,7 +23,8 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 		params.append('values.UpdateTime', calculateTime)
 		const config = {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 			}
 		}
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${post.mintedId}`, params, config)
@@ -38,21 +39,6 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	}
 
 	function displayUpdatedTime(calculateTime) {
-		// console.log('function called', calculateTime)
-		// const startTime = new Date(post.values.UpdateTime)
-		// const startTime = new Date(5680000)
-		// const endTime = new Date()
-		// let timeDiff = endTime - startTime
-		// timeDiff /= 1000
-		// const seconds = Math.round(timeDiff % 60)
-		// setSeconds(seconds)
-		// timeDiff = Math.floor(timeDiff / 60)
-		// const minutes = Math.round(timeDiff % 60)
-		// setMinutes(minutes)
-		// timeDiff = Math.floor(timeDiff / 60)
-		// const hours = Math.round(timeDiff % 24)
-		// setHours(hours)
-		// console.log('days:::', hours, minutes, seconds, new Date())
 
 		let calculateTimeInMinutes
 		if (post.values.UpdateTime !== 'undefined') {

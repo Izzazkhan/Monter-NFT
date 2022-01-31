@@ -22,18 +22,28 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
+app.use(function(req, res, next) {
+  if (req.method == 'POST' || req.method == 'PUT' || req.method == 'DELETE'){
+
+    console.log("==== req.method ====")
+    console.log(req.method)
+
+    if (!req.headers.authorization) {
+      return res.status(403).json({ error: 'No credentials sent!' });
+    } else {
+      if(!(req.headers.authorization == `xx Umaaah haaalaaa ${process.env.CLIENT_SECRET} haaalaaa Umaaah xx`)){
+        return res.status(403).json({ error: 'Invalid token!' });
+      }
+    }
+  }
+  next();
+});
+
+
 //=== 4 - CONFIGURE ROUTES
 //Configure Route
 
 app.use('/api', routes);
-
-// app.use(express.static(path.join(__dirname, "..", "build")));
-// app.use(express.static("build"));
-
-// app.use((req, res, next) => {
-//   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-// });
-
 
 // Front Site Build Path
 app.use('/', express.static(path.join(__dirname, '../build')))
@@ -59,7 +69,6 @@ connection.on('error', (err) => {
 
 app.use(passport.initialize());
 require("./middlewares/jwt")(passport);
-
 
 
 //=== 5 - START SERVER

@@ -100,7 +100,8 @@ const PostCard = ({ className, post, stepImg }) => {
 					params.append('UpdateTime', new Date())
 					const config = {
 						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
+							'Content-Type': 'application/x-www-form-urlencoded',
+							'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 						}
 					}
 					axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
