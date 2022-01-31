@@ -50,7 +50,7 @@ const TrainingGround = () => {
 		// console.log('acount:::', accounts)
 		setAccount(accounts[0])
 
-		if(userId){
+		if (userId) {
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 					.then((response) => {
@@ -135,6 +135,7 @@ const TrainingGround = () => {
 			.then((response) => {
 				console.log('api response::', response)
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
+				setSelectedMonster({})
 				return response.data.mintedMonster
 			})
 			.catch((error) => {
@@ -284,7 +285,6 @@ const TrainingGround = () => {
 							console.log(error)
 						})
 				}
-
 			} else {
 				setLoading(false)
 				setStatus('')
@@ -329,8 +329,8 @@ const TrainingGround = () => {
 
 		try {
 			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}`)
-			if ( getWithdrawRequest?.data?.withdrawRequest?.length > 0 ) {
-				if(Object.keys(nonResolvedRewardRequest).length > 0) {
+			if (getWithdrawRequest?.data?.withdrawRequest?.length > 0) {
+				if (Object.keys(nonResolvedRewardRequest).length > 0) {
 					Swal.fire({
 						icon: 'error',
 						title: 'Reward Claim Already Exist',
@@ -338,7 +338,7 @@ const TrainingGround = () => {
 					})
 					return
 				} else {
-					if(Object.keys(resolvedRewardRequest).length > 0) {
+					if (Object.keys(resolvedRewardRequest).length > 0) {
 						const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
 						let now = new Date().getTime();
 						let distance = lastTime - now
@@ -400,12 +400,14 @@ const TrainingGround = () => {
 	}
 
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster} updateMonsterAfterFight={updateMonsterAfterFight} />
+		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster}
+			updateMonsterAfterFight={updateMonsterAfterFight} />
 	}, [updateMonsterAfterFight, selectedMonster])
 
 
 	const minion = useMemo(() => {
-		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster} />
+		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster}
+		/>
 	}, [status, loading, minionFight, totalReward, selectedMonster])
 
 	return (
