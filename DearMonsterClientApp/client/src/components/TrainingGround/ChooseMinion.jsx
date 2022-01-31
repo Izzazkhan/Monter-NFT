@@ -86,7 +86,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 					Object.entries(JSON.parse(item.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
 						const value = item[1]
-						if (Number(field) === Number(selectedMonster.values.Level)) {
+						if (Number(field) === Number(selectedMonster.rating)) {
 							rewardEstimated = Number(value)
 						}
 						// else {
