@@ -139,7 +139,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 					<img src={post?.img} className='w-md2' />
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
-					<p className='text-center mt-32px fs-18 bold'>{post?.title}</p>
+					<p className='text-center mt-6 fs-18 bold'>{post?.title}</p>
 					<div className='center mt-5'>
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {
