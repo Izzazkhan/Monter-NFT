@@ -5,16 +5,21 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
+import { useSelector } from 'react-redux';
+
+
 const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight }) => {
 
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
+	
+	const { userId } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		function getDearMonster() {
 			let monsters = []
-			const account = '0x7ACf46627094FA89339DB5b2EB862F0E8Ea4D9fc'
-			axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + account)
+			// const account = '0x7ACf46627094FA89339DB5b2EB862F0E8Ea4D9fc'
+			axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + userId)
 				.then((res) => {
 					// console.log('response::', res)
 					if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
@@ -55,7 +60,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 							singleMonster.values['Price'] = item.monster.price
 							singleMonster['createdAt'] = item.createdAt
 							singleMonster.values['UpdateTime'] = item.values.UpdateTime
-							singleMonster.values['OwnerID'] = `${account.substring(0, 4)}...${account.slice(-4)}`
+							singleMonster.values['OwnerID'] = `${userId.substring(0, 4)}...${userId.slice(-4)}`
 							monsters.push(singleMonster);
 							// }
 						})

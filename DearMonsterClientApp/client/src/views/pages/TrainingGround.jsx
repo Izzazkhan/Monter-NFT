@@ -371,17 +371,26 @@ const TrainingGround = () => {
 				}
 			} else {
 				try {
-					const rewardParam = new URLSearchParams()
-					rewardParam.append('requesterAddress', account)
-					rewardParam.append('amount', earnerData.totalAmount)
-					const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-					if (postWithdraw) {
+					if(parseInt(earnerData.totalAmount) > 0 ) {
+						const rewardParam = new URLSearchParams()
+						rewardParam.append('requesterAddress', account)
+						rewardParam.append('amount', earnerData.totalAmount)
+						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						if (postWithdraw) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Reward Claim Requested',
+								text: 'Reward request has been created'
+							})
+						}
+					} else {
 						Swal.fire({
-							icon: 'success',
-							title: 'Reward Claim Requested',
-							text: 'Reward request has been created'
+							icon: 'error',
+							title: 'Reward Claim Failed',
+							text: 'You dont have any reward to claim, Please earn some DMS'
 						})
 					}
+					
 				} catch (error) {
 					Swal.fire({
 						icon: 'error',
