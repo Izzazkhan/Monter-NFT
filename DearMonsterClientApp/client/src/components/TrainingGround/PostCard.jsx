@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
-const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
+const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
 	// console.log('energyCalculate ===', post)
 
 
@@ -88,7 +88,6 @@ const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEn
 		}
 
 		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
-		console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
 		setTimeInMinute(calculateTimeInMinutes)
 
 		if (calculateTimeInMinutes > 90 && calculateTimeInMinutes < 180) {
@@ -188,10 +187,22 @@ const PostCard = ({ className, post, stepImg, handleSelect, updateMonsterAfterEn
 				</div>
 			</main>
 			<footer className='center mt-6'>
-				<div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
-					onClick={() => {
-						handleSelect()
-					}}>Select </div>
+				{
+					selectedMonster && Object.keys(selectedMonster).length > 0 ?
+						selectedMonster.mintedId == post?.mintedId ?
+
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold'>
+								Selected
+							</div>
+							:
+							<div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => { handleSelect() }}>
+								Select
+							</div>
+						:
+						<div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => { handleSelect() }}>
+							Select
+						</div>
+				}
 			</footer>
 		</div>
 	)

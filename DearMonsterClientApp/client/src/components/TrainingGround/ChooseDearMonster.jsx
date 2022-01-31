@@ -5,7 +5,7 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
-const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
+const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight }) => {
 
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
@@ -25,19 +25,19 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 							if (Number(item.values.EXP) < 450) {
 								level = '1'
 							}
-							if (Number(item.values.EXP) === 450) {
+							if (Number(item.values.EXP) >= 450 && Number(item.values.EXP) < 1200 ) {
 								level = '2'
 							}
-							else if (Number(item.values.EXP) === 1200) {
+							else if (Number(item.values.EXP) >= 1200 && Number(item.values.EXP) < 3000) {
 								level = '3'
 							}
-							else if (Number(item.values.EXP) === 3000) {
+							else if (Number(item.values.EXP) >= 3000 && Number(item.values.EXP) < 8000) {
 								level = '4'
 							}
-							else if (Number(item.values.EXP) === 8000) {
+							else if (Number(item.values.EXP) >= 8000 && Number(item.values.EXP) < 15000) {
 								level = '5'
 							}
-							else if (Number(item.values.EXP) === 15000) {
+							else if (Number(item.values.EXP) >= 15000) {
 								level = '6'
 							}
 							singleMonster['mintedId'] = item._id
@@ -69,8 +69,6 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 		}
 		getDearMonster()
 	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
-
-	console.log('monsters::', monsters)
 
 	const onSelect = (monster) => {
 		handleonSelect(monster)
@@ -114,7 +112,7 @@ const ChooseDearMonster = ({ handleonSelect, updateMonsterAfterFight }) => {
 							return (
 								<SplideSlide key={i}>
 									<PostCard
-
+										selectedMonster={selectedMonster}
 										post={post}
 										stepImg='/assets/imgs/droganBord.png'
 										handleSelect={() => onSelect(post)}
