@@ -69,6 +69,7 @@ const PostCard = ({ className, post, stepImg }) => {
 			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
 
 			if (convertedPrice >= balance) {
+				dispatch(stopLoading(false))
 				let notify = notification({
 					type: 'error',
 					message: 'Insufficient fund!',
