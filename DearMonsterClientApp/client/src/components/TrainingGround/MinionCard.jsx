@@ -11,14 +11,37 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 					className='findDearMonster pt-4 pb-5 '
 					style={{ marginTop: '-50px', width: '300px' }}
 				>
-					<p className='text-center mt-3  fs-18 bold'>{post.title}</p>
+					<p className='text-center mt-4 fs-18 bold'>{post.title}</p>
 					<div className='text-white center flex-column mt-8 fs-15'>
 						{Object.keys(post.values).map((key, index) => {
 							const key2 = key.split('_').join(' ');
 							if (key != 'Reward_Estimated') {
 								return (
 									<div className='mb-5' key={index}>
-										<span className='me-2'>{key2} :</span>
+										
+										{/* if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP') */}
+
+										{
+											key2 == 'Exp Gain' ? 
+												<span className='me-2'>EXP Gain (Win):</span>
+												:
+											''
+										}
+										{
+											key2 == 'Lose Exp Gain' ? 
+												<span className='me-2'>EXP Gain (Loss) :</span>
+												:
+											''
+										}
+
+										{
+											key2 != 'Exp Gain' && key2 != 'Lose Exp Gain' ? 
+											<span className='me-2'>{key2} :</span>
+											: ''
+										}
+
+
+
 										<span>{key2 === 'Win Rate' && post.values[key] === 45 ? '42%-50%' :
 											key2 === 'Win Rate' && post.values[key] === 51 ? '48%-58%' :
 												post.values[key]}</span>
@@ -29,7 +52,7 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 						{
 							post.rewardEstimated &&
 							<div className='mb-5'>
-								<span className='me-2'>{'Reward Estimated'} :</span>
+								<span className='me-2'>{'Rewards'} :</span>
 								<span>{post.rewardEstimated}</span>
 							</div>
 						}

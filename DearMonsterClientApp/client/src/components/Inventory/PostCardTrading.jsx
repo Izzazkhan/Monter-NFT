@@ -65,25 +65,27 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 			const transaction = await TradingContract.methods.removeTrade(post.id).send({ from: accounts[0] })
 
 			if (transaction.status) {
-				axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`)
-					.then((res) => {
-						getData(userId)
-						dispatch(stopLoading(false))
-						Swal.fire({
-							icon: 'success',
-							title: 'Item Removed From Trading',
-							text: 'Please check Inventory Trading for items on trade!'
-						})
+				axios.delete(`${apiUrl}/api/tradeItem/${post.tradeId}`, {
+					headers: {
+						'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+					}
+				}).then((res) => {
+					getData(userId)
+					dispatch(stopLoading(false))
+					Swal.fire({
+						icon: 'success',
+						title: 'Item Removed From Trading',
+						text: 'Please check Inventory Trading for items on trade!'
 					})
-					.catch((e) => {
-						console.log("error: ", e);
-						dispatch(stopLoading(false))
-						Swal.fire({
-							icon: 'error',
-							title: 'Error',
-							text: 'Oops, Something went wrong, Please contact admin!'
-						})
+				}).catch((e) => {
+					console.log("error: ", e);
+					dispatch(stopLoading(false))
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'Oops, Something went wrong, Please contact admin!'
 					})
+				})
 			}
 			else {
 				dispatch(stopLoading(false))

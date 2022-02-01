@@ -3,7 +3,7 @@ DearMonsterClientApp/client/node_modules/
 
 DearMonsterClientApp/client/public/assets/gif/
 DearMonsterClientApp/client/build/
-
+DearMonsterClientApp/client/.env
 DearMonsterServer/node_modules/
 DearMonsterServer/.env
 DearMonsterClient/client/.env

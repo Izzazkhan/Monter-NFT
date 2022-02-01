@@ -23,7 +23,8 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 		params.append('values.UpdateTime', calculateTime)
 		const config = {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 			}
 		}
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${post.mintedId}`, params, config)
@@ -38,24 +39,9 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	}
 
 	function displayUpdatedTime(calculateTime) {
-		// console.log('function called', calculateTime)
-		// const startTime = new Date(post.values.UpdateTime)
-		// const startTime = new Date(5680000)
-		// const endTime = new Date()
-		// let timeDiff = endTime - startTime
-		// timeDiff /= 1000
-		// const seconds = Math.round(timeDiff % 60)
-		// setSeconds(seconds)
-		// timeDiff = Math.floor(timeDiff / 60)
-		// const minutes = Math.round(timeDiff % 60)
-		// setMinutes(minutes)
-		// timeDiff = Math.floor(timeDiff / 60)
-		// const hours = Math.round(timeDiff % 24)
-		// setHours(hours)
-		// console.log('days:::', hours, minutes, seconds, new Date())
 
 		let calculateTimeInMinutes
-		if (post.values.UpdateTime !== 'undefined') {
+		if (post.values.UpdateTime) {
 			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
 		}
 		else {
@@ -81,8 +67,10 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 		let calcRemainingTime = new Date()
 
 		let calculateTimeInMinutes
-		if (post.values.UpdateTime !== 'undefined') {
+		if (post.values.UpdateTime) {
 			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+			// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
+
 		}
 		else {
 			calculateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
@@ -90,11 +78,10 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 
 		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
 		setTimeInMinute(calculateTimeInMinutes)
-		// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
 
 		if (calculateTimeInMinutes > 90) {
 			const oneHalfHours = 1500 * 60 * 60
-			const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+			const lastTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
 			const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
 
 			calcRemainingTime = (new Date()).getTime() - calculateTime.getTime()
@@ -108,7 +95,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			calcRemainingTime = 90 - calcRemainingTime
 			setRemainingTime(calcRemainingTime)
 		}
-		// console.log('timeInMinute::', timeInMinute)
+		console.log('timeInMinute::', timeInMinute)
 	}
 
 
@@ -119,7 +106,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			}
 			else if (timeInMinute > 90) {
 				const oneHalfHours = 1500 * 60 * 60
-				const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+				const lastTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
 				const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
 				displayUpdatedTime(calculateTime)
 			}
@@ -153,7 +140,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 					<img src={post?.img} className='w-md2' />
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
-					<p className='text-center mt-32px fs-18 bold'>{post?.title}</p>
+					<p className='text-center mt-6 fs-18 bold'>{post?.title}</p>
 					<div className='center mt-5'>
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {

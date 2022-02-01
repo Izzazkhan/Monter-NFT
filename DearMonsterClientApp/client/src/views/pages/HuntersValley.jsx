@@ -70,9 +70,7 @@ const HuntersValley = () => {
 			else { localNumberlist[i] = 5 }
 		}
 		setNumberList([...localNumberlist])
-
 		getMonstersData()
-
 	}, [])
 
 	const getMonstersData = () => {
@@ -318,6 +316,8 @@ const HuntersValley = () => {
 
 			// todo : uncomment this !!!!!
 			if (isMaxSupply) {
+				dispatch(stopLoading(false))
+
 				let notify = notification({
 					type: 'error',
 					message: 'Not enough NFTs!',
@@ -369,7 +369,8 @@ const HuntersValley = () => {
 
 						const config = {
 							headers: {
-								'Content-Type': 'application/x-www-form-urlencoded'
+								'Content-Type': 'application/x-www-form-urlencoded',
+								'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 							}
 						}
 						axios.post(`${apiUrl}/api/mintedMonster`, params, config)

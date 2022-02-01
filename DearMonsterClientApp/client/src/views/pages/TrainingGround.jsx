@@ -12,7 +12,8 @@ import { connectUserSuccess } from './../../store/actions/auth/login';
 const isCommingSoon = true
 const config = {
 	headers: {
-		'Content-Type': 'application/x-www-form-urlencoded'
+		'Content-Type': 'application/x-www-form-urlencoded',
+		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 	}
 }
 
@@ -133,7 +134,6 @@ const TrainingGround = () => {
 	const energyExperienceUpdate = (params) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
-				console.log('api response::', response)
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
 				setSelectedMonster({})
 				return response.data.mintedMonster
@@ -162,7 +162,7 @@ const TrainingGround = () => {
 
 				const updateParams = new URLSearchParams()
 				updateParams.append('earnerAddress', account)
-				updateParams.append('totalAmount', updateAmount)
+				updateParams.append('totalAmount', parseInt(updateAmount))
 
 				axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
 					.then((response) => {
@@ -183,19 +183,15 @@ const TrainingGround = () => {
 
 	const minionFight = (minion) => {
 		if (Object.keys(selectedMonster).length === 0) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Fight',
-				text: 'Please select Dear Monster before'
-			})
+			setLoading(false)
+			setStatus('Please select DearMonster first.')
 		}
 		else {
 			if (selectedMonster.values.Energy >= 1) {
-				console.log('selected minion', (minion))
 				setLoading(true);
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
-				if (minion.values.Win_Rate) {
+				if (random <= minion.values.Win_Rate) {
 					status = 'WIN';
 					setLoading(false);
 					setStatus(status);
@@ -230,7 +226,7 @@ const TrainingGround = () => {
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
 						const value = item[1]
-						if (Number(field) === Number(selectedMonster.values.Level)) {
+						if (Number(field) === Number(selectedMonster.rating)) {
 							amount = Number(value)
 						}
 					})
@@ -375,17 +371,26 @@ const TrainingGround = () => {
 				}
 			} else {
 				try {
-					const rewardParam = new URLSearchParams()
-					rewardParam.append('requesterAddress', account)
-					rewardParam.append('amount', earnerData.totalAmount)
-					const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-					if (postWithdraw) {
+					if(parseInt(earnerData.totalAmount) > 0 ) {
+						const rewardParam = new URLSearchParams()
+						rewardParam.append('requesterAddress', account)
+						rewardParam.append('amount', earnerData.totalAmount)
+						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						if (postWithdraw) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Reward Claim Requested',
+								text: 'Reward request has been created'
+							})
+						}
+					} else {
 						Swal.fire({
-							icon: 'success',
-							title: 'Reward Claim Requested',
-							text: 'Reward request has been created'
+							icon: 'error',
+							title: 'Reward Claim Failed',
+							text: 'You dont have any reward to claim, Please earn some DMS'
 						})
 					}
+					
 				} catch (error) {
 					Swal.fire({
 						icon: 'error',
@@ -419,7 +424,7 @@ const TrainingGround = () => {
 						<div className='container center mt-8'>
 							<div className='center flex-column'>
 								<div className='border border-warning text-white p-2 rounded-2'>
-									Total Rewards: {earnerData && Object.keys(earnerData).length > 0 ? earnerData.totalAmount : 0}
+									Total Rewards: {earnerData && Object.keys(earnerData).length > 0 ? parseInt(earnerData.totalAmount) : 0}
 									<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 								</div>
 								<section className='mt-5'>

@@ -86,7 +86,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 					Object.entries(JSON.parse(item.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
 						const value = item[1]
-						if (Number(field) === Number(selectedMonster.values.Level)) {
+						if (Number(field) === Number(selectedMonster.rating)) {
 							rewardEstimated = Number(value)
 						}
 						// else {
@@ -170,7 +170,7 @@ const FightModal = ({ loading, status, totalReward }) => {
 					<div className='modal-body center fs-25'>{loading ? <Loading /> :
 						<div>
 							<span>{status}</span> <br />
-							<span>{totalReward && `${totalReward} Reward has been earned`}</span>
+							<span>{totalReward && `Your total reward is: ${parseInt(totalReward)}`}</span>
 						</div>
 					}
 					</div>
