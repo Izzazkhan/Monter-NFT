@@ -99,7 +99,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 
 
 	useEffect(() => {
-		if (Number(post.values.Energy) < 2) {
+		if (Number(post.values.Energy) < 2) {			
 			if (timeInMinute >= 180) {
 				displayUpdatedTime(new Date())
 			}
@@ -111,6 +111,9 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			}
 			else if (timeInMinute === 90) {
 				displayUpdatedTime(new Date())
+			}
+			else {
+				console.log('values not updated yet')
 			}
 		}
 	}, [post, timeInMinute]) // timeInMinute

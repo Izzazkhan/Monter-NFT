@@ -6,5 +6,5 @@ DearMonsterClientApp/client/build/
 DearMonsterClientApp/client/.env
 DearMonsterServer/node_modules/
 DearMonsterServer/.env
-
+DearMonsterClient/client/.env
 .DS_Store
