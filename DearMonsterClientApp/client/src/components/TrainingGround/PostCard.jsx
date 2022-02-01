@@ -41,7 +41,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	function displayUpdatedTime(calculateTime) {
 
 		let calculateTimeInMinutes
-		if (post.values.UpdateTime !== 'undefined') {
+		if (post.values.UpdateTime) {
 			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
 		}
 		else {
@@ -67,8 +67,10 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 		let calcRemainingTime = new Date()
 
 		let calculateTimeInMinutes
-		if (post.values.UpdateTime !== 'undefined') {
+		if (post.values.UpdateTime) {
 			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
+			// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
+
 		}
 		else {
 			calculateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
@@ -76,11 +78,10 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 
 		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
 		setTimeInMinute(calculateTimeInMinutes)
-		// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
 
 		if (calculateTimeInMinutes > 90) {
 			const oneHalfHours = 1500 * 60 * 60
-			const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+			const lastTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
 			const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
 
 			calcRemainingTime = (new Date()).getTime() - calculateTime.getTime()
@@ -94,7 +95,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			calcRemainingTime = 90 - calcRemainingTime
 			setRemainingTime(calcRemainingTime)
 		}
-		// console.log('timeInMinute::', timeInMinute)
+		console.log('timeInMinute::', timeInMinute)
 	}
 
 
@@ -105,7 +106,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			}
 			else if (timeInMinute > 90) {
 				const oneHalfHours = 1500 * 60 * 60
-				const lastTime = post.values.UpdateTime !== 'undefined' ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+				const lastTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
 				const calculateTime = new Date(lastTime.getTime() + oneHalfHours)
 				displayUpdatedTime(calculateTime)
 			}
