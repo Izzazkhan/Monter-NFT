@@ -60,7 +60,7 @@ const data = [
 	},
 ];
 
-const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonster }) => {
+const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonster, expGain }) => {
 
 	const [minions, setMinions] = useState([])
 
@@ -149,14 +149,14 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 				</Splide>
 			</div>
 			{/* {status !== '' &&  */}
-			<FightModal loading={loading} status={status} totalReward={totalReward} />
+			<FightModal loading={loading} status={status} totalReward={totalReward} expGain={expGain} />
 			{/* } */}
 		</div>
 	);
 }
 
 
-const FightModal = ({ loading, status, totalReward }) => {
+const FightModal = ({ loading, status, totalReward, expGain }) => {
 	return (
 		<div
 			className='modal fade false'
@@ -170,7 +170,8 @@ const FightModal = ({ loading, status, totalReward }) => {
 					<div className='modal-body center fs-25'>{loading ? <Loading /> :
 						<div>
 							<span>{status}</span> <br />
-							<span>{totalReward && `Your total reward is: ${parseInt(totalReward)}`}</span>
+							<span>{totalReward && `DMS Rewards: ${parseInt(totalReward)} DMS`}</span><br />
+							<span>{expGain && `EXP Gained: ${parseInt(expGain)} EXP`}</span>
 						</div>
 					}
 					</div>

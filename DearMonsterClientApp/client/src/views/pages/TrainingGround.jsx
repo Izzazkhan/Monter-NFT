@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from './../../store/actions/auth/login';
-
+import moment from 'moment'
 const isCommingSoon = true
 const config = {
 	headers: {
@@ -32,6 +32,10 @@ const TrainingGround = () => {
 	const [updateMonsterAfterFight, setUpdateMonsterAfterFight] = useState(false)
 	const [resolvedRewardRequest, setResolvedRewardRequest] = useState({})
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
+	const [expGain, setExpGain] = useState('')
+
+
+
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -93,25 +97,37 @@ const TrainingGround = () => {
 
 	}, [window.web3, userId, totalReward])
 
-
 	const timer = () => {
 		if (Object.keys(resolvedRewardRequest).length !== 0) {
 			const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
-			let now = new Date().getTime();
-			let distance = countDownDate - now
 
-			let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
-			let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
-			let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
-			let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
-			if (minutes <= 0) {
-				setTime(`${seconds}s`);
-			} else if (hours <= 0) {
-				setTime(`${minutes - 1}m ${seconds}s`);
-			} else if (days <= 0) {
-				setTime(`${hours - 1}h ${minutes - 1}m ${seconds}s`);
-			} else {
-				setTime(`${days - 1}d ${hours - 1}h ${minutes - 1}m ${seconds}s`);
+			let countDownDateConverted = countDownDate / 1000
+			countDownDateConverted = countDownDateConverted + 86400 * 7
+
+			let now = new Date().getTime()
+
+			countDownDateConverted = countDownDateConverted * 1000
+			let distance = countDownDateConverted - now
+			const calculateDays = Math.floor(distance / (1000 * 60 * 60 * 24))
+			// console.log('=== calculateDays ====', calculateDays)
+
+			if (countDownDateConverted > now && calculateDays >= 0) {
+				let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+				let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
+				let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
+				let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
+				if (minutes <= 0) {
+					setTime(`${seconds}s`)
+				} else if (hours <= 0) {
+					setTime(`${minutes}m ${seconds}s`)
+				} else if (days <= 0) {
+					setTime(`${hours}h ${minutes}m ${seconds}s`)
+				} else {
+					setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+				}
+			}
+			else {
+				setTime('7 days have passed')
 			}
 		}
 	}
@@ -134,9 +150,10 @@ const TrainingGround = () => {
 	const energyExperienceUpdate = (params) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
+				console.log('energy experienc update', response)
+				setExpGain(response.data.mintedMonster.values.EXP)
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
 				setSelectedMonster({})
-				return response.data.mintedMonster
 			})
 			.catch((error) => {
 				console.log(error)
@@ -185,6 +202,8 @@ const TrainingGround = () => {
 		if (Object.keys(selectedMonster).length === 0) {
 			setLoading(false)
 			setStatus('Please select DearMonster first.')
+			setExpGain('')
+			setTotalReward('')
 		}
 		else {
 			if (selectedMonster.values.Energy >= 1) {
@@ -192,7 +211,7 @@ const TrainingGround = () => {
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
 				if (random <= minion.values.Win_Rate) {
-					status = 'WIN';
+					status = 'You have won the fight.';
 					setLoading(false);
 					setStatus(status);
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
@@ -233,7 +252,7 @@ const TrainingGround = () => {
 					rewardUpdateCall(amount)
 
 				} else {
-					status = 'LOSE';
+					status = 'You have lost the fight.';
 					setLoading(false)
 					setStatus(status)
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
@@ -263,8 +282,7 @@ const TrainingGround = () => {
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
 
-					const experienceUpdate = energyExperienceUpdate(params)
-					console.log('experienceUpdate::', experienceUpdate)
+					energyExperienceUpdate(params)
 				}
 				const energyCalculate = selectedMonster.values.Energy - 1
 				let params = new URLSearchParams()
@@ -330,17 +348,24 @@ const TrainingGround = () => {
 					Swal.fire({
 						icon: 'error',
 						title: 'Reward Claim Already Exist',
-						text: 'You have already pending calims, please wait'
+						text: 'You have already pending claims, please wait'
 					})
 					return
 				} else {
 					if (Object.keys(resolvedRewardRequest).length > 0) {
 						const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
-						let now = new Date().getTime();
+						let now = new Date().getTime()
 						let distance = lastTime - now
-						let diffInDays = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
+						let diffInDays = Math.abs((distance / (1000 * 60 * 60 * 24)))
 
-						if (diffInDays >= 7) {
+						// let countDownDateConverted = lastTime / 1000
+						// countDownDateConverted = countDownDateConverted + 86400 * 7
+						// let now = new Date().getTime()
+						// countDownDateConverted = countDownDateConverted * 1000
+						// let distance = countDownDateConverted - now
+						// const calculateDays = Math.floor(distance / (1000 * 60 * 60 * 24))
+
+						if (diffInDays >= 7) { // calculateDays <= 0
 							try {
 								const rewardParam = new URLSearchParams()
 								rewardParam.append('requesterAddress', account)
@@ -371,7 +396,7 @@ const TrainingGround = () => {
 				}
 			} else {
 				try {
-					if(parseInt(earnerData.totalAmount) > 0 ) {
+					if (parseInt(earnerData.totalAmount) > 0) {
 						const rewardParam = new URLSearchParams()
 						rewardParam.append('requesterAddress', account)
 						rewardParam.append('amount', earnerData.totalAmount)
@@ -390,7 +415,7 @@ const TrainingGround = () => {
 							text: 'You dont have any reward to claim, Please earn some DMS'
 						})
 					}
-					
+
 				} catch (error) {
 					Swal.fire({
 						icon: 'error',
@@ -412,8 +437,9 @@ const TrainingGround = () => {
 
 	const minion = useMemo(() => {
 		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster}
+			expGain={expGain}
 		/>
-	}, [status, loading, minionFight, totalReward, selectedMonster])
+	}, [status, loading, minionFight, totalReward, selectedMonster, expGain])
 
 	return (
 		<div>

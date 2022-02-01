@@ -95,7 +95,6 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			calcRemainingTime = 90 - calcRemainingTime
 			setRemainingTime(calcRemainingTime)
 		}
-		console.log('timeInMinute::', timeInMinute)
 	}
 
 
