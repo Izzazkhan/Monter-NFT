@@ -8,12 +8,21 @@ import Swal from 'sweetalert2';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from './../../store/actions/auth/login';
-const isCommingSoon = true
+
 const config = {
 	headers: {
 		'Content-Type': 'application/x-www-form-urlencoded',
 		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 	}
+}
+
+const EnergyText = {
+	text: (
+		<span>
+			Dear Monster Energy
+			<br /> should be greater than 0.
+		</span>
+	)
 }
 
 const TrainingGround = () => {
@@ -32,6 +41,7 @@ const TrainingGround = () => {
 	const [resolvedRewardRequest, setResolvedRewardRequest] = useState({})
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 	const [expGain, setExpGain] = useState('')
+	const [claimHistory, setClaimHistory] = useState([])
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -48,15 +58,17 @@ const TrainingGround = () => {
 		let web3 = window.web3
 		// Load account
 		let accounts = await web3.eth.getAccounts()
-		// console.log('acount:::', accounts)
 		setAccount(accounts[0])
 
 		if (userId) {
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 					.then((response) => {
-						if (response.data.earnerData) {
+						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
+						}
+						else {
+							setEarnerData({})
 						}
 					})
 					.catch((error) => {
@@ -89,6 +101,19 @@ const TrainingGround = () => {
 					})
 			}
 			getOpenWithdrawRequest()
+
+			function getClaimHistory() {
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}`)
+					.then((response) => {
+						if (response.data.withdrawRequestApproved) {
+							setClaimHistory(response.data.withdrawRequestApproved)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+			getClaimHistory()
 		}
 
 	}, [window.web3, userId, totalReward])
@@ -106,22 +131,21 @@ const TrainingGround = () => {
 			countDownDateConverted = countDownDateConverted * 1000
 			let distance = countDownDateConverted - now
 			const calculateDays = Math.floor(distance / (1000 * 60 * 60 * 24))
-			// console.log('=== calculateDays ====', calculateDays)
 
 			if (countDownDateConverted > now && calculateDays >= 0) {
 				let days = Math.abs(Math.floor(distance / (1000 * 60 * 60 * 24)))
 				let hours = Math.abs(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))
 				let minutes = Math.abs(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)))
 				let seconds = Math.abs(Math.floor((distance % (1000 * 60)) / 1000))
-				if (minutes <= 0) {
-					setTime(`${seconds}s`)
-				} else if (hours <= 0) {
-					setTime(`${minutes}m ${seconds}s`)
-				} else if (days <= 0) {
-					setTime(`${hours}h ${minutes}m ${seconds}s`)
-				} else {
-					setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`)
-				}
+				// if (minutes <= 0) {
+				// 	setTime(`${seconds}s`)
+				// } else if (hours <= 0) {
+				// 	setTime(`${minutes}m ${seconds}s`)
+				// } else if (days <= 0) {
+				// 	setTime(`${hours}h ${minutes}m ${seconds}s`)
+				// } else {
+				setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+				// }
 			}
 			else {
 				setTime('7 days have passed')
@@ -130,7 +154,6 @@ const TrainingGround = () => {
 	}
 
 	useEffect(() => {
-		// timer();
 		let interval
 		interval = setInterval(timer, 1000)
 		return () => {
@@ -142,13 +165,13 @@ const TrainingGround = () => {
 		setSelectedMonster(monster)
 	}
 
-	// console.log('timeeeeeee', time)
-
-	const energyExperienceUpdate = (params) => {
+	const energyExperienceUpdate = (params, type, EXP) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
 				console.log('energy experienc update', response)
-				setExpGain(response.data.mintedMonster.values.EXP)
+				if (type === 'EXP') {
+					setExpGain(EXP)
+				}
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
 				setSelectedMonster({})
 			})
@@ -182,7 +205,7 @@ const TrainingGround = () => {
 					.then((response) => {
 						console.log('add or update earning ::', response)
 						if (response.data.userEarning) {
-							setTotalReward(response.data.userEarning.totalAmount)
+							setTotalReward(amount)
 						}
 					})
 					.catch((error) => {
@@ -207,7 +230,7 @@ const TrainingGround = () => {
 				setLoading(true);
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
-				if (random <= minion.values.Win_Rate) {
+				if (random <= minion.values.Win_Rate) { // true
 					status = 'You have won the fight.';
 					setLoading(false);
 					setStatus(status);
@@ -237,7 +260,8 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
-					energyExperienceUpdate(params)
+
+					energyExperienceUpdate(params, 'EXP', minion.values.Exp_Gain)
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
@@ -278,13 +302,12 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
-
-					energyExperienceUpdate(params)
+					energyExperienceUpdate(params, 'EXP', minion.values.Lose_Exp_Gain)
 				}
 				const energyCalculate = selectedMonster.values.Energy - 1
 				let params = new URLSearchParams()
 				params.append('values.Energy', energyCalculate)
-				energyExperienceUpdate(params)
+				energyExperienceUpdate(params, 'energy', '')
 				if (Number(selectedMonster.values.Energy) === 2) {
 					let params = new URLSearchParams()
 					params.append('values.UpdateTime', new Date())
@@ -298,12 +321,9 @@ const TrainingGround = () => {
 				}
 			} else {
 				setLoading(false)
-				setStatus('')
-				Swal.fire({
-					icon: 'error',
-					title: 'Energy',
-					text: 'Dear Monster Energy should be greater than 0'
-				})
+				setStatus(EnergyText.text)
+				setExpGain('')
+				setTotalReward('')
 			}
 		}
 	}
@@ -350,22 +370,31 @@ const TrainingGround = () => {
 					return
 				} else {
 					if (Object.keys(resolvedRewardRequest).length > 0) {
-						const lastTime = resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
+						const lastTime = resolvedRewardRequest.updatedAt && new Date(resolvedRewardRequest.updatedAt).getTime()
 						let now = new Date().getTime()
 						let distance = lastTime - now
 						let diffInDays = Math.abs((distance / (1000 * 60 * 60 * 24)))
 
 						if (diffInDays >= 7) {
 							try {
-								const rewardParam = new URLSearchParams()
-								rewardParam.append('requesterAddress', account)
-								rewardParam.append('amount', earnerData.totalAmount)
-								const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-								if (postWithdraw) {
+								if (parseInt(earnerData.totalAmount) > 0) {
+									const rewardParam = new URLSearchParams()
+									rewardParam.append('requesterAddress', account)
+									rewardParam.append('amount', earnerData.totalAmount)
+									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+									setTotalReward('')
+									if (postWithdraw) {
+										Swal.fire({
+											icon: 'success',
+											title: 'Reward Claim Requested',
+											text: 'Reward request has been created'
+										})
+									}
+								} else {
 									Swal.fire({
-										icon: 'success',
-										title: 'Reward Claim Requested',
-										text: 'Reward request has been created'
+										icon: 'error',
+										title: 'Reward Claim Failed',
+										text: 'You dont have any reward to claim, Please earn some DMS'
 									})
 								}
 							} catch (error) {
@@ -391,6 +420,7 @@ const TrainingGround = () => {
 						rewardParam.append('requesterAddress', account)
 						rewardParam.append('amount', earnerData.totalAmount)
 						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						setTotalReward('')
 						if (postWithdraw) {
 							Swal.fire({
 								icon: 'success',
@@ -429,7 +459,7 @@ const TrainingGround = () => {
 		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster}
 			expGain={expGain}
 		/>
-	}, [status, loading, minionFight, totalReward, selectedMonster, expGain])
+	}, [status, loading, minionFight, totalReward, selectedMonster, expGain,])
 
 	return (
 		<div>
@@ -456,19 +486,18 @@ const TrainingGround = () => {
 										aria-labelledby='ClaimRewardHistoryLabel'
 										aria-hidden='true'
 									>
-										<div className='modal-dialog'>
-											<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-												<div className='modal-body p-4'>
-													{/* Popup to show last 10 claims amount in DMS, datetime, status, tx id */}
-													Coming Soon
-												</div>
-												<div className='modal-footer'>
-													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-														Close
-													</button>
-													{/* <button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-													Confirm
-												</button> */}
+										<div className='modal-dialog instructionsBoard'>
+											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
+												<div className='modal-body center fs-25'>
+													{claimHistory.length ? claimHistory.map((history, i) => {
+														return (
+															<div>
+																<span>{'Approved Claims History'}</span> <br />
+																<span className='modal-amount'>{`${i + 1}. ${history.amount}`}</span>
+															</div>
+
+														)
+													}) : 'No Claim History Found.'}
 												</div>
 											</div>
 										</div>
