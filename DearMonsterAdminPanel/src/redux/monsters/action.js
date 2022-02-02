@@ -3,14 +3,7 @@ import { Monster } from '../../utilities/constant'
 
 export const getDearMonsters = () => dispatch => {
     axios
-        .get(`${Monster}`, {
-            // headers: {
-            //     "Authorization": `${token.token}`,
-            //     // crossDomain: true,
-            //     // 'Access-Control-Allow-Origin': '*'
-            // },
-            // 'Content-Type': 'application/x-www-form-urlencoded'
-        })
+        .get(`${Monster}`)
         .then((res) => {
             return dispatch({
                 type: 'GET_DEARMONSTERS',
@@ -32,7 +25,8 @@ export const addDearMonsters = (data) => dispatch => {
     params.append('price', Number(data.price))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios
@@ -63,7 +57,8 @@ export const editDearMonsters = (data) => dispatch => {
 
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios
@@ -80,9 +75,13 @@ export const editDearMonsters = (data) => dispatch => {
 };
 
 export const deleteDearMonsters = (id) => dispatch => {
-
-
-    axios.delete(`${Monster}/${id}`)
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+        }
+    }
+    axios.delete(`${Monster}/${id}`, config)
         .then((res) => {
             console.log('response delete', res)
             return dispatch({

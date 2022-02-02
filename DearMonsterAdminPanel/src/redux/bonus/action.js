@@ -26,7 +26,8 @@ export const addBonus = (data) => dispatch => {
     params.append('6', Number(data['6']))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios
@@ -56,7 +57,8 @@ export const editBonus = (data) => dispatch => {
     params.append('6', Number(data['6']))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios
@@ -73,7 +75,13 @@ export const editBonus = (data) => dispatch => {
 };
 
 export const deleteBonus = (id) => dispatch => {
-    axios.delete(`${Bonus}/${id}`)
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+        }
+    }
+    axios.delete(`${Bonus}/${id}`, config)
         .then((res) => {
             console.log('response delete', res)
             // if (res.data.success) {

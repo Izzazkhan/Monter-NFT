@@ -3,14 +3,7 @@ import { Minion } from '../../utilities/constant'
 
 export const getMinions = (token) => dispatch => {
     axios
-        .get(`${Minion}`, {
-            // headers: {
-            //     "Authorization": `${token.token}`,
-            //     // crossDomain: true,
-            //     // 'Access-Control-Allow-Origin': '*'
-            // },
-            // 'Content-Type': 'application/x-www-form-urlencoded'
-        })
+        .get(`${Minion}`)
         .then((res) => {
             return dispatch({
                 type: 'GET_MINIONS',
@@ -37,7 +30,8 @@ export const addMinions = (data) => dispatch => {
     params.append('values.Exp_Gain', Number(data.Exp_Gain))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios
@@ -57,7 +51,7 @@ export const addMinions = (data) => dispatch => {
     // }
 };
 
-export const editMinions = (data) => dispatch => {
+export const editMinions = (data, token) => dispatch => {
     // return dispatch => {
     const params = new URLSearchParams()
 
@@ -69,28 +63,35 @@ export const editMinions = (data) => dispatch => {
     params.append('values.Win_Rate', Number(data.Win_Rate))
     params.append('values.Lose_Exp_Gain', Number(data.Lose_Exp_Gain))
     params.append('values.Reward_Estimated', JSON.stringify(data.Reward_Estimated))
-    // params.append('values.Reward_Estimated', Number(data.Reward_Estimated))
     params.append('values.Exp_Gain', Number(data.Exp_Gain))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            // "Authorization": `Bearer ${token.token}`
         }
     }
     axios
         .put(`${Minion}/${data._id}`, params, config)
         .then((res) => {
             console.log('response', res)
-            // return dispatch({
-            //     type: 'ADD_MINIONS',
-            //     payload: res.data.minion
-            // })
+            return dispatch({
+                type: 'EDIT_MINIONS',
+                payload: res.data.minion
+            })
         }).catch((e) => {
             console.log("Error", e)
         })
 };
 
 export const deleteMinions = (id) => dispatch => {
-    axios.delete(`${Minion}/${id}`)
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+        }
+    }
+    axios.delete(`${Minion}/${id}`, config)
         .then((res) => {
             console.log('response delete', res)
             // if (res.data.success) {

@@ -77,8 +77,8 @@ function MinionForm(props) {
 
     const validateForm = () => {
         let isValid = false
-        if (state.title && state.img && state.rating && state.totalRating && state.price && state.Win_Rate && state.Lose_Exp_Gain &&
-            // state.Reward_Estimated && 
+        if (state.rating && state.totalRating && state.price && state.Win_Rate &&
+            // state.Reward_Estimated &&  state.Lose_Exp_Gain &&
             state.Exp_Gain) {
             isValid = true
         }
@@ -86,18 +86,18 @@ function MinionForm(props) {
     }
 
     const submitData = () => {
-        if (props.location.state && validateForm()) {
-            props.editMinions(state)
-            // dispatch(editMinions(state))
+
+        if (validateForm() && !state._id) {
+            props.addMinions(state)
+            props.history.push('/minions')
+        } else if (validateForm()) {
+            props.editMinions(state, JSON.parse(localStorage.getItem('token')))
+            props.history.push('/minions')
+
+        } else {
+            alert('Enter Minion Details.');
         }
-        // else if (validateForm()) {
-        props.addMinions(state)
-        props.history.push('/minions')
-        // }
-        // else {
-        //     alert('Enter Complete Minion Details');
-        // }
-        // clearData();
+        clearData()
     }
 
     const handleChange = (e) => {
@@ -177,7 +177,7 @@ function MinionForm(props) {
                             </div>
                         </div> */}
                         <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
-                            {state.id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
+                            {state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
                                 <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}
                         </div>
                         <div className="row" style={{ justifyContent: 'center', width: '200px' }}>

@@ -58,10 +58,10 @@ function BonusForm(props) {
 
     const submitData = () => {
 
-        if (props.location.state && validateForm()) {
-            props.editBonus(state)
-        } else if (validateForm()) {
+        if (!state._id && validateForm()) {
             props.addBonus(state)
+        } else if (validateForm()) {
+            props.editBonus(state)
             props.history.push('/additional-reward')
 
         } else {

@@ -32,8 +32,8 @@ function Bonus(props) {
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
-                        <h3>DearBonus Profile</h3>
-                        {!props.bonus.bonus &&
+                        <h3>Dear Monster Bonus (Additional Reward)</h3>
+                        {!props.bonus.bonus.length &&
                             <button className="btn-default" onClick={() => props.history.push('/additional-reward/create')}>ADD New</button>
                         }
                         <table className="table">

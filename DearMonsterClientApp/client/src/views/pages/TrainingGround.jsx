@@ -205,7 +205,7 @@ const TrainingGround = () => {
 					.then((response) => {
 						console.log('add or update earning ::', response)
 						if (response.data.userEarning) {
-							setTotalReward(amount)
+							setTotalReward(amount + additionalReward)
 						}
 					})
 					.catch((error) => {
