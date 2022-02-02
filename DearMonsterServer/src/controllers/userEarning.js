@@ -5,7 +5,7 @@ exports.show = async function (req, res) {
     try {
         const earnerAddress = req.params.earnerAddress;
 
-        const earnerData = await UserEarning.findOne({earnerAddress});
+        const earnerData = await UserEarning.findOne({earnerAddress, isRequested: false});
 
         // if (!earnerData) return res.status(401).json({message: 'record against earnerData does not exist'});
         
@@ -37,7 +37,7 @@ exports.update = async function (req, res) {
         const update = req.body;
 
 
-        let query = {earnerAddress}
+        let query = {earnerAddress, isRequested: false}
         let updateData = {$set: update}
         let options = { new: true, upsert: true }
         
