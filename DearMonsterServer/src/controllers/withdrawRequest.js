@@ -1,4 +1,5 @@
 const WithdrawRequest = require('../models/withdrawRequest');
+const UserEarning = require('../models/userEarning');
 
 
 exports.userWithdrawRequest = async function (req, res) {
@@ -14,7 +15,7 @@ exports.userResolvedWithdrawRequest = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const withdrawRequest = await WithdrawRequest.findOne({ isResolved: true, requesterAddress: wallet }, null, { sort: { 'created_at' : -1 }});
+    const withdrawRequest = await WithdrawRequest.findOne({ isResolved: true, requesterAddress: wallet }, null, { sort: { 'updatedAt' : -1 }});
     res.status(200).json({withdrawRequest});
 };
 
@@ -27,7 +28,7 @@ exports.pending = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const openWithdrawRequest = await WithdrawRequest.findOne({ isResolved: false, requesterAddress: wallet }, null, { sort: { 'created_at' : -1 }});
+    const openWithdrawRequest = await WithdrawRequest.findOne({ isResolved: false, requesterAddress: wallet }, null, { sort: { 'updatedAt' : -1 }});
     res.status(200).json({ openWithdrawRequest });
 };
 
@@ -37,6 +38,9 @@ exports.store = async (req, res) => {
 
         const newRequest = new WithdrawRequest({ ...req.body });
         const newRequest_ = await newRequest.save();
+
+        // UserEarning requesterAddress
+        const withdrawRequest = await UserEarning.findOneAndUpdate({requesterAddress}, { $set: { isRequested: true } });
 
         res.status(200).json({ message: 'Request created successfully', newRequest: newRequest_ });
     } catch (error) {

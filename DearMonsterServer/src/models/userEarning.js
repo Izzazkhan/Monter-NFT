@@ -13,6 +13,10 @@ const UserEarningSchema = new mongoose.Schema({
     lastClaim: {
         type: String,
     },
+    isRequested: {
+        type: Boolean,
+        default: false
+    },
 }, {timestamps: true});
 
 module.exports = mongoose.model('UserEarning', UserEarningSchema);
