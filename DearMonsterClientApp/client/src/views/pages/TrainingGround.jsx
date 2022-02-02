@@ -489,7 +489,7 @@ const TrainingGround = () => {
 										<div className='modal-dialog instructionsBoard'>
 											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
 												<div className='modal-body center fs-25'>
-													{claimHistory.map((history, i) => {
+													{claimHistory.length ? claimHistory.map((history, i) => {
 														return (
 															<div>
 																<span>{'Approved Claims History'}</span> <br />
@@ -497,7 +497,7 @@ const TrainingGround = () => {
 															</div>
 
 														)
-													})}
+													}) : 'No Claim History Found.'}
 												</div>
 											</div>
 										</div>
