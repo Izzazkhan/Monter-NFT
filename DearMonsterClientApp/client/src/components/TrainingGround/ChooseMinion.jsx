@@ -5,60 +5,6 @@ import Loading from '../common/Loading';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
 
-const data = [
-	{
-		id: '#123212',
-		title: 'Monster A',
-		img: '/assets/gif/4 Monster characters (1)/1. Monster animated.gif',
-		rating: '2',
-		totalRating: 3,
-		values: {
-			Win_Rate: '~70%',
-			Reward_Estimated: 'None',
-			Exp_Gain: 'A34500',
-		},
-		price: '3,000',
-	},
-	{
-		id: '#123212',
-		title: 'Monster B',
-		img: '/assets/gif/4 Monster characters (1)/3. Monster animated.gif',
-		rating: '2',
-		totalRating: 3,
-		values: {
-			Win_Rate: '~90%',
-			Reward_Estimated: 'None',
-			Exp_Gain: 'A34500',
-		},
-		price: '3,000',
-	},
-	{
-		id: '#123212',
-		title: 'Monster C',
-		img: '/assets/gif/4 Monster characters (1)/2. Monster animated.gif',
-		rating: '2',
-		totalRating: 3,
-		values: {
-			Win_Rate: '~72%',
-			Reward_Estimated: 'None',
-			Exp_Gain: 'A34500',
-		},
-		price: '3,000',
-	},
-	{
-		id: '#123212',
-		title: 'Monster D',
-		img: '/assets/gif/4 Monster characters (1)/4. Monster animated.gif',
-		rating: '2',
-		totalRating: 3,
-		values: {
-			Win_Rate: '~50%',
-			Reward_Estimated: 'None',
-			Exp_Gain: 'A34500',
-		},
-		price: '3,000',
-	},
-];
 
 const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonster, expGain }) => {
 
@@ -119,7 +65,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 					options={{
 						rewind: true,
 						gap: '8rem',
-						perPage: data.length == 1 ? 1 : 3,
+						perPage: minions.length == 1 ? 1 : 3,
 						pagination: false,
 						drag: false,
 						perMove: 3,
@@ -133,7 +79,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 						},
 						classes: {
 							arrows: '',
-							arrow: `splide__arrow text-white ${data.length == 1 ? 'd-none' : ''}`,
+							arrow: `splide__arrow text-white ${minions.length == 1 ? 'd-none' : ''}`,
 							prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2 end-0',
 							next: 'splide__arrow--next  border rounded-circle p-2 ',
 						},
@@ -148,7 +94,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 					})}
 				</Splide>
 			</div>
-			{/* {status !== '' &&  */}
+			{/* {expGain !== '' && */}
 			<FightModal loading={loading} status={status} totalReward={totalReward} expGain={expGain} />
 			{/* } */}
 		</div>

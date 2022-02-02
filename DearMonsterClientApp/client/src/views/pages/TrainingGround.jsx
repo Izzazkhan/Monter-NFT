@@ -8,12 +8,21 @@ import Swal from 'sweetalert2';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from './../../store/actions/auth/login';
-const isCommingSoon = true
+
 const config = {
 	headers: {
 		'Content-Type': 'application/x-www-form-urlencoded',
 		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 	}
+}
+
+const EnergyText = {
+	text: (
+		<span>
+			Dear Monster Energy
+			<br /> should be greater than 0.
+		</span>
+	)
 }
 
 const TrainingGround = () => {
@@ -32,6 +41,7 @@ const TrainingGround = () => {
 	const [resolvedRewardRequest, setResolvedRewardRequest] = useState({})
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 	const [expGain, setExpGain] = useState('')
+	const [claimHistory, setClaimHistory] = useState([])
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -54,8 +64,11 @@ const TrainingGround = () => {
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 					.then((response) => {
-						if (response.data.earnerData) {
+						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
+						}
+						else {
+							setEarnerData({})
 						}
 					})
 					.catch((error) => {
@@ -88,6 +101,19 @@ const TrainingGround = () => {
 					})
 			}
 			getOpenWithdrawRequest()
+
+			function getClaimHistory() {
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}`)
+					.then((response) => {
+						if (response.data.withdrawRequestApproved) {
+							setClaimHistory(response.data.withdrawRequestApproved)
+						}
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+			getClaimHistory()
 		}
 
 	}, [window.web3, userId, totalReward])
@@ -128,7 +154,6 @@ const TrainingGround = () => {
 	}
 
 	useEffect(() => {
-		// timer();
 		let interval
 		interval = setInterval(timer, 1000)
 		return () => {
@@ -139,8 +164,6 @@ const TrainingGround = () => {
 	const handleonSelect = (monster) => {
 		setSelectedMonster(monster)
 	}
-
-	// console.log('timeeeeeee', time)
 
 	const energyExperienceUpdate = (params, type, EXP) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
@@ -196,7 +219,6 @@ const TrainingGround = () => {
 	}
 
 	const minionFight = (minion) => {
-		console.log('minoinnn', minion)
 		if (Object.keys(selectedMonster).length === 0) {
 			setLoading(false)
 			setStatus('Please select DearMonster first.')
@@ -280,7 +302,6 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
-
 					energyExperienceUpdate(params, 'EXP', minion.values.Lose_Exp_Gain)
 				}
 				const energyCalculate = selectedMonster.values.Energy - 1
@@ -300,12 +321,9 @@ const TrainingGround = () => {
 				}
 			} else {
 				setLoading(false)
-				setStatus('')
-				Swal.fire({
-					icon: 'error',
-					title: 'Energy',
-					text: 'Dear Monster Energy should be greater than 0'
-				})
+				setStatus(EnergyText.text)
+				setExpGain('')
+				setTotalReward('')
 			}
 		}
 	}
@@ -364,7 +382,7 @@ const TrainingGround = () => {
 									rewardParam.append('requesterAddress', account)
 									rewardParam.append('amount', earnerData.totalAmount)
 									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-									setEarnerData({})
+									setTotalReward('')
 									if (postWithdraw) {
 										Swal.fire({
 											icon: 'success',
@@ -402,7 +420,7 @@ const TrainingGround = () => {
 						rewardParam.append('requesterAddress', account)
 						rewardParam.append('amount', earnerData.totalAmount)
 						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
-						setEarnerData({})
+						setTotalReward('')
 						if (postWithdraw) {
 							Swal.fire({
 								icon: 'success',
@@ -441,7 +459,7 @@ const TrainingGround = () => {
 		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster}
 			expGain={expGain}
 		/>
-	}, [status, loading, minionFight, totalReward, selectedMonster, expGain])
+	}, [status, loading, minionFight, totalReward, selectedMonster, expGain,])
 
 	return (
 		<div>
@@ -468,19 +486,18 @@ const TrainingGround = () => {
 										aria-labelledby='ClaimRewardHistoryLabel'
 										aria-hidden='true'
 									>
-										<div className='modal-dialog'>
-											<div className='modal-content py-3 bg-dark bg-opacity-75 text-white shadow-lg'>
-												<div className='modal-body p-4'>
-													{/* Popup to show last 10 claims amount in DMS, datetime, status, tx id */}
-													Coming Soon
-												</div>
-												<div className='modal-footer'>
-													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-														Close
-													</button>
-													{/* <button type='button' className='btn btn-warning' data-bs-dismiss='modal'>
-													Confirm
-												</button> */}
+										<div className='modal-dialog instructionsBoard'>
+											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
+												<div className='modal-body center fs-25'>
+													{claimHistory.map((history, i) => {
+														return (
+															<div>
+																<span>{'Approved Claims History'}</span> <br />
+																<span className='modal-amount'>{`${i + 1}. ${history.amount}`}</span>
+															</div>
+
+														)
+													})}
 												</div>
 											</div>
 										</div>
