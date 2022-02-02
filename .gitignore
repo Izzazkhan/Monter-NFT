@@ -7,4 +7,5 @@ DearMonsterClientApp/client/.env
 DearMonsterServer/node_modules/
 DearMonsterServer/.env
 DearMonsterClient/client/.env
+DearMonsterAdminPanel/.env
 .DS_Store

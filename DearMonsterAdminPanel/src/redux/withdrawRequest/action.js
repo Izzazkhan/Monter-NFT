@@ -3,7 +3,14 @@ import { WithdrawRequest } from '../../utilities/constant'
 
 export const getWithdrawRequest = (token) => dispatch => {
     axios
-        .get(`${WithdrawRequest}`)
+        .get(`${WithdrawRequest}`, {
+            headers: {
+                "Authorization": `${token.token}`,
+                // crossDomain: true,
+                // 'Access-Control-Allow-Origin': '*'
+            },
+            'Content-Type': 'application/x-www-form-urlencoded'
+        })
         .then((res) => {
             console.log('with draw request', res)
             return dispatch({
@@ -76,7 +83,8 @@ export const markResolved = (id) => dispatch => {
     params.append('isResolved', true)
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
         }
     }
     axios

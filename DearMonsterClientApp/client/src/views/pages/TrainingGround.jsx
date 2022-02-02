@@ -34,9 +34,6 @@ const TrainingGround = () => {
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 	const [expGain, setExpGain] = useState('')
 
-
-
-
 	useEffect(async () => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
@@ -97,9 +94,10 @@ const TrainingGround = () => {
 
 	}, [window.web3, userId, totalReward])
 
+
 	const timer = () => {
 		if (Object.keys(resolvedRewardRequest).length !== 0) {
-			const countDownDate = resolvedRewardRequest != 'undefined' && resolvedRewardRequest.createdAt && new Date(resolvedRewardRequest.createdAt).getTime()
+			const countDownDate = Object.keys(resolvedRewardRequest).length > 0 && resolvedRewardRequest.updatedAt && new Date(resolvedRewardRequest.updatedAt).getTime()
 
 			let countDownDateConverted = countDownDate / 1000
 			countDownDateConverted = countDownDateConverted + 86400 * 7
@@ -337,7 +335,7 @@ const TrainingGround = () => {
 
 		dispatch(connectUserSuccess(accounts[0]))
 
-	};
+	}
 
 	const claimRewardHandler = async () => {
 
@@ -347,8 +345,8 @@ const TrainingGround = () => {
 				if (Object.keys(nonResolvedRewardRequest).length > 0) {
 					Swal.fire({
 						icon: 'error',
-						title: 'Reward Claim Already Exist',
-						text: 'You have already pending claims, please wait'
+						title: 'You have a pending claim.',
+						text: 'Please note that you can only claim reward once every 7 days.'
 					})
 					return
 				} else {
@@ -358,14 +356,7 @@ const TrainingGround = () => {
 						let distance = lastTime - now
 						let diffInDays = Math.abs((distance / (1000 * 60 * 60 * 24)))
 
-						// let countDownDateConverted = lastTime / 1000
-						// countDownDateConverted = countDownDateConverted + 86400 * 7
-						// let now = new Date().getTime()
-						// countDownDateConverted = countDownDateConverted * 1000
-						// let distance = countDownDateConverted - now
-						// const calculateDays = Math.floor(distance / (1000 * 60 * 60 * 24))
-
-						if (diffInDays >= 7) { // calculateDays <= 0
+						if (diffInDays >= 7) {
 							try {
 								const rewardParam = new URLSearchParams()
 								rewardParam.append('requesterAddress', account)
@@ -389,7 +380,7 @@ const TrainingGround = () => {
 							Swal.fire({
 								icon: 'error',
 								title: 'Reward Claim',
-								text: 'You can claim reward after 7 days from the last claim'
+								text: 'Please note that you can only claim reward once every 7 days.'
 							})
 						}
 					}
