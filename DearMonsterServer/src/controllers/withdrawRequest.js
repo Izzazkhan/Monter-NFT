@@ -10,6 +10,13 @@ exports.userWithdrawRequest = async function (req, res) {
     res.status(200).json({ withdrawRequest });
 };
 
+exports.claimHistory = async function (req, res) {
+
+    const wallet = req.params.wallet;
+
+    const withdrawRequestApproved = await WithdrawRequest.find({ requesterAddress: wallet, isResolved: true}, null, { sort: { 'updatedAt' : -1 }}).limit(5)
+    res.status(200).json({ withdrawRequestApproved });
+};
 
 exports.userResolvedWithdrawRequest = async function (req, res) {
 
