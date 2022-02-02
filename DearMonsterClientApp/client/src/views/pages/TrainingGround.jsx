@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from './../../store/actions/auth/login';
-import moment from 'moment'
 const isCommingSoon = true
 const config = {
 	headers: {
