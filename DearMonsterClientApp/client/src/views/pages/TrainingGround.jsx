@@ -205,7 +205,7 @@ const TrainingGround = () => {
 					.then((response) => {
 						console.log('add or update earning ::', response)
 						if (response.data.userEarning) {
-							setTotalReward(response.data.userEarning.totalAmount)
+							setTotalReward(amount)
 						}
 					})
 					.catch((error) => {
@@ -230,7 +230,7 @@ const TrainingGround = () => {
 				setLoading(true);
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
-				if (random <= minion.values.Win_Rate) {
+				if (random <= minion.values.Win_Rate) { // true
 					status = 'You have won the fight.';
 					setLoading(false);
 					setStatus(status);
