@@ -15,8 +15,8 @@ import { apiUrl, appEnv, addressList } from '../../utils/constant'
 import DMSToken from '../../contracts/DMSToken.json';
 import DMSTokenTest from '../../contracts/DMSTokenTest.json';
 
-const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken 
-const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress 
+const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
+const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
 
 const Header = () => {
 
@@ -29,7 +29,7 @@ const Header = () => {
 	const [active, setActive] = useState(false);
 	const [blance, setBlance] = useState(0);
 	const [web3Modal, setWeb3Modal] = useState(null);
-	
+
 	const [walletConnected, setWalletConnected] = useState(false);
 	const [account, setAccount] = useState([]);
 	const [web3, setWeb3] = useState(0);
@@ -57,11 +57,11 @@ const Header = () => {
 		// let networkId = await web3.eth.net.getId()
 		// let DMSTokenNetwork = DMSToken.networks[networkId]
 		// let DMSTokenContract = new web3.eth.Contract(DMSToken.abi, DMSTokenNetwork.address)	
-		
-		
+
+
 		let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
-		
-		
+
+
 		DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (bal) {
 			setBlance(Math.floor(bal / (10 ** 18)));
 		})
@@ -85,8 +85,7 @@ const Header = () => {
 			providerOptions, // required
 			disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
 		});
-		setWeb3Modal(web3_Modal);
-		console.log("Web3Modal instance is", web3Modal);
+		setWeb3Modal(web3_Modal)
 	}
 
 	async function fetchAccountData() {
@@ -100,7 +99,7 @@ const Header = () => {
 		console.log("Got accounts", accounts_temp);
 		setAccount(accounts_temp[0])
 		dispatch(connectUserSuccess(accounts_temp[0]))
-		
+
 		setWalletConnected(true);
 	}
 
@@ -155,8 +154,8 @@ const Header = () => {
 				</button>
 				<div
 					className={`${active
-							? 'position-fixed bg-dark top-0 w-100 w-100 start-0 vh-lg-auto vh-100'
-							: 'd-none d-lg-flex align-items-center '
+						? 'position-fixed bg-dark top-0 w-100 w-100 start-0 vh-lg-auto vh-100'
+						: 'd-none d-lg-flex align-items-center '
 						} `}
 					style={{ zIndex: '999' }}
 				>
