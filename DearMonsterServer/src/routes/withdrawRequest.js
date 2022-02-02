@@ -7,6 +7,8 @@ const router = express.Router();
 //INDEX
 router.get('/userWithdrawRequest/:wallet', WithdrawRequest.userWithdrawRequest);
 
+router.get('/claimHistory/:wallet', WithdrawRequest.claimHistory);
+
 //INDEX
 router.get('/userResolvedWithdrawRequest/:wallet', WithdrawRequest.userResolvedWithdrawRequest);
 //INDEX
