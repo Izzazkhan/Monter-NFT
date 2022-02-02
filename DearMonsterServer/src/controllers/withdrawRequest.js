@@ -39,6 +39,8 @@ exports.store = async (req, res) => {
         const newRequest = new WithdrawRequest({ ...req.body });
         const newRequest_ = await newRequest.save();
 
+        const { requesterAddress } = req.body
+
         // UserEarning requesterAddress
         const withdrawRequest = await UserEarning.findOneAndUpdate({requesterAddress}, { $set: { isRequested: true } });
 
