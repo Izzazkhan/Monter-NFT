@@ -11,8 +11,6 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	const [remainingTime, setRemainingTime] = useState(1)
 	const [timeInMinute, setTimeInMinute] = useState(1)
 
-
-
 	const energyUpdateCall = (energy, calculateTime) => {
 
 		const localEnergy = post.values.Energy === '' ? 0 : post.values.Energy
@@ -99,7 +97,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 
 
 	useEffect(() => {
-		if (Number(post.values.Energy) < 2) {			
+		if (Number(post.values.Energy) < 2) {
 			if (timeInMinute >= 180) {
 				displayUpdatedTime(new Date())
 			}
