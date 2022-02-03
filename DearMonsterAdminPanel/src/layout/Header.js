@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useToken from '../hooks/useToken'
 const Header = (props) => {
-    const { token, setToken } = useToken()
+    const { token } = useToken()
     console.log('tokennnnnn', token)
     const [currentUser] = useState(JSON.parse(localStorage.getItem('token')));
     console.log('current', currentUser)

@@ -14,13 +14,13 @@ function MinionForm(props) {
     const [state, setState] = useState({
         title: '',
         img: '',
-        rating: '',
-        totalRating: '',
-        price: '',
-        Win_Rate: '',
-        Reward_Estimated: { 1: '', 2: '', 3: '', 4: '', 5: '' },
-        Exp_Gain: '',
-        Lose_Exp_Gain: ''
+        rating: 0,
+        totalRating: 0,
+        price: 0,
+        Win_Rate: 0,
+        Reward_Estimated: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+        Exp_Gain: 0,
+        Lose_Exp_Gain: 0
     })
 
     // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
@@ -75,29 +75,37 @@ function MinionForm(props) {
 
     // console.log('imageState', imageState)
 
-    const validateForm = () => {
-        let isValid = false
-        if (state.rating && state.totalRating && state.price && state.Win_Rate &&
-            // state.Reward_Estimated &&  state.Lose_Exp_Gain &&
-            state.Exp_Gain) {
-            isValid = true
-        }
-        return isValid
-    }
+    // const validateForm = () => {
+    //     let isValid = false
+    //     if (state.rating >= 0 &&
+    //         state.totalRating >= 0 &&
+    //         state.price >= 0 &&
+    //         state.Win_Rate >= 0 &&
+    //         state.Reward_Estimated['1'] >= 0 &&
+    //         state.Reward_Estimated['2'] >= 0 &&
+    //         state.Reward_Estimated['3'] >= 0 &&
+    //         state.Reward_Estimated['4'] >= 0 &&
+    //         state.Reward_Estimated['5'] >= 0 &&
+    //         state.Lose_Exp_Gain >= 0 &&
+    //         state.Exp_Gain >= 0) {
+    //         isValid = true
+    //     }
+    //     return isValid
+    // }
 
     const submitData = () => {
 
-        if (validateForm() && !state._id) {
-            props.addMinions(state)
-            props.history.push('/minions')
-        } else if (validateForm()) {
+        if (!state._id) {
+            props.addMinions(state, JSON.parse(localStorage.getItem('token')))
+            // props.history.push('/minions')
+        } else if (state._id) {
             props.editMinions(state, JSON.parse(localStorage.getItem('token')))
             props.history.push('/minions')
 
         } else {
             alert('Enter Minion Details.');
         }
-        clearData()
+        // clearData()
     }
 
     const handleChange = (e) => {
@@ -113,6 +121,7 @@ function MinionForm(props) {
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
+        console.log('field', field)
         if (field !== '_id' && field !== 'Reward_Estimated') {
             return (
                 <div className="form-group col-md-6" key={i}>
@@ -120,7 +129,8 @@ function MinionForm(props) {
                     <input type="text" required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
                         placeholder={`Enter ${field}`}
-                    // type='number'
+                        type={(field === 'rating' || field === 'totalRating' || field === 'price' || field === 'Win_Rate' ||
+                            field === 'Lose_Exp_Gain' || field === 'Exp_Gain') && 'number'}
                     />
                 </div>
             )
@@ -137,7 +147,7 @@ function MinionForm(props) {
                 <input type="text" required="required" className="form-control" onChange={handleRewardChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`}
-                // type='number'
+                    type='number'
                 />
             </div>
         )

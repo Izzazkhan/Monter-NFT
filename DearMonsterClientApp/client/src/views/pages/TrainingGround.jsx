@@ -165,13 +165,13 @@ const TrainingGround = () => {
 		setSelectedMonster(monster)
 	}
 
-	const energyExperienceUpdate = (params, type, EXP) => {
+	const energyExperienceUpdate = (params, EXP, status) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
 				console.log('energy experienc update', response)
-				if (type === 'EXP') {
-					setExpGain(EXP)
-				}
+				setExpGain(EXP)
+				setStatus(status)
+				setLoading(false)
 				setUpdateMonsterAfterFight(!updateMonsterAfterFight)
 				setSelectedMonster({})
 			})
@@ -227,13 +227,15 @@ const TrainingGround = () => {
 		}
 		else {
 			if (selectedMonster.values.Energy >= 1) {
-				setLoading(true);
+				setLoading(true)
+				setExpGain('')
+				setTotalReward('')
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
+				const energyCalculate = selectedMonster.values.Energy - 1
 				if (random <= minion.values.Win_Rate) { // true
-					status = 'You have won the fight.';
-					setLoading(false);
-					setStatus(status);
+					status = 'You have won the fight.'
+
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
 
 					let localLevel = '1'
@@ -260,8 +262,8 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
-
-					energyExperienceUpdate(params, 'EXP', minion.values.Exp_Gain)
+					params.append('values.Energy', energyCalculate)
+					energyExperienceUpdate(params, minion.values.Exp_Gain, status)
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
 						const field = item[0]
@@ -273,9 +275,7 @@ const TrainingGround = () => {
 					rewardUpdateCall(amount)
 
 				} else {
-					status = 'You have lost the fight.';
-					setLoading(false)
-					setStatus(status)
+					status = 'You have lost the fight.'
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Lose_Exp_Gain
 
 					let localLevel = '1'
@@ -302,12 +302,9 @@ const TrainingGround = () => {
 					let params = new URLSearchParams()
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
-					energyExperienceUpdate(params, 'EXP', minion.values.Lose_Exp_Gain)
+					params.append('values.Energy', energyCalculate)
+					energyExperienceUpdate(params, minion.values.Lose_Exp_Gain, status)
 				}
-				const energyCalculate = selectedMonster.values.Energy - 1
-				let params = new URLSearchParams()
-				params.append('values.Energy', energyCalculate)
-				energyExperienceUpdate(params, 'energy', '')
 				if (Number(selectedMonster.values.Energy) === 2) {
 					let params = new URLSearchParams()
 					params.append('values.UpdateTime', new Date())

@@ -2,6 +2,7 @@ const express = require('express');
 
 const LevelBonus = require('../controllers/levelBonus');
 // const validate = require('../middlewares/validate');
+const authenticate = require('../middlewares/authenticate');
 
 const router = express.Router();
 
@@ -9,16 +10,16 @@ const router = express.Router();
 router.get('/', LevelBonus.index);
 
 //SAVE
-router.post('/', LevelBonus.store);
+router.post('/', authenticate, LevelBonus.store);
 
 //SHOW
-router.get('/:id',  LevelBonus.show);
+router.get('/:id', LevelBonus.show);
 
 //UPDATE
-router.put('/:id', LevelBonus.update);
+router.put('/:id', authenticate, LevelBonus.update);
 
 //DELETE
-router.delete('/:id', LevelBonus.destroy);
+router.delete('/:id', authenticate, LevelBonus.destroy);
 
 module.exports = router;
 

@@ -1,6 +1,7 @@
 const express = require('express');
 // const {check} = require('express-validator');
 // const multer = require('multer');
+const authenticate = require('../middlewares/authenticate');
 
 const Monster = require('../controllers/monster');
 // const validate = require('../middlewares/validate');
@@ -21,16 +22,16 @@ router.get('/', Monster.index);
 // ], validate, Monster.store);
 
 //STORE
-router.post('/', Monster.store);
+router.post('/', authenticate, Monster.store);
 
 //SHOW
-router.get('/:id',  Monster.show);
+router.get('/:id', Monster.show);
 
 //UPDATE
-router.put('/:id', Monster.update);
+router.put('/:id', authenticate, Monster.update);
 
 //DELETE
-router.delete('/:id', Monster.destroy);
+router.delete('/:id', authenticate, Monster.destroy);
 
 module.exports = router;
 

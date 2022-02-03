@@ -1,6 +1,7 @@
 const express = require('express');
 // const {check} = require('express-validator');
 // const multer = require('multer');
+const authenticate = require('../middlewares/authenticate');
 
 const Minion = require('../controllers/minion');
 // const validate = require('../middlewares/validate');
@@ -20,16 +21,16 @@ router.get('/', Minion.index);
 //     check('lastName').not().isEmpty().withMessage('You last name is required')
 // ], validate, Minion.store);
 
-router.post('/', Minion.store);
+router.post('/', authenticate, Minion.store);
 
 //SHOW
-router.get('/:id',  Minion.show);
+router.get('/:id', Minion.show);
 
 //UPDATE
-router.put('/:id', Minion.update);
+router.put('/:id', authenticate, Minion.update);
 
 //DELETE
-router.delete('/:id', Minion.destroy);
+router.delete('/:id', authenticate, Minion.destroy);
 
 module.exports = router;
 

@@ -117,7 +117,7 @@ const FightModal = ({ loading, status, totalReward, expGain }) => {
 						<div>
 							<span>{status}</span> <br />
 							<span>{totalReward && `DMS Rewards: ${parseInt(totalReward)} DMS`}</span><br />
-							<span>{expGain && `EXP Gained: ${parseInt(expGain)} EXP`}</span>
+							<span>{(expGain || expGain === 0) && `EXP Gained: ${parseInt(expGain)} EXP`}</span>
 						</div>
 					}
 					</div>

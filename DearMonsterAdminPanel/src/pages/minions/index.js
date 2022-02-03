@@ -21,10 +21,9 @@ function Minions(props) {
 
     const deleteMinions = (id) => {
         if (window.confirm("Are you sure?")) {
-            props.deleteMinions(id)
+            props.deleteMinions(id, JSON.parse(localStorage.getItem('token')))
         }
     }
-    console.log('=====', props)
 
     return (
         <>

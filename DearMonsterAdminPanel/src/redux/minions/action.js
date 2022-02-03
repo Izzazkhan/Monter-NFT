@@ -15,7 +15,7 @@ export const getMinions = (token) => dispatch => {
         })
 };
 
-export const addMinions = (data) => dispatch => {
+export const addMinions = (data, token) => dispatch => {
 
     // if (state.email && state.password) {
     const params = new URLSearchParams()
@@ -31,7 +31,8 @@ export const addMinions = (data) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            "Token": `Bearer ${token.token}`
         }
     }
     axios
@@ -68,7 +69,7 @@ export const editMinions = (data, token) => dispatch => {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
-            // "Authorization": `Bearer ${token.token}`
+            "Token": `Bearer ${token.token}`
         }
     }
     axios
@@ -84,11 +85,12 @@ export const editMinions = (data, token) => dispatch => {
         })
 };
 
-export const deleteMinions = (id) => dispatch => {
+export const deleteMinions = (id, token) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            "Token": `Bearer ${token.token}`
         }
     }
     axios.delete(`${Minion}/${id}`, config)

@@ -50,10 +50,10 @@ const MainRoutes = (props) => {
                     </Switch>
                 </Layout>
                 : <Switch>
-                    {/* <Route path={'/'} render={() => (<Redirect to="/login" />)} /> */}
                     <Route path={'/register'} component={RegistrationPage} />
                     <Route path="/login" component={LoginPage} />
                     <Route path={'/'} component={LoginPage} />
+                    {/* <Route path={'*'} render={() => (<Redirect to="/login" />)} /> */}
                     <Route path="*" component={NotFound} />
                 </Switch>}
         </Router>

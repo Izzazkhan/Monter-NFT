@@ -21,7 +21,7 @@ function Bonus(props) {
     const deleteBonus = (id) => {
         // clearData();
         if (window.confirm("Are you sure?")) {
-            props.deleteBonus(id);
+            props.deleteBonus(id, JSON.parse(localStorage.getItem('token')));
 
         }
     }
