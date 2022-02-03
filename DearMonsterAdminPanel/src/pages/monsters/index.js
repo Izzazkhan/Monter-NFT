@@ -21,7 +21,7 @@ function Monsters(props) {
     const deleteDearMonsters = (id) => {
         // clearData();
         if (window.confirm("Are you sure?")) {
-            props.deleteDearMonsters(id);
+            props.deleteDearMonsters(id, JSON.parse(localStorage.getItem('token')))
 
         }
     }

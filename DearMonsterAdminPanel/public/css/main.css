@@ -983,6 +983,9 @@ footer{
     padding: 25px;
     margin-bottom: 20px;
 }
+.auth-box {
+ margin-top: 50px;
+}
 .content-box h3 {
     margin-bottom: 20px;
     color: #281489;

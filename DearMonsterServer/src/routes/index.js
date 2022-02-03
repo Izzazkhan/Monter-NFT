@@ -17,7 +17,7 @@ const withdrawRequest = require('./withdrawRequest');
 const authenticate = require('../middlewares/authenticate');
 
 router.get('/', (req, res) => {
-    res.status(200).send({ message: "Welcome to the SERVER APIs"});
+    res.status(200).send({ message: "Welcome to the SERVER APIs" });
 });
 router.use('/auth', auth);
 
@@ -25,8 +25,8 @@ router.use('/auth', auth);
 router.use('/userA', authenticate, user);
 router.use('/minionA', authenticate, minion);
 router.use('/monsterA', authenticate, monster);
-router.use('/mintedMonsterA',authenticate, mintedMonster);
-router.use('/tradeItemA',authenticate, tradeItem);
+router.use('/mintedMonsterA', authenticate, mintedMonster);
+router.use('/tradeItemA', authenticate, tradeItem);
 
 
 router.use('/user', user);

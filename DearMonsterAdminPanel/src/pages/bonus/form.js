@@ -17,8 +17,7 @@ function BonusForm(props) {
         3: '',
         4: '',
         5: '',
-        6: '',
-
+        6: ''
     })
 
 
@@ -47,21 +46,22 @@ function BonusForm(props) {
 
 
 
-    const validateForm = () => {
-        let isValid = false
-        if (state['1'] && state['2'] && state['3'] && state['4'] && state['5'] && state['6']
-        ) {
-            isValid = true
-        }
-        return isValid
-    }
+    // const validateForm = () => {
+    //     let isValid = false
+    //     if (state['1'] && state['2'] && state['3'] && state['4'] && state['5'] && state['6']
+    //     ) {
+    //         isValid = true
+    //     }
+    //     return isValid
+    // }
 
     const submitData = () => {
 
-        if (props.location.state && validateForm()) {
-            props.editBonus(state)
-        } else if (validateForm()) {
-            props.addBonus(state)
+        if (!state._id) {
+            props.addBonus(state, JSON.parse(localStorage.getItem('token')))
+            props.history.push('/additional-reward')
+        } else if (state._id) {
+            props.editBonus(state, JSON.parse(localStorage.getItem('token')))
             props.history.push('/additional-reward')
 
         } else {
@@ -85,7 +85,7 @@ function BonusForm(props) {
                     <input type="text" required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
                         placeholder={`Enter ${field}`}
-                    // type='number'
+                        type='number'
                     />
                 </div>
             )

@@ -1,17 +1,15 @@
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
-
-    console.log('before auth ------')
-
-    passport.authenticate('jwt', function(err, user, info) {
-        if (err) return next(err);
-
-        if (!user) return res.status(401).json({message: "Unauthorized Access - No Token Provided!"});
-
-        req.user = user;
-
+    try {
+        const token = req.header("token")
+        if (!token) return res.status(403).send("Access denied.");
+        const bearer = token.split(' ')
+        const bearerToken = bearer[1]
+        const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET)
+        req.user = decoded;
         next();
-
-    })(req, res, next);
+    } catch (error) {
+        res.status(400).send("Invalid token");
+    }
 };

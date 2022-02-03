@@ -15,7 +15,7 @@ export const getBonus = () => dispatch => {
         })
 };
 
-export const addBonus = (data) => dispatch => {
+export const addBonus = (data, token) => dispatch => {
     // if (state.email && state.password) {
     const params = new URLSearchParams()
     params.append('1', Number(data['1']))
@@ -26,7 +26,9 @@ export const addBonus = (data) => dispatch => {
     params.append('6', Number(data['6']))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            "Token": `Bearer ${token.token}`
         }
     }
     axios
@@ -46,7 +48,7 @@ export const addBonus = (data) => dispatch => {
     // }
 };
 
-export const editBonus = (data) => dispatch => {
+export const editBonus = (data, token) => dispatch => {
     const params = new URLSearchParams()
     params.append('1', Number(data['1']))
     params.append('2', Number(data['2']))
@@ -56,7 +58,9 @@ export const editBonus = (data) => dispatch => {
     params.append('6', Number(data['6']))
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            "Token": `Bearer ${token.token}`
         }
     }
     axios
@@ -64,7 +68,7 @@ export const editBonus = (data) => dispatch => {
         .then((res) => {
             console.log('response', res)
             return dispatch({
-                type: 'ADD_BONUS',
+                type: 'EDIT_BONUS',
                 payload: res.data.levelBonus
             })
         }).catch((e) => {
@@ -72,8 +76,15 @@ export const editBonus = (data) => dispatch => {
         })
 };
 
-export const deleteBonus = (id) => dispatch => {
-    axios.delete(`${Bonus}/${id}`)
+export const deleteBonus = (id, token) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+            "Token": `Bearer ${token.token}`
+        }
+    }
+    axios.delete(`${Bonus}/${id}`, config)
         .then((res) => {
             console.log('response delete', res)
             // if (res.data.success) {

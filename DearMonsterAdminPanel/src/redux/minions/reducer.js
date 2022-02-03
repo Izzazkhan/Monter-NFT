@@ -3,6 +3,7 @@ const initialstate = {
 };
 
 const MinionReducer = (state = initialstate, action) => {
+    console.log('stateeeeeee', state, action.payload)
     switch (action.type) {
         case 'GET_MINIONS':
             return {
@@ -18,10 +19,13 @@ const MinionReducer = (state = initialstate, action) => {
             return {
                 ...state,
                 minions: state.minions.map(
-                    (content, i) => content.id === action.payload.id ? {
-                        ...content, name: action.payload.name, element: action.payload.element
-                        , level: action.payload.level, exp: action.payload.exp, star: action.payload.star, energy: action.payload.energy,
-                        image: action.payload.image
+                    (content, i) => content._id === action.payload._id ? {
+                        ...content, title: action.payload.title, rating: action.payload.rating
+                        , totalRating: action.payload.totalRating, values: {
+                            ...content.values, Win_Rate: action.payload.values.Win_Rate,
+                            Lose_Exp_Gain: action.payload.values.Lose_Exp_Gain, Exp_Gain: action.payload.values.Exp_Gain
+                        },
+                        img: action.payload.img
                     }
                         : content)
             };

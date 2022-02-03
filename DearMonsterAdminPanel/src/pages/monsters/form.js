@@ -63,16 +63,17 @@ function MonsterPage(props) {
             cetagory: state.cetagory,
             price: state.price,
         }
-        if (state.title && state.totalRating && !state._id) {
-            props.addDearMonsters({ ...dearMonsters })
-        } else if (state.title && state.totalRating && state._id) {
-            props.editDearMonsters({ ...dearMonsters, _id: state._id });
+        if (!state._id) {
+            props.addDearMonsters(state, JSON.parse(localStorage.getItem('token')))
+            props.history.push('/monsters')
+        } else if (state._id) {
+            props.editDearMonsters(state, JSON.parse(localStorage.getItem('token')));
             props.history.push('/monsters')
 
         } else {
             alert('Enter Monster Details.');
         }
-        clearData();
+        // clearData()
     }
 
     const handleChange = (e) => {

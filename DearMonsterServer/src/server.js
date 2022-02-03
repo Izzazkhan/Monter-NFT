@@ -22,17 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-app.use(function(req, res, next) {
-  if (req.method == 'POST' || req.method == 'PUT' || req.method == 'DELETE'){
+app.use(function (req, res, next) {
+  if (req.method == 'POST' || req.method == 'PUT' || req.method == 'DELETE') {
 
-    console.log("==== req.method ====")
-    console.log(req.method)
+    // console.log("==== req.method ====")
+    // console.log(req.headers.authorization)
 
     if (!req.headers.authorization) {
       return res.status(403).json({ error: 'No credentials sent!' });
     } else {
-      if(!(req.headers.authorization == `xx Umaaah haaalaaa ${process.env.CLIENT_SECRET} haaalaaa Umaaah xx`)){
-        return res.status(403).json({ error: 'Invalid token!' });
+      if (!(req.headers.authorization == `xx Umaaah haaalaaa ${process.env.CLIENT_SECRET} haaalaaa Umaaah xx`)) {
+        return res.status(402).json({ error: 'Invalid token!' });
       }
     }
   }
@@ -63,8 +63,8 @@ mongoose.connect(connUri, { useNewUrlParser: true });
 const connection = mongoose.connection;
 connection.once('open', () => console.log('MongoDB --  database connection established successfully!'));
 connection.on('error', (err) => {
-    console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
-    process.exit();
+  console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
+  process.exit();
 });
 
 app.use(passport.initialize());
@@ -72,4 +72,4 @@ require("./middlewares/jwt")(passport);
 
 
 //=== 5 - START SERVER
-app.listen(PORT, () => console.log('Server running on http://localhost:'+PORT+'/'));
+app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT + '/'));

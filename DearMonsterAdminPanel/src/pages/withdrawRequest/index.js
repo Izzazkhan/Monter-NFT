@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 function WithdrawRequest(props) {
 
     useEffect(() => {
-        props.getWithdrawRequest(JSON.parse(localStorage.getItem('token')))
+        props.getWithdrawRequest()
     }, [])
 
 

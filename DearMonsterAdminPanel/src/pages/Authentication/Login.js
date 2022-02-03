@@ -24,7 +24,8 @@ const LoginPage = (props) => {
 
             const config = {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
                 }
             }
             axios
@@ -35,7 +36,7 @@ const LoginPage = (props) => {
                     setOpenNotification(true)
                     setToken(res.data)
                     props.history.push('/dashboard')
-                    // window.location.reload()
+                    window.location.reload()
                 }).catch((e) => {
                     console.log("Error", e);
                     setErrorMsg('Error while logging, please try again')
@@ -57,7 +58,7 @@ const LoginPage = (props) => {
         return (
             <div className="form-group col-md-6" key={i}>
                 <label className="control-label">{field.toUpperCase()}</label>
-                <input type={ field === "password" ? "password" : "text"} required="required" className="form-control" onChange={handleChange}
+                <input type={field === "password" ? "password" : "text"} required="required" className="form-control" onChange={handleChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`} />
             </div>
@@ -69,7 +70,7 @@ const LoginPage = (props) => {
             <Header />
             <div className="col-lg-12 col-md-12">
                 <div className="content-wrapper">
-                    <div className="content-box">
+                    <div className="content-box auth-box">
                         <h3>Login User</h3>
                         <div className="row">
                             {InputField}

@@ -4,12 +4,10 @@ import { apiUrl } from '../../utils/constant';
 const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
 	// console.log('energyCalculate ===', post)
 
-
-	const [minutes, setMinutes] = useState()
-	const [seconds, setSeconds] = useState()
-	const [hours, setHours] = useState()
 	const [remainingTime, setRemainingTime] = useState(1)
 	const [timeInMinute, setTimeInMinute] = useState(1)
+	const [time, setTime] = useState('0d 0h 0m 0s')
+
 
 	const energyUpdateCall = (energy, calculateTime) => {
 
@@ -29,6 +27,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			.then((response) => {
 				console.log('Energy update::', response)
 				setUpdateMonsterAfterEnergyChange(!updateMonsterAfterEnergyChange)
+				// setTime('0d 0h 0m 0s')
 
 			})
 			.catch((error) => {
@@ -37,6 +36,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	}
 
 	function displayUpdatedTime(calculateTime) {
+
 
 		let calculateTimeInMinutes
 		if (post.values.UpdateTime) {
@@ -61,20 +61,33 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 	}
 
 
+
 	const displayTimer = () => {
+		// console.log('function called')
+		// const startTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+		// console.log('startTime::', startTime)
+		// const endTime = new Date()
+		// let timeDiff = endTime - startTime
+		// timeDiff /= 1000
+		// const seconds = Math.round(timeDiff % 60)
+		// timeDiff = Math.floor(timeDiff / 60)
+		// const minutes = Math.round(timeDiff % 60)
+		// timeDiff = Math.floor(timeDiff / 60)
+		// const hours = Math.round(timeDiff % 24)
+		// setTime(`${hours}h ${minutes}m ${seconds}s`)
+
 		let calcRemainingTime = new Date()
 
 		let calculateTimeInMinutes
 		if (post.values.UpdateTime) {
 			calculateTimeInMinutes = (new Date(post.values.UpdateTime)).getTime() - (new Date()).getTime()
-			// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
-
 		}
 		else {
 			calculateTimeInMinutes = (new Date(post.createdAt)).getTime() - (new Date()).getTime()
 		}
 
 		calculateTimeInMinutes = Math.abs(Math.round(calculateTimeInMinutes / 60000))
+		// console.log('calculateTimeInMinutes::', calculateTimeInMinutes)
 		setTimeInMinute(calculateTimeInMinutes)
 
 		if (calculateTimeInMinutes > 90) {
@@ -94,6 +107,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 			setRemainingTime(calcRemainingTime)
 		}
 	}
+
 
 
 	useEffect(() => {
@@ -128,7 +142,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 				clearInterval(interval)
 			}
 		}
-	}, [remainingTime, post])
+	}, [post, remainingTime])
 
 	return (
 		<div className={`${className}`}>
@@ -141,6 +155,8 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
 					<p className='text-center mt-6 fs-18 bold'>{post?.title}</p>
+					{/* <div className='timerBoard w-170px mt-8  ms-10 center py-3 bold'>{time}</div> */}
+
 					<div className='center mt-5'>
 						<div>
 							{[...Array(post?.totalRating)].map((e, i) => {
