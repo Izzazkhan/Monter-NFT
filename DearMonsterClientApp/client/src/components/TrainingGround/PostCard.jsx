@@ -64,17 +64,17 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 
 	const displayTimer = () => {
 		// console.log('function called')
-		const startTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
+		// const startTime = post.values.UpdateTime ? new Date(post.values.UpdateTime) : new Date(post.createdAt)
 		// console.log('startTime::', startTime)
-		const endTime = new Date()
-		let timeDiff = endTime - startTime
-		timeDiff /= 1000
-		const seconds = Math.round(timeDiff % 60)
-		timeDiff = Math.floor(timeDiff / 60)
-		const minutes = Math.round(timeDiff % 60)
-		timeDiff = Math.floor(timeDiff / 60)
-		const hours = Math.round(timeDiff % 24)
-		setTime(`${hours}h ${minutes}m ${seconds}s`)
+		// const endTime = new Date()
+		// let timeDiff = endTime - startTime
+		// timeDiff /= 1000
+		// const seconds = Math.round(timeDiff % 60)
+		// timeDiff = Math.floor(timeDiff / 60)
+		// const minutes = Math.round(timeDiff % 60)
+		// timeDiff = Math.floor(timeDiff / 60)
+		// const hours = Math.round(timeDiff % 24)
+		// setTime(`${hours}h ${minutes}m ${seconds}s`)
 
 		let calcRemainingTime = new Date()
 
@@ -155,7 +155,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
 					<p className='text-center mt-6 fs-18 bold'>{post?.title}</p>
-					<div className='timerBoard w-170px mt-8  ms-10 center py-3 bold'>{time}</div>
+					{/* <div className='timerBoard w-170px mt-8  ms-10 center py-3 bold'>{time}</div> */}
 
 					<div className='center mt-5'>
 						<div>
