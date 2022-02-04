@@ -14,6 +14,7 @@ import AdditionaRewardForm from '../pages/bonus/form'
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
 import LoginPage from '../pages/Authentication/Login'
+import ForgetPassword from '../pages/ForgetPassword/index'
 import useToken from '../hooks/useToken'
 // import '../App.css';
 
@@ -44,6 +45,7 @@ const MainRoutes = (props) => {
                         <Route exact path={'/additional-reward'} component={AdditionaReward} />
                         <Route exact path={'/additional-reward/create'} component={AdditionaRewardForm} />
                         <Route exact path={'/additional-reward/edit'} component={AdditionaRewardForm} />
+                        <Route path={'/forget-password'} component={ForgetPassword} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
                             <Route path="/login" component={LoginPage} /> */}
                         <Route path="*" component={NotFound} />
@@ -53,6 +55,8 @@ const MainRoutes = (props) => {
                     <Route path={'/register'} component={RegistrationPage} />
                     <Route path="/login" component={LoginPage} />
                     <Route path={'/'} component={LoginPage} />
+
+
                     {/* <Route path={'*'} render={() => (<Redirect to="/login" />)} /> */}
                     <Route path="*" component={NotFound} />
                 </Switch>}
