@@ -12,32 +12,31 @@ const NavigationMenu = (props) => {
                 <hr />
                 <Link to='/monsters'>
                     <div className="other-info">
-                        <button className="btn-default hvr-bounce-in" data-toggle="modal" data-target=".create-item"><span
-                            className="icon fas fa-plus"></span>Monsters List</button>
+                        <button className="nav-button btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item">Monsters List</button>
                     </div>
                 </Link>
                 <Link to='/minions'>
                     <div className="other-info">
-                        <button className="btn-default hvr-bounce-in" data-toggle="modal" data-target=".create-item"><span
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
                             className="icon fas fa-plus"></span>Minions List</button>
                     </div>
                 </Link>
                 <hr />
                 <Link to='/withdraw-request'>
                     <div className="other-info">
-                        <button className="btn-default hvr-bounce-in" data-toggle="modal" data-target=".create-item"><span
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
                             className="icon fas fa-plus"></span>Withdraw Request</button>
                     </div>
                 </Link>
                 <Link to='/additional-reward'>
                     <div className="other-info">
-                        <button className="btn-default hvr-bounce-in" data-toggle="modal" data-target=".create-item"><span
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
                             className="icon fas fa-plus"></span>Additional Reward</button>
                     </div>
                 </Link>
                 <Link to='/forget-password'>
                     <div className="other-info">
-                        <button className="btn-default hvr-bounce-in" data-toggle="modal" data-target=".create-item"><span
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
                             className="icon fas fa-plus"></span>Change Password</button>
                     </div>
                 </Link>

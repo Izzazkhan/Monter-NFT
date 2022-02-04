@@ -97,11 +97,14 @@ td, th {
 	transition: all 0.3s ease 0s
 }
 .main-menu .navbar{
-	background-color: orange;
+	background-color: #CA4F35;
 	filter: drop-shadow(-4.17px 4.32px 24px #00000085);
 }
 .main-padding{
 	padding: 10px 70px;
+}
+.nav-padding {
+    padding-left: 80px;
 }
 .navbar .nav-item .nav-link{
 	color: #fff;
@@ -115,7 +118,7 @@ td, th {
     width: 62px;
 }
 .btn-default{
-	background: chocolate;
+	background: #FF901D;
 	border-radius: 14px;
 	color: #fff;
 	padding: 12px 20px;
@@ -124,6 +127,11 @@ td, th {
     justify-content: center;
 }
 .login-button {
+  margin-top: 20px;
+    width: 180px;
+    height: 50px;
+}
+.nav-button {
   margin-top: 20px;
     width: 180px;
     height: 50px;
@@ -895,7 +903,7 @@ footer{
     padding-top: 150px;
 }
 .sidebar {
-    background: orange;
+    background: #CA4F35;
     border-radius: 10px;
     padding: 20px 0;
 }
@@ -929,8 +937,7 @@ footer{
     padding: 20px 95px;
 }
 .sidebar .other-info .btn-default {
-    margin: 0 auto 10px;
-    width: fit-content;
+    margin: 0 -35px;
 }
 .sidebar .other-info .btn-default:hover{
     color: #fff;

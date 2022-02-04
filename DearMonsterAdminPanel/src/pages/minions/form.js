@@ -13,7 +13,7 @@ function MinionForm(props) {
 
     const [state, setState] = useState({
         title: '',
-        img: '',
+        // img: '',
         rating: 0,
         totalRating: 0,
         price: 0,
@@ -35,7 +35,7 @@ function MinionForm(props) {
                 ...state,
                 _id: propsData._id,
                 title: propsData.title,
-                img: propsData.img,
+                // img: propsData.img,
                 rating: propsData.rating,
                 totalRating: propsData.totalRating,
                 price: propsData.price,
@@ -156,7 +156,7 @@ function MinionForm(props) {
 
     const clearData = () => {
         setState({
-            title: '', img: '', rating: '', totalRating: '', price: '', Win_Rate: '',
+            title: '', rating: '', totalRating: '', price: '', Win_Rate: '',
             Lose_Exp_Gain: '', Reward_Estimated: { 1: '', 2: '', 3: '', 4: '', 5: '' }, Exp_Gain: ''
         })
     }

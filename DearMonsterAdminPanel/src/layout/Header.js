@@ -14,7 +14,7 @@ const Header = (props) => {
             <div className="container-fluid main-menu">
                 <div className="row">
                     <nav className="navbar navbar-expand-lg w-100 fixed-top main-padding">
-                        <h5>DearMonsters </h5>
+                        <h5 className='nav-padding'>Dear Monsters </h5>
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
                             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon fa fa-bars"></span>

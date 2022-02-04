@@ -56,7 +56,7 @@ function Minions(props) {
                                             {/* <td>{(index + 1)}</td> */}
                                             {/* <td>{data._id}</td> */}
                                             <td>{data.title}</td>
-                                            <td>{data.img}</td>
+                                            {/* <td>{data.img}</td> */}
                                             <td>{data.rating}</td>
                                             <td>{data.totalRating}</td>
                                             <td>{data.values.Exp_Gain}</td>

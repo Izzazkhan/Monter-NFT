@@ -3,15 +3,12 @@ import React, { useState } from "react"
 import axios from 'axios'
 import { resetPassword } from "../../utilities/constant";
 import ToastNotification from '../../components/Toast'
-import Header from '../../layout/Header'
-import useToken from '../../hooks/useToken'
 
 function ChangePassword(props) {
     const [state, setState] = useState({ password: '', newPassword: '', confirmPassword: '' })
     const [errorMsg, setErrorMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
     const [openNotification, setOpenNotification] = useState(false)
-    console.log('stateeeee', JSON.parse(localStorage.getItem('token')).user)
 
     const handleForgetPassword = async () => {
         if (state.confirmPassword !== state.newPassword) {
@@ -65,10 +62,10 @@ function ChangePassword(props) {
         // }
         return (
             <div className="form-group col-md-12" key={i}>
-                <label className="control-label">{field === "newPassword" ? 'New Password' : field === 'confirmPassword' ? 'Confirm Password' : 'Previos Password'}</label>
+                <label className="control-label">{field === "newPassword" ? 'New Password' : field === 'confirmPassword' ? 'Confirm Password' : 'Previous Password'}</label>
                 <input type={"password"} required="required" className="form-control" onChange={handleChange}
                     name={field} value={value}
-                    placeholder={`Enter ${field}`} />
+                    placeholder={`Enter ${field === "newPassword" ? 'New Password' : field === 'confirmPassword' ? 'Confirm Password' : 'Previous Password'}`} />
             </div>
         )
     })

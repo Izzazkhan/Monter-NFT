@@ -7,7 +7,7 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 function MonsterPage(props) {
 
-    const [state, setState] = useState({ title: '', cetagory: '', img: '', totalRating: 0, price: 0 });
+    const [state, setState] = useState({ title: '', cetagory: '', totalRating: 0, price: 0 });
 
     // todo commented untill file is added
     // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })
@@ -19,7 +19,7 @@ function MonsterPage(props) {
                 ...state,
                 _id: propsData._id,
                 title: propsData.title,
-                img: propsData.img,
+                // img: propsData.img,
                 totalRating: propsData.totalRating,
                 price: propsData.price,
                 cetagory: propsData.cetagory
@@ -56,13 +56,6 @@ function MonsterPage(props) {
 
     const submitData = () => {
 
-        const dearMonsters = {
-            title: state.title,
-            img: state.img,
-            totalRating: state.totalRating,
-            cetagory: state.cetagory,
-            price: state.price,
-        }
         if (!state._id) {
             props.addDearMonsters(state, JSON.parse(localStorage.getItem('token')))
             props.history.push('/monsters')
@@ -100,7 +93,7 @@ function MonsterPage(props) {
     });
 
     const clearData = () => {
-        setState({ title: '', cetagory: '', img: '', totalRating: 0, price: 0 })
+        setState({ title: '', cetagory: '', totalRating: 0, price: 0 })
     }
 
     return (
