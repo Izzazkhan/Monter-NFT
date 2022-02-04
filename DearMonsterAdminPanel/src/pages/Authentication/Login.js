@@ -5,8 +5,10 @@ import { Login } from "../../utilities/constant";
 import ToastNotification from '../../components/Toast'
 import Header from '../../layout/Header'
 import useToken from '../../hooks/useToken'
+// import { useHistory } from 'react-router-dom';
 
 const LoginPage = (props) => {
+    // const history = useHistory()
     const { token, setToken } = useToken()
     console.log('loginprosp', token)
 
@@ -25,7 +27,7 @@ const LoginPage = (props) => {
             const config = {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+                    'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
                 }
             }
             axios
@@ -65,6 +67,10 @@ const LoginPage = (props) => {
         )
     })
 
+    const forgetPassword = () => {
+        props.history.push('/forget-password');
+    }
+
     return (
         <>
             <Header />
@@ -76,7 +82,8 @@ const LoginPage = (props) => {
                             {InputField}
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <button className="btn-default hvr-bounce-in" onClick={handleLogin}>Login</button>
+                            <button className="btn-default hvr-bounce-in login-button" onClick={handleLogin}>Login</button> &nbsp;&nbsp;
+                            {/* <button className="btn-default hvr-bounce-in login-button" onClick={forgetPassword}>Forget Password</button> */}
                         </div>
                         <br />
                     </div>

@@ -1,19 +1,19 @@
 const express = require('express');
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 
 const Auth = require('../controllers/auth');
 const Password = require('../controllers/password');
 const validate = require('../middlewares/validate');
-
+const authenticate = require('../middlewares/authenticate');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.status(200).json({message: "Base route for auth called."});
+    res.status(200).json({ message: "Base route for auth called." });
 });
 
 router.post('/register', [
     check('email').isEmail().withMessage('Enter a valid email address'),
-    check('password').not().isEmpty().isLength({min: 6}).withMessage('Must be at least 6 chars long'),
+    check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),
     check('firstName').not().isEmpty().withMessage('You first name is required'),
     check('lastName').not().isEmpty().withMessage('You last name is required')
 ], validate, Auth.register);
@@ -22,6 +22,13 @@ router.post("/login", [
     check('email').isEmail().withMessage('Enter a valid email address'),
     check('password').not().isEmpty(),
 ], validate, Auth.login);
+router.post("/resetPassword", [
+    check('email').isEmail().withMessage('Enter a valid email address'),
+    check('password').not().isEmpty(),
+    // check('newPassword').not().isEmpty()
+], validate, Auth.resetPassword);
+
+
 
 
 //EMAIL Verification
@@ -36,8 +43,8 @@ router.post('/recover', [
 router.get('/reset/:token', Password.reset);
 
 router.post('/reset/:token', [
-    check('password').not().isEmpty().isLength({min: 6}).withMessage('Must be at least 6 chars long'),
-    check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
+    check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),
+    check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),
 ], validate, Password.resetPassword);
 
 

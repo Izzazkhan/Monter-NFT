@@ -42,14 +42,15 @@ const Header = (props) => {
                                 </>
                                 :
                                 <>
-                                    <Link to='/login'>
+                                    {/* <Link to='/login'>
                                         <button className="btn-default hvr-bounce-in"><span className="icon">
                                         </span>Login</button>
                                     </Link>
                                     <Link to='/register'>
                                         <button className="btn-default hvr-bounce-in"><span className="icon">
                                         </span>Sign Up</button>
-                                    </Link></>}
+                                    </Link> */}
+                                </>}
                             <div className="flags-dropdown btn-group">
                                 <button type="button" className="btn" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">
@@ -61,23 +62,6 @@ const Header = (props) => {
                                         alt="Flag" /></a>
                                     <a className="dropdown-item" href="#"><img className="img-fluid" src="img/flag.png"
                                         alt="Flag" /></a>
-                                </div>
-                            </div>
-                            <div className="login-signup">
-                                <div className="account-dropdown btn-group">
-                                    <button type="button" className="btn dropdown-toggle" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        <span className="img fa fa-user"></span>DearMonsters
-                                    </button>
-                                    <div className="dropdown-menu">
-                                        <a href="dashboard.html" className="dropdown-item active" role="button">Profile</a>
-                                        <a href="messages.html" className="dropdown-item" role="button">Messages</a>
-                                        <a href="create-store.html" className="dropdown-item" role="button">Create a Store</a>
-                                        <a href="#" className="dropdown-item" role="button">Disconnect my wallet</a>
-                                        <a href="#" className="dropdown-item" role="button">Help</a>
-                                        <a href="#" className="dropdown-item" role="button">Log out</a>
-                                        <a href="#" className="dropdown-item" role="button">Suggest a feature</a>
-                                    </div>
                                 </div>
                             </div>
                             {/* <div className="mobile login-signup">
