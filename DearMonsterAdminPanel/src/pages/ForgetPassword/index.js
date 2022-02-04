@@ -83,8 +83,11 @@ function ChangePassword(props) {
                         <div className="row">
                             {InputField}
                         </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <button className="btn-default hvr-bounce-in login-button" onClick={handleForgetPassword}>Change Password</button>&nbsp;&nbsp;
+                        <div className="row">
+                            <div className="col-md-6">
+                                <button className="btn-default hvr-bounce-in" onClick={handleForgetPassword}>Change Password</button>
+
+                            </div>
                         </div>
 
                     </div>

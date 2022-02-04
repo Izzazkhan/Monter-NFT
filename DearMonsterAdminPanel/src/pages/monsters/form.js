@@ -121,9 +121,15 @@ function MonsterPage(props) {
 
 
 
-                        <div className="row" style={{ justifyContent: 'center', width: "200px" }}>
-                            {state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
-                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}   <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
+                        <div className="row" >
+                            <div className="col-md-6">
+                                {state._id ?
+
+                                    <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
+                                    <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}
+                            </div>
+
+                            <div className="col-md-6"><button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button></div>
                         </div>
                         <br />
                     </div>
