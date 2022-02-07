@@ -53,6 +53,7 @@ const TradingPost = ({ }) => {
 					searchDataLocal = localFilterData.filter((element) => element.id == parseInt(filterObject.tokenId))
 				} else {
 					searchDataLocal = data.filter((element) => element.id == parseInt(filterObject.tokenId))
+					filterApplied = true
 				}
 				localFilterData = searchDataLocal
 			}
@@ -162,7 +163,10 @@ const TradingPost = ({ }) => {
 	}
 
 	const clearSearchData = () => {
-		setFilterObject({})
+		// setFilterObject({})
+		let tempObj = { ...filterObject }
+		delete tempObj.tokenId
+		setFilterObject(tempObj)
 	}
 
 	const filterDataByStar = (starsArray) => {

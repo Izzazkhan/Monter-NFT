@@ -6,6 +6,8 @@ import {
 	INVENTORY_ALL,
 	INVENTORY_TRADING,
 	TRAINING_GROUND,
+	SCHOLARSHIP_MANAGER,
+	SCHOLARSHIP_SCHOLAR
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -44,6 +46,21 @@ export const NavbarRoutes = [
 		title: 'Training Ground',
 		exact: true,
 		component: lazy(() => import('../views/pages/TrainingGround')),
+	},
+	{
+		path: SCHOLARSHIP_MANAGER,
+		title: 'Scholarship',
+		pathForNavabr: '/scholarship/manager',
+		exact: true,
+		component: lazy(() => import('../views/pages/ScholarshipManager')),
+	},
+	{
+		path: SCHOLARSHIP_SCHOLAR,
+		title: 'Scholarship',
+		pathForNavabr: '/scholarship/scholar',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/ScholarshipScholar')),
 	},
 	{
 		path: INSTRUCTIONS,

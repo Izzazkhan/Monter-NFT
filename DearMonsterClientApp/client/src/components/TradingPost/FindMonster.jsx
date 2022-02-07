@@ -7,31 +7,35 @@ const FindMonster = ({
 	clearFilterData,
 	filterDataByStar
 }) => {
-	const [rating, setRating] = React.useState([]);
-	const [levels, setLevels] = React.useState([]);
-	const [isSearch, setIsSearch] = React.useState(false);
-	const [isFilter, setIsFilter] = React.useState(false);
-	const [searchValue, setSearchValue] = React.useState('');
+	const [rating, setRating] = useState([]);
+	const [levels, setLevels] = useState([]);
+	const [isSearch, setIsSearch] = useState(false);
+	const [isFilter, setIsFilter] = useState(false);
+	const [searchValue, setSearchValue] = useState('');
 	const addRating = (e) => {
-		setRating(rating.concat(e.target.value));
+		let localRating = Number(e.target.value) + 1
+		localRating = localRating.toString()
+		setRating(rating.concat(localRating));
 	};
 	const removeRating = (e) => {
-		const newRating = rating.filter((rating) => rating !== e.target.value);
+		let localRating = Number(e.target.value) + 1
+		localRating = localRating.toString()
+		const newRating = rating.filter((rating) => rating !== localRating);
 		setRating(newRating);
 	};
 
-	const addLevels = (e) => {
-		setLevels(levels.concat(e.target.value));
-	};
+	// const addLevels = (e) => {
+	// 	setLevels(levels.concat(e.target.value));
+	// };
 
-	const removeLevels = (e) => {
-		const newLevels = levels.filter((level) => level !== e.target.value);
-		setLevels(newLevels);
-	};
+	// const removeLevels = (e) => {
+	// 	const newLevels = levels.filter((level) => level !== e.target.value);
+	// 	setLevels(newLevels);
+	// };
+
 
 	const handleFiltering = (e) => {
-		e.preventDefault();
-		console.log(rating)
+		e.preventDefault()
 		filterDataByStar(rating)
 		setIsFilter(true);
 	};
@@ -53,11 +57,10 @@ const FindMonster = ({
 		clearFilterData()
 	}
 
-	const [starData, setStarData] = useState([{ id: 1, checked: false }, { id: 2, checked: false },
-	{ id: 3, checked: false }, { id: 4, checked: false }, { id: 5, checked: false }])
+	const [starData, setStarData] = useState([{ id: 0, checked: false }, { id: 1, checked: false }, { id: 2, checked: false },
+	{ id: 3, checked: false }, { id: 4, checked: false }])
 
 	const handleCheckbox = (e) => {
-		console.log(e.target.checked)
 		if (e.target.checked) {
 			addRating(e);
 		} else {
