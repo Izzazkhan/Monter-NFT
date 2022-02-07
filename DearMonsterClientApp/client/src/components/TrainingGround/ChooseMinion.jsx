@@ -47,6 +47,9 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 			})
 			setMinions(rewardMapped)
 		}
+		else {
+			minions.length && minions.filter(minion => delete minion.rewardEstimated)
+		}
 
 	}, [selectedMonster])
 
