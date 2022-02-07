@@ -50,9 +50,8 @@ exports.show = async function (req, res) {
 exports.destroy = async function (req, res) {
     try {
         const id = req.params.id
-        const scholarId = req.body.scholarId
 
-        await MintedMonster.findByIdAndUpdate(id, { $unset: { scholarId: 1 } }, { new: true });
+        await MintedMonster.findByIdAndUpdate(id, { $unset: { 'req.body.scholarId': 1 } }, { new: true });
         res.status(200).json({ message: 'MintedMonster scholar is removed' });
     } catch (error) {
         res.status(500).json({ message: error.message });
