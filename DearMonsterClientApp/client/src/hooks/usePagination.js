@@ -40,7 +40,7 @@ export const usePagination = (data, itemsPerPage) => {
 	};
 
 	const doPagination = (data, itemsPerPage, currentPage) => {
-		if (data == null) {
+		if (data == null || data.length === 0) {
 			setTotalData([]);
 			setTotalPages(0);
 			setPageData([]);

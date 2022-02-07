@@ -31,6 +31,7 @@ const FindMonster = ({
 
 	const handleFiltering = (e) => {
 		e.preventDefault();
+		console.log(rating)
 		filterDataByStar(rating)
 		setIsFilter(true);
 	};
@@ -56,6 +57,7 @@ const FindMonster = ({
 	{ id: 3, checked: false }, { id: 4, checked: false }, { id: 5, checked: false }])
 
 	const handleCheckbox = (e) => {
+		console.log(e.target.checked)
 		if (e.target.checked) {
 			addRating(e);
 		} else {
@@ -132,7 +134,7 @@ const FindMonster = ({
 									/>
 									<label className='form-check-label ms-3' for={i}>
 										{[...Array(i + 1).keys()].map((star, i) => {
-											return <img src='/assets/imgs/Star.png' alt='' className='me-2' />;
+											return <img src='/assets/imgs/star.png' alt='' className='me-2' />;
 										})}
 									</label>
 								</div>
