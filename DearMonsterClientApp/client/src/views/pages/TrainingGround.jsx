@@ -548,7 +548,7 @@ const TrainingGround = () => {
 						<div className='center'>
 							<div>
 								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-									Please connect to see Inventory
+									Please connect to see Training Ground
 								</p>
 								<div
 									onClick={handleConnect}

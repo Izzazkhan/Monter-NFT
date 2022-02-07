@@ -1,6 +1,6 @@
 
 let xurl = "http://34.234.236.236"
-let url = "http://4bb3-202-166-170-107.ngrok.io"
+let url = "https://www.dearmonsters.io"
 
 
 export const Register = url + '/api/auth/register'
