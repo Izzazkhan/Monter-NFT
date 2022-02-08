@@ -139,7 +139,7 @@ const Inventory = ({ match }) => {
                         {
                             posts.length < 1 ? (
                                 <p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-                                    You Don't have any inventory
+                                    You Don't have any scholarship
                                 </p>
                             )
                                 :
