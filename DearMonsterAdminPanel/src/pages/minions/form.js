@@ -13,7 +13,7 @@ function MinionForm(props) {
 
     const [state, setState] = useState({
         title: '',
-        // img: '',
+        img: '',
         rating: 0,
         totalRating: 0,
         price: 0,
