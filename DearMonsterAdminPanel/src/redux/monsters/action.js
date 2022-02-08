@@ -19,7 +19,7 @@ export const addDearMonsters = (data, token) => dispatch => {
 
     const params = new URLSearchParams()
     params.append('title', data.title)
-    // params.append('img', data.img)
+    params.append('img', data.img)
     params.append('cetagory', data.cetagory)
     params.append('totalRating', Number(data.totalRating))
     params.append('price', Number(data.price))

@@ -7,7 +7,7 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 function MonsterPage(props) {
 
-    const [state, setState] = useState({ title: '', cetagory: '', totalRating: 0, price: 0 });
+    const [state, setState] = useState({ title: '', cetagory: '', totalRating: 0, price: 0, img: '' });
 
     // todo commented untill file is added
     // const [imageState, setImageState] = useState({ image: null, imagePreviewUrl: null })

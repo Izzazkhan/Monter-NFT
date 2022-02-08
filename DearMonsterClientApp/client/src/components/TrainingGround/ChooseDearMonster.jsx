@@ -12,7 +12,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
-	
+
 	const { userId } = useSelector((state) => state.auth);
 
 	useEffect(() => {

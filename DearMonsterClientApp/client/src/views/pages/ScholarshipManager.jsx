@@ -96,8 +96,9 @@ const Inventory = ({ match }) => {
 
     function getData(owner) {
         let _posts = []
-        axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + owner)
+        axios.get(`${apiUrl}/api/scholarship/` + owner)
             .then((res) => {
+                console.log('response::::', res)
                 if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
                     res.data.mintedMonster.forEach(item => {
                         if (item.tradeitem.length < 1) {
@@ -110,6 +111,7 @@ const Inventory = ({ match }) => {
                             post['rating'] = item.rating
                             post['totalRating'] = item.monster.totalRating
                             post['values'] = {}
+                            post['scholarshipsItems'] = item.scholarshipsItems
                             post.values['Level'] = item.values.Level
                             post.values['EXP'] = item.values.EXP
                             post.values['Element'] = 'None'

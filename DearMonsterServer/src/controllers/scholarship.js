@@ -19,39 +19,67 @@ exports.store = async (req, res) => {
     }
 }
 
-exports.show = async function (req, res) {
-    try {
-        const id = req.params.id;
-        const mintedMonster = await MintedMonster.aggregate([
-            {
-                $match: { _id: id }
-            },
-            {
-                $lookup: {
-                    from: 'Monster',
-                    foreignField: '_id',
-                    localField: 'monsterId',
-                    as: 'monster'
-                }
-            },
-            {
-                $unwind: '$monster'
+exports.index = async function (req, res) {
+    const { owner } = req.params;
+
+    let mintedMonster = await MintedMonster.aggregate([
+        {
+            $match: { owner }
+        },
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
             }
-        ]).populate('scholarId')
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'tradeitems',
+                foreignField: 'mintedMonsterId',
+                localField: '_id',
+                as: 'tradeitem'
+            }
+        },
+        {
+            $lookup: {
+                from: 'scholarships',
+                foreignField: '_id',
+                localField: 'scholarId',
+                as: 'scholarshipsItems'
+            }
+        },
+    ])
 
-        if (!mintedMonster) return res.status(401).json({ message: 'MintedMonster does not exist' });
+    res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
+}
 
-        res.status(200).json({ mintedMonster });
+
+
+exports.update = async function (req, res) {
+    try {
+
+        const { id } = req.params
+        console.log(id)
+        let update = { assigned: true }
+        await Scholarship.findByIdAndUpdate(id, { $set: update }, { new: true })
+
+        res.status(200).json({ message: 'Monster scholar request accepted' })
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
 };
 
 exports.destroy = async function (req, res) {
     try {
         const id = req.params.id
+        let update = { scholarId: null }
 
-        await MintedMonster.findByIdAndUpdate(id, { $unset: { 'req.body.scholarId': 1 } }, { new: true });
+        await MintedMonster.findByIdAndUpdate(id, { $set: update }, { new: true })
         res.status(200).json({ message: 'MintedMonster scholar is removed' });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -23,7 +23,7 @@ const MonsterSchema = new mongoose.Schema({
         type: Number,
         required: 'monster price is required'
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 
 module.exports = mongoose.model('Monster', MonsterSchema);

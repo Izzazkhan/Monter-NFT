@@ -23,6 +23,7 @@ app.use(express.json());
 
 
 app.use(function (req, res, next) {
+  console.log(req.headers)
   if (req.method == 'POST' || req.method == 'PUT' || req.method == 'DELETE') {
 
     // console.log("==== req.method ====")

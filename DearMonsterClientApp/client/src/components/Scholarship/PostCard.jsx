@@ -57,7 +57,6 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 	}
 
 	const scholarFunction = async (post) => {
-		console.log('post', post)
 		let params = new URLSearchParams()
 		params.append('scholarID', state.walletAddress)
 		params.append('scholarName', state.scholarName)
@@ -74,14 +73,44 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		}
 		axios.post(`${apiUrl}/api/scholarship/${post.mintedId}`, params, config)
 			.then((response) => {
-				console.log('Energy update::', response)
-
+				Swal.fire({
+					icon: 'success',
+					title: 'Dear Monster Scholarship',
+					text: 'Dear Monster got on scholar successfully'
+				})
 			})
 			.catch((error) => {
 				console.log(error)
+				Swal.fire({
+					icon: 'error',
+					title: 'Dear Monster Scholarship',
+					text: 'Error while getting on scholar'
+				})
 			})
+	}
 
-
+	const revokeFunction = (post) => {
+		const config = {
+			headers: {
+				'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+			}
+		}
+		axios.delete(`${apiUrl}/api/scholarship/${post.mintedId}`, config)
+			.then((response) => {
+				Swal.fire({
+					icon: 'success',
+					title: 'Dear Monster Scholarship',
+					text: 'Dear Monster scholar is removed'
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+				Swal.fire({
+					icon: 'error',
+					title: 'Dear Monster Scholarship',
+					text: 'Error while removing scholar'
+				})
+			})
 	}
 
 
@@ -120,6 +149,14 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								</div>
 							);
 						})}
+						{post.scholarshipsItems.length ?
+							<div className='mb-4' >
+								<span className='me-2'>On scholarship</span>
+							</div> :
+							<div className='mb-4' >
+								<span className='me-2'>Not on scholarship</span>
+							</div>
+						}
 					</div>
 					<div className='center center mt-5 mb-4  fs-19 text-white'>
 						<p className='fs-30'>{post?.price}</p>
@@ -130,129 +167,209 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 				{account || owner ?
 					(
 						<>
-							<div
-								className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
-								data-bs-toggle='modal'
-								data-bs-target={`#SellMonster${post?.id}`}
-							>
-								Scholar
-							</div>
-							<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
-								<div className='modal-dialog'>
-									<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+							{post.scholarshipsItems.length ?
+								<>
+									<div
+										className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target={`#SellMonster${post?.id}`}
+									>
+										{post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending on scholar'}
+									</div>
+									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
+										<div className='modal-dialog'>
+											<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
-										<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
+												<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
+												</div>
+												<div className='modal-body p-4'>
+													<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
+
+													</p>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Scholar Address</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															{ }
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Scholar Name</h4> </div>
+														<div className='d-flex align-items-center w-60'>
+															{post.scholarshipsItems[0].scholarName}
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Manager Name</h4> </div>
+														<div className='d-flex align-items-center w-60'>
+															{post.scholarshipsItems[0].managerName}
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>profitToManager</h4> </div>
+														<div className='d-flex align-items-center w-60'>
+															{post.scholarshipsItems[0].profitShare.Manager_Share}
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>profitToScholar</h4> </div>
+														<div className='d-flex align-items-center w-60'>
+															{post.scholarshipsItems[0].profitShare.Scholar_Share}
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>readMe</h4> </div>
+														<div className='d-flex align-items-center w-60'>
+															{post.scholarshipsItems[0].readMe}
+														</div>
+
+													</div>
+													<div style={{ float: "right" }}>
+														<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
+													</div>
+
+												</div>
+												<div className='modal-footer border-top-0 mb-5'>
+													<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => revokeFunction(post)}>
+														Revoke
+													</div>
+													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+														Cancel
+													</button>
+												</div>
+											</div>
 										</div>
-										<div className='modal-body p-4'>
-											<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
+									</div></> :
+								<>
+									<div
+										className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+										data-bs-toggle='modal'
+										data-bs-target={`#SellMonster${post?.id}`}
+									>
+										Scholar
+									</div>
+									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
+										<div className='modal-dialog'>
+											<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
-											</p>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>Scholar Address</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='walletAddress'
-														className='form-control  w-200px'
-														id='walletAddress'
-														value={state.walletAddress}
-														onChange={handleInputChange}
-													/>
+												<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
+												</div>
+												<div className='modal-body p-4'>
+													<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
+
+													</p>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Scholar Address</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='walletAddress'
+																className='form-control  w-200px'
+																id='walletAddress'
+																value={state.walletAddress}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Scholar Name</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='scholarName'
+																className='form-control  w-200px'
+																id='scholarName'
+																value={state.scholarName}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>Manager Name</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='managerName'
+																className='form-control  w-200px'
+																id='managerName'
+																value={state.managerName}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>profitToManager</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='profitToManager'
+																className='form-control  w-200px'
+																id='profitToManager'
+																value={state.profitToManager}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>profitToScholar</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='profitToScholar'
+																className='form-control  w-200px'
+																id='profitToScholar'
+																value={state.profitToScholar}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div className='align-items-center d-flex justify-content-between mb-4' >
+														<div> <h4 style={{ color: "black" }}>readMe</h4> </div>
+														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+															<input
+																type='text'
+																name='readMe'
+																className='form-control  w-200px'
+																id='readMe'
+																value={state.readMe}
+																onChange={handleInputChange}
+															/>
+
+														</div>
+
+													</div>
+													<div style={{ float: "right" }}>
+														<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
+													</div>
 
 												</div>
-
-											</div>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>Scholar Name</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='scholarName'
-														className='form-control  w-200px'
-														id='scholarName'
-														value={state.scholarName}
-														onChange={handleInputChange}
-													/>
-
+												<div className='modal-footer border-top-0 mb-5'>
+													<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => scholarFunction(post)}>
+														Scholar
+													</div>
+													<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+														Cancel
+													</button>
 												</div>
-
 											</div>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>Manager Name</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='managerName'
-														className='form-control  w-200px'
-														id='managerName'
-														value={state.managerName}
-														onChange={handleInputChange}
-													/>
-
-												</div>
-
-											</div>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>profitToManager</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='profitToManager'
-														className='form-control  w-200px'
-														id='profitToManager'
-														value={state.profitToManager}
-														onChange={handleInputChange}
-													/>
-
-												</div>
-
-											</div>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>profitToScholar</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='profitToScholar'
-														className='form-control  w-200px'
-														id='profitToScholar'
-														value={state.profitToScholar}
-														onChange={handleInputChange}
-													/>
-
-												</div>
-
-											</div>
-											<div className='align-items-center d-flex justify-content-between mb-4' >
-												<div> <h4 style={{ color: "black" }}>readMe</h4> </div>
-												<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-													<input
-														type='text'
-														name='readMe'
-														className='form-control  w-200px'
-														id='readMe'
-														value={state.readMe}
-														onChange={handleInputChange}
-													/>
-
-												</div>
-
-											</div>
-											<div style={{ float: "right" }}>
-												<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
-											</div>
-
-										</div>
-										<div className='modal-footer border-top-0 mb-5'>
-											<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => scholarFunction(post)}>
-												Scholar
-											</div>
-											<button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-												Cancel
-											</button>
 										</div>
 									</div>
-								</div>
-							</div>
+								</>
+							}
 						</>
 					)
 

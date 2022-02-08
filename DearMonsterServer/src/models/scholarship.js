@@ -20,6 +20,10 @@ const ScholarshipSchema = new mongoose.Schema({
     },
     readMe: {
         type: String
+    },
+    assigned: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

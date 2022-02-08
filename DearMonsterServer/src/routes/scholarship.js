@@ -4,9 +4,12 @@ const Scholarship = require('../controllers/scholarship')
 const router = express.Router();
 //INDEX
 
-router.post('/:id', authenticate, Scholarship.store)
-router.get('/:id', authenticate, Scholarship.show);
-router.delete('/:id', authenticate, Scholarship.destroy);
+router.post('/:id', Scholarship.store)
+router.get('/:owner', Scholarship.index);
+// router.delete('/:id', authenticate, Scholarship.destroy);
+router.delete('/:id', Scholarship.destroy)
+router.put('/:id', Scholarship.update)
+
 
 module.exports = router;
 
