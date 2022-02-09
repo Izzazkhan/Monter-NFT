@@ -163,7 +163,13 @@ exports.allInTrade = async function (req, res) {
 
 exports.buyFromAllTradeItems = async function (req, res) {
 
-    await MintedMonster.findByIdAndUpdate(req.body.mintedId, { $set: { owner: req.body.buyer, 'values.Energy': req.body.Energy, 'values.UpdateTime': req.body.UpdateTime } }, { new: true });
+    await MintedMonster.findByIdAndUpdate(req.body.mintedId, {
+        $set: {
+            owner: req.body.buyer, 'values.Energy': req.body.Energy,
+            'values.EXP': req.body.EXP,
+            'values.UpdateTime': req.body.UpdateTime
+        }
+    }, { new: true });
     await TradeItem.findByIdAndDelete(req.body.tradeId);
 
     res.status(200).json({ message: "Trade done successfully" });

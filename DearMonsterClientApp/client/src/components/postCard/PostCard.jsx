@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess, startLoading, stopLoading  } from '../../store/actions/auth/login';
+import { connectUserSuccess, startLoading, stopLoading } from '../../store/actions/auth/login';
 import axios from 'axios'
 import Web3 from 'web3';
 import Swal from 'sweetalert2';
@@ -42,99 +42,101 @@ const PostCard = ({ className, post, stepImg }) => {
 	};
 
 	const purchaseFun = async () => {
+		console.log('post', post)
 		dispatch(startLoading(true))
 		// if (userId || owner) {
 
-			if (window.ethereum) {
-				window.web3 = new Web3(window.ethereum)
-				await window.ethereum.enable();
-			}
-			else if (window.web3) {
-				window.web3 = new Web3(window.web3.currentProvider)
-				window.loaded_web3 = true
-			}
-			else {
-				window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-				return;
-			}
-			let web3 = window.web3
-			const accounts = await web3.eth.getAccounts()
-			const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		}
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+			return;
+		}
+		let web3 = window.web3
+		const accounts = await web3.eth.getAccounts()
+		const TradingContract = new web3.eth.Contract(tradingContractAbi.abi, tradingContractAddress)
 
-			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
+		let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
 
-			let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
+		let balance = await DMSTokenContract.methods.balanceOf(accounts[0]).call()
 
-			var convertedPrice = Number(parseInt(post.price) * 10 ** 18);
-			let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
+		var convertedPrice = Number(parseInt(post.price) * 10 ** 18);
+		let convertedPriceLocale = convertedPrice.toLocaleString('fullwide', { useGrouping: false })
 
-			if (convertedPrice >= balance) {
-				dispatch(stopLoading(false))
-				let notify = notification({
-					type: 'error',
-					message: 'Insufficient fund!',
-				});
-				notify();
-				return
-			}
+		if (convertedPrice >= balance) {
+			dispatch(stopLoading(false))
+			let notify = notification({
+				type: 'error',
+				message: 'Insufficient fund!',
+			});
+			notify();
+			return
+		}
 
-			try {
+		try {
 
 
-				await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
+			await DMSTokenContract.methods.approve(TradingContract._address, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] });
 
-				// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
-				// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
-				// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
-				// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
+			// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, "0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776")
+			// // await DearMonsterContract.methods.setApprovalForAll(TradingContract._address, true).send({ from: accounts[0] });
+			// await DearMonsterContract.methods.approve(TradingContract._address, post.id).send({ from: accounts[0] });
+			// const transaction = await TradingContract.methods.buyTrade(post.id,  web3.utils.toBN(post.price.toString())).send({ from: accounts[0] })
 
-				const transaction = await TradingContract.methods.buyTrade(post.id, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
+			const transaction = await TradingContract.methods.buyTrade(post.id, web3.utils.toBN(convertedPriceLocale)).send({ from: accounts[0] })
 
-				if (transaction.status) {
-					let params = new URLSearchParams()
-					params.append('owner', post.owner)
-					params.append('seller', post.seller)
-					params.append('buyer', userId ? userId : owner)
-					params.append('tradeId', post.tradeId)
-					params.append('mintedId', post.mintedId)
-					params.append('Energy', '0')
-					params.append('UpdateTime', new Date())
-					const config = {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded',
-							'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
-						}
+			if (transaction.status) {
+				let params = new URLSearchParams()
+				params.append('owner', post.owner)
+				params.append('seller', post.seller)
+				params.append('buyer', userId ? userId : owner)
+				params.append('tradeId', post.tradeId)
+				params.append('mintedId', post.mintedId)
+				params.append('Energy', '0')
+				params.append('EXP', '0')
+				params.append('UpdateTime', new Date())
+				const config = {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 					}
-					axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
-						.then((res) => {
-							dispatch(stopLoading(false))
-							Swal.fire({
-								icon: 'success',
-								title: 'Purchase Done !',
-								text: 'Please check inventory for new monster'
-							})
-						})
-						.catch((e) => {
-							console.log("Error ----------------")
-							dispatch(stopLoading(false))
-							console.log(e)
-							Swal.fire({
-								icon: 'error',
-								title: 'Error',
-								text: 'Something went wrong, Please contact admin.'
-							})
-						})
 				}
-			} catch (e) {
-				dispatch(stopLoading(false))
-				Swal.fire({
-					icon: 'error',
-					title: 'Error',
-					text: 'Transaction was rejected from Metamask'
-				})
-				console.log("Error ----------------")
-				console.log(e)
+				axios.post(`${apiUrl}/api/tradeItem/buyFromAllTradeItems`, params, config)
+					.then((res) => {
+						dispatch(stopLoading(false))
+						Swal.fire({
+							icon: 'success',
+							title: 'Purchase Done !',
+							text: 'Please check inventory for new monster'
+						})
+					})
+					.catch((e) => {
+						console.log("Error ----------------")
+						dispatch(stopLoading(false))
+						console.log(e)
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'Something went wrong, Please contact admin.'
+						})
+					})
 			}
+		} catch (e) {
+			dispatch(stopLoading(false))
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: 'Transaction was rejected from Metamask'
+			})
+			console.log("Error ----------------")
+			console.log(e)
+		}
 
 		// } else {
 		// 	Swal.fire({
@@ -178,7 +180,7 @@ const PostCard = ({ className, post, stepImg }) => {
 							if (
 								key == 'Level' ||
 								key == 'Element' ||
-								key == 'EXP' ||
+								// key == 'EXP' ||
 								key == 'OwnerID'
 							) {
 								return (

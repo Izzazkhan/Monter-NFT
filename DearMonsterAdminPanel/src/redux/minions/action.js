@@ -57,7 +57,7 @@ export const editMinions = (data, token) => dispatch => {
     const params = new URLSearchParams()
 
     params.append('title', data.title)
-    params.append('img', data.img)
+    // params.append('img', data.img)
     params.append('rating', Number(data.rating))
     params.append('totalRating', Number(data.totalRating))
     params.append('price', Number(data.price))

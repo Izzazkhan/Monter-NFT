@@ -307,7 +307,7 @@ const HuntersValley = () => {
 		if (true) {
 			let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
 			let DMSTokenContract = new web3.eth.Contract(tokenContractAbi.abi, tokenContractAddress)
-				
+
 
 			var isMaxSupply = await DearMonsterContract.methods.checkMaxSupply().call()
 			var price = await DearMonsterContract.methods.getPrice().call()
@@ -393,7 +393,7 @@ const HuntersValley = () => {
 								console.log(e)
 							})
 					})
-				} catch (e){
+				} catch (e) {
 					dispatch(stopLoading(false))
 					Swal.fire({
 						icon: 'error',
@@ -413,29 +413,55 @@ const HuntersValley = () => {
 		let paths = [];
 		let _ratings = [];
 		let monsterIds = [];
+		// for (let i = 0; i < items; i++) {
+		// 	let rand = parseInt(Math.random() * 600);
+		// 	let randCheck = randomizer()
+
+		// 	if (randCheck == 5) {
+		// 		paths[i] = rand % 2 ? data[18].img : data[21].img;
+		// 		monsterIds[i] = rand % 2 ? data[18]._id : data[21]._id;
+		// 		_ratings[i] = 5;
+		// 	} else if (randCheck == 4) {
+		// 		paths[i] = rand % 2 ? data[0].img : data[24].img;
+		// 		monsterIds[i] = rand % 2 ? data[0]._id : data[24]._id;
+		// 		_ratings[i] = 4;
+		// 	} else if (randCheck == 3) {
+		// 		paths[i] = rand % 2 ? data[6].img : data[12].img;
+		// 		monsterIds[i] = rand % 2 ? data[6]._id : data[12]._id;
+		// 		_ratings[i] = 3;
+		// 	} else if (randCheck == 2) {
+		// 		paths[i] = rand % 2 ? data[3].img : data[9].img;
+		// 		monsterIds[i] = rand % 2 ? data[3]._id : data[9]._id;
+		// 		_ratings[i] = 2;
+		// 	} else {
+		// 		paths[i] = rand % 2 ? data[15].img : data[27].img;
+		// 		monsterIds[i] = rand % 2 ? data[15]._id : data[27]._id;
+		// 		_ratings[i] = 1;
+		// 	}
+		// }
 		for (let i = 0; i < items; i++) {
 			let rand = parseInt(Math.random() * 600);
 			let randCheck = randomizer()
 
 			if (randCheck == 5) {
-				paths[i] = rand % 2 ? data[18].img : data[21].img;
-				monsterIds[i] = rand % 2 ? data[18]._id : data[21]._id;
+				paths[i] = rand % 2 ? data[1].img : data[2].img;
+				monsterIds[i] = rand % 2 ? data[1]._id : data[2]._id;
 				_ratings[i] = 5;
 			} else if (randCheck == 4) {
-				paths[i] = rand % 2 ? data[0].img : data[24].img;
-				monsterIds[i] = rand % 2 ? data[0]._id : data[24]._id;
+				paths[i] = rand % 2 ? data[3].img : data[4].img;
+				monsterIds[i] = rand % 2 ? data[3]._id : data[4]._id;
 				_ratings[i] = 4;
 			} else if (randCheck == 3) {
-				paths[i] = rand % 2 ? data[6].img : data[12].img;
-				monsterIds[i] = rand % 2 ? data[6]._id : data[12]._id;
+				paths[i] = rand % 2 ? data[2].img : data[4].img;
+				monsterIds[i] = rand % 2 ? data[2]._id : data[4]._id;
 				_ratings[i] = 3;
 			} else if (randCheck == 2) {
-				paths[i] = rand % 2 ? data[3].img : data[9].img;
-				monsterIds[i] = rand % 2 ? data[3]._id : data[9]._id;
+				paths[i] = rand % 2 ? data[4].img : data[1].img;
+				monsterIds[i] = rand % 2 ? data[4]._id : data[1]._id;
 				_ratings[i] = 2;
 			} else {
-				paths[i] = rand % 2 ? data[15].img : data[27].img;
-				monsterIds[i] = rand % 2 ? data[15]._id : data[27]._id;
+				paths[i] = rand % 2 ? data[2].img : data[3].img;
+				monsterIds[i] = rand % 2 ? data[2]._id : data[3]._id;
 				_ratings[i] = 1;
 			}
 		}

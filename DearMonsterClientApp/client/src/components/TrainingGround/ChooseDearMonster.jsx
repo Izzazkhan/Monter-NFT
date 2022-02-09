@@ -12,7 +12,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
-	
+
 	const { userId } = useSelector((state) => state.auth);
 
 	useEffect(() => {
@@ -108,7 +108,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 							classes: {
 								arrows: '',
 								arrow: `splide__arrow text-white ${monsters.length == 1 ? 'd-none' : ''}`,
-								prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2 end-0',
+								prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
 								next: 'splide__arrow--next  border rounded-circle p-2 ',
 							},
 						}}

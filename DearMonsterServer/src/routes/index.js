@@ -12,6 +12,7 @@ const levelBonus = require('./levelBonus');
 
 const userEarning = require('./userEarning');
 const withdrawRequest = require('./withdrawRequest');
+const scholarship = require('./scholarship');
 
 
 const authenticate = require('../middlewares/authenticate');
@@ -37,5 +38,6 @@ router.use('/tradeItem', tradeItem);
 router.use('/userEarning', userEarning);
 router.use('/withdrawRequest', withdrawRequest);
 router.use('/levelBonus', levelBonus);
+router.use('/scholarship', scholarship);
 
 module.exports = router

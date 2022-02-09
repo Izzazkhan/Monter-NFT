@@ -7,6 +7,10 @@ const MintedMonsterSchema = new mongoose.Schema({
         ref: 'Monster',
         required: true
     },
+    scholarId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Scholarship',
+    },
     owner: {
         type: String,
         required: true

@@ -35,7 +35,7 @@ function MinionForm(props) {
                 ...state,
                 _id: propsData._id,
                 title: propsData.title,
-                img: propsData.img,
+                // img: propsData.img,
                 rating: propsData.rating,
                 totalRating: propsData.totalRating,
                 price: propsData.price,
@@ -156,7 +156,7 @@ function MinionForm(props) {
 
     const clearData = () => {
         setState({
-            title: '', img: '', rating: '', totalRating: '', price: '', Win_Rate: '',
+            title: '', rating: '', totalRating: '', price: '', Win_Rate: '',
             Lose_Exp_Gain: '', Reward_Estimated: { 1: '', 2: '', 3: '', 4: '', 5: '' }, Exp_Gain: ''
         })
     }
@@ -186,12 +186,10 @@ function MinionForm(props) {
                                 }} src={imageState.imagePreviewUrl} />
                             </div>
                         </div> */}
-                        <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
-                            {state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
-                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}
-                        </div>
-                        <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
-                            <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
+                        <div className="row" >
+                            <div className="col-md-6">{state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
+                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>}</div>
+                            <div className="col-md-6"><button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button></div>
                         </div>
                         <br />
                     </div>

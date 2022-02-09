@@ -25,7 +25,7 @@ const MinionReducer = (state = initialstate, action) => {
                             ...content.values, Win_Rate: action.payload.values.Win_Rate,
                             Lose_Exp_Gain: action.payload.values.Lose_Exp_Gain, Exp_Gain: action.payload.values.Exp_Gain
                         },
-                        img: action.payload.img
+                        // img: action.payload.img
                     }
                         : content)
             };

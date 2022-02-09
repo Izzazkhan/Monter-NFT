@@ -19,8 +19,8 @@ const config = {
 const EnergyText = {
 	text: (
 		<span>
-			Dear Monster Energy
-			<br /> should be greater than 0.
+			The DearMonster has
+			<br /> insufficient energy.
 		</span>
 	)
 }

@@ -24,7 +24,7 @@ const TradingPost = ({ }) => {
 	const [error, setError] = useState('');
 	const [filterValues, setFilterValues] = useState();
 	const [searchedData, setSearchedData] = useState()
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30, history.location.pathname);
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30, history.location.pathname);
 
 	useEffect(() => {
 		getTradingData()
@@ -163,7 +163,10 @@ const TradingPost = ({ }) => {
 	}
 
 	const clearSearchData = () => {
-		setFilterObject({})
+		// setFilterObject({})
+		let tempObj = { ...filterObject }
+		delete tempObj.tokenId
+		setFilterObject(tempObj)
 	}
 
 	const filterDataByStar = (starsArray) => {

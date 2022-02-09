@@ -47,6 +47,9 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 			})
 			setMinions(rewardMapped)
 		}
+		else {
+			minions.length && minions.filter(minion => delete minion.rewardEstimated)
+		}
 
 	}, [selectedMonster])
 
@@ -80,7 +83,7 @@ const ChooseMinion = ({ minionFight, loading, status, totalReward, selectedMonst
 						classes: {
 							arrows: '',
 							arrow: `splide__arrow text-white ${minions.length == 1 ? 'd-none' : ''}`,
-							prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2 end-0',
+							prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
 							next: 'splide__arrow--next  border rounded-circle p-2 ',
 						},
 					}}

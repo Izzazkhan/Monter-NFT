@@ -54,7 +54,7 @@ function Monsters(props) {
                                             <td>{data._id}</td>
                                             <td>{data.title}</td>
                                             <td>{data.cetagory}</td>
-                                            <td>{data.img}</td>
+                                            {/* <td>{data.img}</td> */}
                                             <td>{data.totalRating}</td>
                                             <td>{data.price}</td>
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>

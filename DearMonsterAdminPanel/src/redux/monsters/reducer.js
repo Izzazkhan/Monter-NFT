@@ -22,7 +22,7 @@ const MonsterReducer = (state = initialstate, action) => {
                     {
                         ...content,
                         title: action.payload.title,
-                        img: action.payload.img,
+                        // img: action.payload.img,
                         cetagory: action.payload.cetagory,
                         totalRating: action.payload.totalRating,
                         price: action.payload.price
