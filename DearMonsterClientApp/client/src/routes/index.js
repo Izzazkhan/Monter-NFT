@@ -52,6 +52,7 @@ export const NavbarRoutes = [
 		title: 'Scholarship',
 		pathForNavabr: '/scholarship/manager',
 		exact: true,
+		hidden: true,
 		component: lazy(() => import('../views/pages/ScholarshipManager')),
 	},
 	{
