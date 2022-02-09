@@ -58,7 +58,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 	const scholarFunction = async (post) => {
 		let params = new URLSearchParams()
-		params.append('scholarID', state.walletAddress)
+		params.append('scholarWallet', state.walletAddress)
 		params.append('scholarName', state.scholarName)
 		params.append('managerName', state.managerName)
 		params.append('readMe', state.readMe)
@@ -149,13 +149,18 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								</div>
 							);
 						})}
-						{post.scholarshipsItems.length ?
+						{post.scholarshipsItems.length && post.scholarshipsItems[0].assigned ?
 							<div className='mb-4' >
 								<span className='me-2'>On scholarship</span>
 							</div> :
-							<div className='mb-4' >
-								<span className='me-2'>Not on scholarship</span>
-							</div>
+							post.scholarshipsItems.length ?
+								<div className='mb-4' >
+									<span className='me-2'>Scholarship pending</span>
+								</div>
+								:
+								<div className='mb-4' >
+									<span className='me-2'>Not on scholarship</span>
+								</div>
 						}
 					</div>
 					<div className='center center mt-5 mb-4  fs-19 text-white'>
@@ -170,11 +175,11 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 							{post.scholarshipsItems.length ?
 								<>
 									<div
-										className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+										className={`header-Connect-btn py-3 px-4 ${post.scholarshipsItems[0].assigned ? 'w-140px' : 'w-160px'} center bold fs-13 cursor`}
 										data-bs-toggle='modal'
 										data-bs-target={`#SellMonster${post?.id}`}
 									>
-										{post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending on scholar'}
+										{post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending On Scholar'}
 									</div>
 									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
 										<div className='modal-dialog'>
@@ -228,9 +233,6 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 														</div>
 
 													</div>
-													<div style={{ float: "right" }}>
-														<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
-													</div>
 
 												</div>
 												<div className='modal-footer border-top-0 mb-5'>
@@ -246,7 +248,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 									</div></> :
 								<>
 									<div
-										className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+										className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
 										data-bs-toggle='modal'
 										data-bs-target={`#SellMonster${post?.id}`}
 									>

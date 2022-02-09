@@ -56,39 +56,6 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
         dispatch(connectUserSuccess(accounts[0]))
     }
 
-    const scholarFunction = async (post) => {
-        let params = new URLSearchParams()
-        params.append('scholarID', state.walletAddress)
-        params.append('scholarName', state.scholarName)
-        params.append('managerName', state.managerName)
-        params.append('readMe', state.readMe)
-        params.append('profitShare.Manager_Share', state.profitToManager)
-        params.append('profitShare.Scholar_Share', state.profitToScholar)
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
-            }
-        }
-        axios.post(`${apiUrl}/api/scholarship/${post.mintedId}`, params, config)
-            .then((response) => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Dear Monster Scholarship',
-                    text: 'Dear Monster got on scholar successfully'
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Dear Monster Scholarship',
-                    text: 'Error while getting on scholar'
-                })
-            })
-    }
-
     const acceptScholarRequest = (post) => {
         console.log('post', post)
         let params = new URLSearchParams()
@@ -103,7 +70,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Dear Monster Scholarship',
-                    text: 'Dear Monster scholar is removed'
+                    text: 'Request for scholar accepted successfully'
                 })
             })
             .catch((error) => {
@@ -111,7 +78,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Dear Monster Scholarship',
-                    text: 'Error while removing scholar'
+                    text: 'Error while accepting request'
                 })
             })
     }
@@ -168,7 +135,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                             {post.scholarshipsItems.length ?
                                 <>
                                     <div
-                                        className='header-Connect-btn py-3 px-4 mt-6 w-140px center bold fs-13 cursor'
+                                        className={`header-Connect-btn py-3 px-4 ${post.scholarshipsItems[0].assigned ? 'w-140px' : 'w-160px'} center bold fs-13 cursor`}
                                         data-bs-toggle='modal'
                                         data-bs-target={`#SellMonster${post?.id}`}
                                     >
