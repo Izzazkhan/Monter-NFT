@@ -3,10 +3,10 @@ import { Route, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Routes } from '../routes'
 import Header from '../components/common/Header'
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-// import "../../src/style.css";
+import ClipLoader from "react-spinners/ClipLoader";
+// import { css } from "@emotion/react";
 
-import { Oval } from 'react-loader-spinner';
+// import { Oval } from 'react-loader-spinner';
 
 const loaderParentStyle = {
 	display: "flex",
@@ -42,7 +42,9 @@ const App = () => {
 				loading ?
 					<div style={loaderParentStyle} className='loader-div'>
 						<div style={loaderStyle}>
-							<Oval color='orange' ariaLabel='loading' />
+							{/* <Oval color='orange' ariaLabel='loading' /> */}
+							<ClipLoader color='orange' loading={true} size={150} />
+ 
 							<p style={textStyle} > Please wait for the Metamask transaction to be completed </p>
 						</div>
 					</div>
