@@ -1,11 +1,17 @@
-DearMonsterClientApp/node_modules/
 DearMonsterClientApp/client/node_modules/
+DearMonsterAdminPanel/node_modules/
+DearMonsterServer/node_modules/
 
 DearMonsterClientApp/client/public/assets/gif/
+
 DearMonsterClientApp/client/build/
-DearMonsterClientApp/client/.env
-DearMonsterServer/node_modules/
+DearMonsterAdminPanel/build/
+
+DearMonsterServer/client/build/
+DearMonsterServer/admin/build/
+
 DearMonsterServer/.env
-DearMonsterClient/client/.env
 DearMonsterAdminPanel/.env
+DearMonsterClientApp/client/.env
+
 .DS_Store
