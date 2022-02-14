@@ -47,11 +47,12 @@ exports.store = async (req, res) => {
         const newRequest_ = await newRequest.save();
 
         const { requesterAddress } = req.body
+        let update = { totalAmount: 0, isRequested: true }
 
         // UserEarning requesterAddress
-        const withdrawRequest = await UserEarning.findOneAndUpdate({requesterAddress}, { $set: { isRequested: true } });
-
+        const earningRequestReset = await UserEarning.findOneAndUpdate({earnerAddress: requesterAddress}, { $set: update });
         res.status(200).json({ message: 'Request created successfully', newRequest: newRequest_ });
+
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }

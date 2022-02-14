@@ -142,3 +142,14 @@
  }
 
  
+.instructionsBoard .modal-body .title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .items-list .item {
+    display: flex;
+    justify-content: space-around;
+  }
+  .items-list .item .modal-amount {
+    margin: 0;
+  }

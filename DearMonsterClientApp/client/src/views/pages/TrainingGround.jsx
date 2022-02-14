@@ -380,6 +380,9 @@ const TrainingGround = () => {
 									rewardParam.append('amount', earnerData.totalAmount)
 									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
 									setTotalReward('')
+
+									setEarnerData({...earnerData, totalAmount: 0})
+
 									if (postWithdraw) {
 										Swal.fire({
 											icon: 'success',
@@ -408,6 +411,12 @@ const TrainingGround = () => {
 								text: 'Please note that you can only claim reward once every 7 days.'
 							})
 						}
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Reward Claim Failed',
+							text: 'something went wrong while creating request, Please contact admin.'
+						})
 					}
 				}
 			} else {
@@ -485,16 +494,25 @@ const TrainingGround = () => {
 									>
 										<div className='modal-dialog instructionsBoard'>
 											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
-												<div className='modal-body center fs-25'>
+												<div className='modal-body  fs-25'>
+													<div className='title'>
+														<span>{'Approved Claims History'}</span>
+													</div>
+													<div className='items-list'>
 													{claimHistory.length ? claimHistory.map((history, i) => {
 														return (
-															<div>
-																<span>{'Approved Claims History'}</span> <br />
-																<span className='modal-amount'>{`${i + 1}. ${history.amount}`}</span>
+															<div className='item'>
+																<span className='modal-amount'>{`${i + 1}.`}</span>
+																<span className='modal-amount'>{`${history.amount}`}</span>
+																<span className='modal-amount'>
+																	{`${ new Date(history.updatedAt).getMonth() + 1 }-${ new Date(history.updatedAt).getDate() }-2022`}
+																	
+																	</span>
 															</div>
 
 														)
 													}) : 'No Claim History Found.'}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -502,8 +520,7 @@ const TrainingGround = () => {
 								</section>
 								<section className='mt-5 d-flex align-items-center '>
 									<div className='header-Connect-btn py-3 px-4 w-140px center bold fs-13 cursor'
-										data-bs-toggle='modal'
-										data-bs-target='#ClaimReward' onClick={claimRewardHandler}>
+									onClick={() => claimRewardHandler()}>
 										Claim Reward
 									</div>
 									<div className='timerBoard w-170px   ms-5 center py-3 bold'>{time}</div>
