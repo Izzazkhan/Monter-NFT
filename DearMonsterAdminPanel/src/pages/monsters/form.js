@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 import "../../App.css";
 import { getDearMonsters, addDearMonsters, editDearMonsters, deleteDearMonsters } from '../../redux/monsters/action';
 import { connect } from 'react-redux';
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
+// import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 function MonsterPage(props) {
 
@@ -19,7 +19,7 @@ function MonsterPage(props) {
                 ...state,
                 _id: propsData._id,
                 title: propsData.title,
-                // img: propsData.img,
+                img: propsData.img,
                 totalRating: propsData.totalRating,
                 price: propsData.price,
                 cetagory: propsData.cetagory
@@ -81,10 +81,11 @@ function MonsterPage(props) {
         // if (field !== 'id' && field !== 'img') {
         if (field !== '_id') {
             return (
-                <div className="form-group col-md-6" key={i}>
+                <div className="form-group col-md-6 mb-4" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
                     <input type="text" required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
+                        disabled={ field === 'img' ? 'disabled' : ''}
                         placeholder={`Enter ${field}`} />
                 </div>
             )

@@ -32,8 +32,11 @@ const Header = (props) => {
                         </div>
                         <div className="custom-items">
                             {currentUser ?
-                                <><button className="btn-default hvr-bounce-in"><span className="icon">
-                                </span>{currentUser.user.firstName + ' ' + currentUser.user.lastName}</button>
+                                <>
+                                    <button className="btn-default">
+                                        <span className="icon"> </span>
+                                        {currentUser.user.firstName + ' ' + currentUser.user.lastName}
+                                    </button>
                                     <a className="nav-link hvr-float-shadow" href="/login">
                                         <button className="btn-default hvr-bounce-in" onClick={logOut}>
                                             <span className="icon"></span>{'Log Out'}

@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react"
 import "../../App.css";
 import { getMinions, addMinions, editMinions, deleteMinions } from '../../redux/minions/action';
 import { connect } from 'react-redux';
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
+// import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
+// import { useSelector, useDispatch } from 'react-redux'
 
 function MinionForm(props) {
     // const dispatch = useDispatch()
@@ -18,6 +18,7 @@ function MinionForm(props) {
         totalRating: 0,
         price: 0,
         Win_Rate: 0,
+        Win_Rate_Display: '',
         Reward_Estimated: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
         Exp_Gain: 0,
         Lose_Exp_Gain: 0
@@ -35,21 +36,19 @@ function MinionForm(props) {
                 ...state,
                 _id: propsData._id,
                 title: propsData.title,
-                // img: propsData.img,
+                img: propsData.img,
                 rating: propsData.rating,
                 totalRating: propsData.totalRating,
                 price: propsData.price,
                 Win_Rate: propsData.values.Win_Rate,
+                Win_Rate_Display: propsData.values.Win_Rate_Display,
                 Reward_Estimated: { 1: rewardEstimated['1'], 2: rewardEstimated['2'], 3: rewardEstimated['3'], 4: rewardEstimated['4'], 5: rewardEstimated['5'] },
                 Exp_Gain: propsData.values.Exp_Gain,
                 Lose_Exp_Gain: propsData.values.Lose_Exp_Gain
             })
         }
     }, [])
-
-    console.log('state =====', state)
-
-
+    
     // handleSubmit(e) {
     //     e.preventDefault();
     //     let form = document.forms.itemAdd;
@@ -124,10 +123,11 @@ function MinionForm(props) {
         console.log('field', field)
         if (field !== '_id' && field !== 'Reward_Estimated') {
             return (
-                <div className="form-group col-md-6" key={i}>
+                <div className="form-group col-md-6 mb-4" key={i}>
                     <label className="control-label">{field.toUpperCase()}</label>
                     <input type="text" required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
+                        disabled={ field === 'img' ? 'disabled' : ''}
                         placeholder={`Enter ${field}`}
                         type={(field === 'rating' || field === 'totalRating' || field === 'price' || field === 'Win_Rate' ||
                             field === 'Lose_Exp_Gain' || field === 'Exp_Gain') && 'number'}
@@ -142,7 +142,7 @@ function MinionForm(props) {
         const field = item[0]
         const value = item[1]
         return (
-            <div className="form-group col-md-6" key={i}>
+            <div className="form-group col-md-6 mb-4" key={i}>
                 <label className="control-label">{`Level ${field}`}</label>
                 <input type="text" required="required" className="form-control" onChange={handleRewardChange}
                     name={field} value={value}
@@ -171,10 +171,12 @@ function MinionForm(props) {
                             {InputField}
                         </div>
 
+                        <br />
+                        <h3>Rewards Setup</h3>
+
                         <div className="row">
                             {rewardEstimated}
                         </div>
-
 
                         {/* <div className="row">
                             <div className="form-group col-md-6">

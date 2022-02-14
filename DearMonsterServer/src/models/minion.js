@@ -27,6 +27,10 @@ const MinionSchema = new mongoose.Schema({
             type: Number,
             required: true,
         },
+        Win_Rate_Display: {
+            type: String,
+            required: true,
+        },
         Reward_Estimated: {
             type: String,
             required: true,

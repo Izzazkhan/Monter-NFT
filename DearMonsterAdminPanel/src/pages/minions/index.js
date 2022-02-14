@@ -27,7 +27,7 @@ function Minions(props) {
 
     return (
         <>
-            <div className="col-lg-9 col-md-8">
+            <div className="col-lg-9 col-md-8 minion_edit_button">
                 <div className="content-wrapper">
                     <div className="content-box">
                         <h3>Minions Profile</h3>
@@ -37,7 +37,7 @@ function Minions(props) {
                                 <tr>
                                     {/* <th>ID</th> */}
                                     <th>Title</th>
-                                    <th>Image</th>
+                                    {/* <th>Image</th> */}
                                     <th>Rating</th>
                                     <th>Total Rating</th>
                                     <th>Experience Gain</th>

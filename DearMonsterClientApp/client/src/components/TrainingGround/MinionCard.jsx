@@ -13,42 +13,64 @@ const MinionCard = ({ className, post, stepImg, handleFight }) => {
 				>
 					<p className='text-center mt-4 fs-18 bold'>{post.title}</p>
 					<div className='text-white center flex-column mt-8 fs-15'>
-						{Object.keys(post.values).map((key, index) => {
-							const key2 = key.split('_').join(' ');
-							if (key != 'Reward_Estimated') {
-								return (
-									<div className='mb-5' key={index}>
-										
-										{/* if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP') */}
 
-										{
-											key2 == 'Exp Gain' ? 
-												<span className='me-2'>EXP Gain (Win):</span>
-												:
-											''
-										}
-										{
-											key2 == 'Lose Exp Gain' ? 
-												<span className='me-2'>EXP Gain (Loss) :</span>
-												:
-											''
-										}
-
-										{
-											key2 != 'Exp Gain' && key2 != 'Lose Exp Gain' ? 
-											<span className='me-2'>{key2} :</span>
-											: ''
-										}
+						<div className='mb-5'>
+							<span className='me-2'>Win Rate Display:</span>
+							{ post.values['Win_Rate_Display'] }
+						</div>
+						<div className='mb-5'>
+							<span className='me-2'>EXP Gain (Win):</span>
+							{ post.values['Exp_Gain'] }
+						</div>
+						<div className='mb-5'>
+							<span className='me-2'>EXP Gain (Loss):</span>
+							{ post.values['Lose_Exp_Gain'] }
+						</div>
 
 
+						{
+							// Object.keys(post.values).map((key, index) => {
+							// 	const key2 = key.split('_').join(' ');
+							// 	if (key != 'Reward_Estimated') {
+							// 		return (
+										// <div className='mb-5' key={index}>
+										// 	{
+										// 		key2 == 'Exp Gain' ?
+										// 			<>
 
-										<span>{key2 === 'Win Rate' && post.values[key] === 45 ? '42%-50%' :
-											key2 === 'Win Rate' && post.values[key] === 51 ? '48%-58%' :
-												post.values[key]}</span>
-									</div>
-								)
-							}
-						})}
+										// 				<span className='me-2'>EXP Gain (Win):</span>
+										// 				{post.values[key]}
+
+										// 			</>
+
+										// 			:
+										// 			''
+										// 	}
+										// 	{
+										// 		key2 == 'Lose Exp Gain' ?
+										// 			<>
+										// 				<span className='me-2'>EXP Gain (Loss) :</span>
+										// 				{post.values[key]}
+
+										// 			</>
+										// 			:
+										// 			''
+										// 	}
+										// 	{
+										// 		key2 == 'Win Rate Display' ?
+										// 			<>
+										// 				<span className='me-2'>Win Rate Display:</span>
+										// 				{post.values[key]}
+
+										// 			</>
+										// 			:
+										// 			''
+										// 	}
+										// </div>
+							// 		)
+							// 	}
+							// })
+						}
 						{
 							post.rewardEstimated &&
 							<div className='mb-5'>
