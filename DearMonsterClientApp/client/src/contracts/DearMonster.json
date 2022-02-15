@@ -4,73 +4,18 @@
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "_monsterImageURI",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_caveImageURI",
-          "type": "string"
+          "internalType": "address",
+          "name": "_nftAddress",
+          "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_dmsAddress",
+          "name": "_tokenAddress",
           "type": "address"
         }
       ],
       "stateMutability": "nonpayable",
       "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "approved",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "Approval",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "approved",
-          "type": "bool"
-        }
-      ],
-      "name": "ApprovalForAll",
-      "type": "event"
     },
     {
       "anonymous": false,
@@ -92,428 +37,31 @@
       "type": "event"
     },
     {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "Transfer",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "MAX_PER_MINT",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "MAX_SUPPLY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "_tokenIds",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "approve",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "attributes",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "element",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "level",
+          "name": "_tokenId",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "exp",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "star",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "energy",
+          "name": "_amount",
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "balanceOf",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "baseTokenURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "caveImageURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "checkMaxSupply",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "elementPath",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getApproved",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAttributes",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "owner",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "element",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "level",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "exp",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "star",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "energy",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct DearMonster.Attribute[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getElementPath",
-      "outputs": [
-        {
-          "internalType": "string[]",
-          "name": "",
-          "type": "string[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getMaxPurchaseLimit",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getMaxSupply",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getOwner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getTokenIds",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        }
-      ],
-      "name": "isApprovedForAll",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "isRevealed",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string[]",
-          "name": "element",
-          "type": "string[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "ratings",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "mintDearMonster",
+      "name": "buyTrade",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "monsterImageURI",
+      "name": "getAdminPercentage",
       "outputs": [
         {
-          "internalType": "string",
+          "internalType": "uint256",
           "name": "",
-          "type": "string"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -521,12 +69,12 @@
     },
     {
       "inputs": [],
-      "name": "name",
+      "name": "getSellerPercentage",
       "outputs": [
         {
-          "internalType": "string",
+          "internalType": "uint256",
           "name": "",
-          "type": "string"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -549,67 +97,29 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "_tokenId",
           "type": "uint256"
-        }
-      ],
-      "name": "ownerOf",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "presaleActive",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "limit",
-          "type": "uint256"
-        }
-      ],
-      "name": "randomImageId",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "tokenAddress",
-          "type": "address"
         },
         {
           "internalType": "uint256",
-          "name": "tokenAmount",
+          "name": "_price",
           "type": "uint256"
         }
       ],
-      "name": "recoverERC20",
+      "name": "putTrade",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeTrade",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -624,71 +134,25 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "returnAttributes",
-      "outputs": [
-        {
           "internalType": "address",
-          "name": "owner",
+          "name": "_address",
           "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "element",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "level",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "exp",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "star",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "energy",
-          "type": "uint256"
         }
       ],
-      "stateMutability": "view",
+      "name": "setAdminAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "_adminPercentage",
           "type": "uint256"
         }
       ],
-      "name": "safeTransferFrom",
+      "name": "setAdminPercentage",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -697,26 +161,11 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "from",
+          "name": "_contractAddress",
           "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "_data",
-          "type": "bytes"
         }
       ],
-      "name": "safeTransferFrom",
+      "name": "setDMSAddress",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -725,42 +174,11 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "operator",
+          "name": "_contractAddress",
           "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "approved",
-          "type": "bool"
         }
       ],
-      "name": "setApprovalForAll",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_baseTokenURI",
-          "type": "string"
-        }
-      ],
-      "name": "setBaseURI",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_caveImageURI",
-          "type": "string"
-        }
-      ],
-      "name": "setCaveImageURI",
+      "name": "setDearMonsterAddress",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -769,149 +187,29 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_energy",
+          "name": "_sellerPercentage",
           "type": "uint256"
         }
       ],
-      "name": "setEnergy",
+      "name": "setSellerPercentage",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_maxPurchaseLimit",
-          "type": "uint256"
-        }
-      ],
-      "name": "setMaxPurchaseLimit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_maxSupply",
-          "type": "uint256"
-        }
-      ],
-      "name": "setMaxSupply",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_monsterImageURI",
-          "type": "string"
-        }
-      ],
-      "name": "setMonsterImageURI",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        }
-      ],
-      "name": "setPrice",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes4",
-          "name": "interfaceId",
-          "type": "bytes4"
-        }
-      ],
-      "name": "supportsInterface",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "symbol",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "toggleReveal",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "index",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenByIndex",
-      "outputs": [
         {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "index",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenOfOwnerByIndex",
+      "name": "tokenOwners",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -921,43 +219,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "tokenURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_owner",
-          "type": "address"
-        }
-      ],
-      "name": "tokensOfOwner",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "totalSupply",
+      "name": "tokenPrices",
       "outputs": [
         {
           "internalType": "uint256",
@@ -966,29 +232,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "transferFrom",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -1002,13 +245,6 @@
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdraw",
-      "outputs": [],
-      "stateMutability": "payable",
       "type": "function"
     }
   ]

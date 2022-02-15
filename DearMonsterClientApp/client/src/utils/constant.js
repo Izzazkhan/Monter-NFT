@@ -5,7 +5,7 @@ export const addressList = {
     tokenAddress: '0x9bfd1348cf574e3eb2b114cc18374b09ad012c69',
     tokenAddressTest: '0x4a709e2e07edffc8770f268c373fb9f17e316b9f',
 
-    nftAddress: '0xf5ba121b8e4c89e4090feC0E262b8Af17Bedc776',
+    nftAddress: '0x9Bb677527369922e1cC9d55D49025843b86Ad467',
     nftAddressTest: '0x180b36a4293507bd31f56fd211c7b879f2827286',
 
     tradingAddress: '0x88947e431fC724f98525c715ed6F1F3CeF672EB1',

@@ -21,7 +21,6 @@ const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTes
 
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
-    console.log('post ==========', post)
 
     const [owner, setOwner] = useState(null);
     const [state, setState] = useState({ walletAddress: '', scholarName: '', managerName: '', profitToManager: '', profitToScholar: '', readMe: '' })
