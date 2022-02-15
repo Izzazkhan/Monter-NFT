@@ -12,11 +12,6 @@
                     "internalType": "address",
                     "name": "_tokenAddress",
                     "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_adminAddress",
-                    "type": "address"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -40,25 +35,6 @@
             ],
             "name": "OwnershipTransferred",
             "type": "event"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "name": "availableTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
         },
         {
             "inputs": [
