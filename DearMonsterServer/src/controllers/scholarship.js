@@ -58,7 +58,42 @@ exports.index = async function (req, res) {
     res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
 }
 
+exports.scholarItems = async function (req, res) {
+    const { scholar } = req.params;
+    
 
+    let mintedMonster = await MintedMonster.aggregate([
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'scholarships',
+                foreignField: '_id',
+                localField: 'scholarId',
+                as: 'scholarshipsItems'
+            }
+        },
+        {
+            $unwind: '$scholarshipsItems'
+        },
+        {
+            $match: { 
+                'scholarshipsItems.scholarWallet': scholar 
+            }
+        }
+    ])
+
+    res.status(200).json({ mintedMonster, message: "got scholar monsters retrived successfully" });
+}
 
 exports.update = async function (req, res) {
     try {

@@ -153,3 +153,17 @@
   .items-list .item .modal-amount {
     margin: 0;
   }
+
+
+  nav > a > p{
+    padding: 10px;
+    background-color: #FFBD1C;
+    border-radius: 9px;
+    width: 200px;
+    text-align: center;
+    color: black;
+  }
+
+  nav > a > p:hover{
+    background-color: #FF901D;
+  }

@@ -33,10 +33,22 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		setState({
-			...state,
-			[name]: value,
-		});
+
+		if(name === 'profitToManager') {
+			if(parseInt(value) >= 0 && parseInt(value) <= 100) {
+				setState({
+					...state,
+					profitToScholar: `${100 - parseInt(value)}`,
+					profitToManager: value
+				})
+			}
+		} else {
+			setState({
+				...state,
+				[name]: value,
+			});
+		}
+
 	}
 
 	console.log('state', state)
@@ -187,48 +199,48 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 
 												<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
 												</div>
-												<div className='modal-body p-4'>
+												<div className='modal-body'>
 													<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
 
 													</p>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Scholar Address</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
-															{ }
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Address</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
+															{post.scholarshipsItems[0].scholarWallet}
 														</div>
 
 													</div>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Scholar Name</h4> </div>
-														<div className='d-flex align-items-center w-60'>
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Name</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
 															{post.scholarshipsItems[0].scholarName}
 														</div>
 
 													</div>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Manager Name</h4> </div>
-														<div className='d-flex align-items-center w-60'>
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Manager Name</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
 															{post.scholarshipsItems[0].managerName}
 														</div>
 
 													</div>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>profitToManager</h4> </div>
-														<div className='d-flex align-items-center w-60'>
-															{post.scholarshipsItems[0].profitShare.Manager_Share}
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToManager</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
+															{post.scholarshipsItems[0].profitShare.Manager_Share}%
 														</div>
 
 													</div>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>profitToScholar</h4> </div>
-														<div className='d-flex align-items-center w-60'>
-															{post.scholarshipsItems[0].profitShare.Scholar_Share}
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToScholar</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
+															{post.scholarshipsItems[0].profitShare.Scholar_Share}%
 														</div>
 
 													</div>
 													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>readMe</h4> </div>
-														<div className='d-flex align-items-center w-60'>
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>readMe</h4> </div>
+														<div className='d-flex align-items-center w-60 text-black'>
 															{post.scholarshipsItems[0].readMe}
 														</div>
 
@@ -256,21 +268,20 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 									</div>
 									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
 										<div className='modal-dialog'>
-											<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
-
-												<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
+											<div style={{ padding: "20px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+												<div className='modal-header mt-4 pb-2 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
 												</div>
-												<div className='modal-body p-4'>
+												<div className='modal-body'>
 													<p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
-
+														Provide Scholar Details
 													</p>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Scholar Address</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+													<div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Address</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
 																type='text'
 																name='walletAddress'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='walletAddress'
 																value={state.walletAddress}
 																onChange={handleInputChange}
@@ -279,13 +290,13 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 														</div>
 
 													</div>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Scholar Name</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+													<div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Name</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
 																type='text'
 																name='scholarName'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='scholarName'
 																value={state.scholarName}
 																onChange={handleInputChange}
@@ -294,13 +305,13 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 														</div>
 
 													</div>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>Manager Name</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+													<div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>Manager Name</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
 																type='text'
 																name='managerName'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='managerName'
 																value={state.managerName}
 																onChange={handleInputChange}
@@ -309,13 +320,13 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 														</div>
 
 													</div>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>profitToManager</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+													<div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToManager</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
-																type='text'
+																type='number'
 																name='profitToManager'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='profitToManager'
 																value={state.profitToManager}
 																onChange={handleInputChange}
@@ -324,40 +335,39 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 														</div>
 
 													</div>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>profitToScholar</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+
+													{/* <div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToScholar</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
 																type='text'
 																name='profitToScholar'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='profitToScholar'
 																value={state.profitToScholar}
 																onChange={handleInputChange}
 															/>
 
 														</div>
-
-													</div>
-													<div className='align-items-center d-flex justify-content-between mb-4' >
-														<div> <h4 style={{ color: "black" }}>readMe</h4> </div>
-														<div className='d-flex align-items-center w-60' style={{ padding: "15px 15px 23px 3px" }}>
+													</div> */}
+													
+													<div className='align-items-center d-flex justify-content-between pb-2' >
+														<div> <h4 style={{ color: "black", fontSize: "15px" }}>readMe</h4> </div>
+														<div className='d-flex align-items-center w-60'>
 															<input
 																type='text'
 																name='readMe'
-																className='form-control  w-200px'
+																className='form-control w-200px'
 																id='readMe'
 																value={state.readMe}
 																onChange={handleInputChange}
 															/>
 
 														</div>
-
 													</div>
 													<div style={{ float: "right" }}>
-														<p style={{ maxWidth: "210px", fontSize: "13px", color: "black" }}>Note that there will be a 5% transaction fee.</p>
+														<p style={{ maxWidth: "210px", fontSize: "12px", color: "black" }}>Set manager profit, Remaining will be assigned to Scholar.</p>
 													</div>
-
 												</div>
 												<div className='modal-footer border-top-0 mb-5'>
 													<div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor' data-bs-dismiss='modal' onClick={() => scholarFunction(post)}>

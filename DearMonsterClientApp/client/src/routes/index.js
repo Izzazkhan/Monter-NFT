@@ -5,9 +5,11 @@ import {
 	INSTRUCTIONS,
 	INVENTORY_ALL,
 	INVENTORY_TRADING,
-	TRAINING_GROUND,
+	TRAINING_GROUND_OWNED,
+	TRAINING_GROUND_SCHOLAR,
 	SCHOLARSHIP_MANAGER,
-	SCHOLARSHIP_SCHOLAR
+	ON_SCHOLARSHIP_SCHOLAR,
+	GOT_SCHOLARSHIP_SCHOLAR
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -41,27 +43,43 @@ export const NavbarRoutes = [
 		component: lazy(() => import('../views/pages/InventoryTrading')),
 	},
 	{
-		path: TRAINING_GROUND,
-		pathForNavabr: TRAINING_GROUND,
+		path: TRAINING_GROUND_OWNED,
+		pathForNavabr: TRAINING_GROUND_OWNED,
 		title: 'Training Ground',
 		exact: true,
 		component: lazy(() => import('../views/pages/TrainingGround')),
+	},
+	{
+		path: TRAINING_GROUND_SCHOLAR,
+		pathForNavabr: TRAINING_GROUND_SCHOLAR,
+		title: 'Training Ground',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/TrainingGroundScholar')),
 	},
 	{
 		path: SCHOLARSHIP_MANAGER,
 		title: 'Scholarship',
 		pathForNavabr: '/scholarship/manager',
 		exact: true,
-		hidden: true,
+		// hidden: true,
 		component: lazy(() => import('../views/pages/ScholarshipManager')),
 	},
 	{
-		path: SCHOLARSHIP_SCHOLAR,
+		path: ON_SCHOLARSHIP_SCHOLAR,
 		title: 'Scholarship',
-		pathForNavabr: '/scholarship/scholar',
+		pathForNavabr: '/scholarship/on-scholar',
 		exact: true,
 		hidden: true,
-		component: lazy(() => import('../views/pages/ScholarshipScholar')),
+		component: lazy(() => import('../views/pages/ScholarshipOnScholar')),
+	},
+	{
+		path: GOT_SCHOLARSHIP_SCHOLAR,
+		title: 'Scholarship',
+		pathForNavabr: '/scholarship/got-scholar',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/ScholarshipGotScholar')),
 	},
 	{
 		path: INSTRUCTIONS,

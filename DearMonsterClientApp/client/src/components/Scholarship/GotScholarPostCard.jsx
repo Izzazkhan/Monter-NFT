@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 import { apiUrl } from '../../utils/constant'
 
+
 const PostCard = ({ className, getData, post, stepImg, account }) => {
 
     const [owner, setOwner] = useState(null);
@@ -27,6 +28,33 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
         setOwner(accounts[0])
         dispatch(connectUserSuccess(accounts[0]))
     }
+
+    const acceptScholarRequest = (post) => {
+        let params = new URLSearchParams()
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+            }
+        }
+        axios.put(`${apiUrl}/api/scholarship/${post.scholarshipsItems._id}`, params, config)
+            .then((response) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Dear Monster Scholarship',
+                    text: 'Request for scholar accepted successfully'
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Dear Monster Scholarship',
+                    text: 'Error while accepting request'
+                })
+            })
+    }
+
 
 	const revokeFunction = (post) => {
 		const config = {
@@ -88,26 +116,26 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                             );
                         })}
                         <div className='mb-4' >
-                            <span className='me-2'>On scholarship</span>
+                            <span className='me-2'>On scholarship:</span>
+                            <span>{!post.scholarshipsItems.assigned ? 'Pending' : 'Accepted' }</span>
+
+                            
                         </div>
-                    </div>
-                    <div className='center center mt-5 mb-4  fs-19 text-white'>
-                        <p className='fs-30'>{post?.price}</p>
                     </div>
                 </div>
             </main>
             <footer className='center mt-6'>
-                {account || owner ?
+                {userId ?
                     (
                         <>
-                            {post.scholarshipsItems.length ?
+                            {post.scholarshipsItems ?
                                 <>
                                     <div
-                                        className={`header-Connect-btn py-3 px-4 ${post.scholarshipsItems[0].assigned ? 'w-140px' : 'w-160px'} center bold fs-13 cursor`}
+                                        className={`header-Connect-btn py-3 px-4 ${post.scholarshipsItems.assigned ? 'w-140px' : 'w-160px'} center bold fs-13 cursor`}
                                         data-bs-toggle='modal'
                                         data-bs-target={`#SellMonster${post?.id}`}
                                     >
-                                        {post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending on scholar'}
+                                        {post.scholarshipsItems.assigned ? 'View Scholar' : 'View Request'}
                                     </div>
                                     <div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
                                         <div className='modal-dialog'>
@@ -122,42 +150,42 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Address</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].scholarWallet}
+                                                            {post.scholarshipsItems.scholarWallet}
                                                         </div>
 
                                                     </div>
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>Scholar Name</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].scholarName}
+                                                            {post.scholarshipsItems.scholarName}
                                                         </div>
 
                                                     </div>
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>Manager Name</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].managerName}
+                                                            {post.scholarshipsItems.managerName}
                                                         </div>
 
                                                     </div>
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToManager</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].profitShare.Manager_Share}
+                                                            {post.scholarshipsItems.profitShare.Manager_Share}
                                                         </div>
 
                                                     </div>
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>profitToScholar</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].profitShare.Scholar_Share}
+                                                            {post.scholarshipsItems.profitShare.Scholar_Share}
                                                         </div>
 
                                                     </div>
                                                     <div className='align-items-center d-flex justify-content-between mb-4' >
                                                         <div> <h4 style={{ color: "black", fontSize: "15px" }}>readMe</h4> </div>
                                                         <div className='d-flex align-items-center w-60 text-black'>
-                                                            {post.scholarshipsItems[0].readMe}
+                                                            {post.scholarshipsItems.readMe}
                                                         </div>
 
                                                     </div>
@@ -165,13 +193,13 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                                 </div>
                                                 <div className='modal-footer border-top-0 mb-5'>
                                                     {
-                                                        !post.scholarshipsItems[0].assigned ?
+                                                        !post.scholarshipsItems.assigned ?
                                                         
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'>
-                                                                Revoke Request
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => acceptScholarRequest(post)}>
+                                                                Accept Request
                                                             </div>
                                                             :
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => revokeFunction()}>
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => revokeFunction(post)}>
                                                                 Cancel Scholar
                                                             </div>
                                                     }

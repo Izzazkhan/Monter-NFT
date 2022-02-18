@@ -5,7 +5,7 @@ import NavLinks from '../../components/Scholarship/NavLinks';
 import PostCard from '../../components/Scholarship/ScholarPostCard';
 import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess } from './../../store/actions/auth/login';
+import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
@@ -116,7 +116,6 @@ const ScholarshipScholar = ({ match }) => {
                             post.values['EXP'] = item.values.EXP
                             post.values['Element'] = 'None'
                             post.values['Energy'] = item.values.Energy
-                            // post.values['Price'] = "48000"
                             post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
                             _posts.push(post);
                         }
@@ -133,7 +132,7 @@ const ScholarshipScholar = ({ match }) => {
 
     return (
         <div>
-            <CurrenPageTitle title='Scholarship'></CurrenPageTitle>
+            <CurrenPageTitle title='On Scholarship'></CurrenPageTitle>
             <NavLinks match={match} />
             {userId ?
                 <div className='container'>

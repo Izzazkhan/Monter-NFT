@@ -172,12 +172,19 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
                         </div>
                     </div>
                     <div className='text-white center flex-column mt-5 fs-18'>
+
+                        {console.log(post?.values)}
+
                         {Object.keys(post?.values).map((key, index) => {
-                            if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP') {
+                            if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP' || key == 'Owner_Share') {
                                 return (
                                     <div className='mb-4' key={index}>
                                         <span className='me-2'>{key} :</span>
+                                        { key == 'Owner_Share' ?
+                                        <span>{post?.values[key]}%</span>
+                                        :
                                         <span>{post?.values[key]}</span>
+                                        }
                                     </div>
                                 );
                             }

@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import NavLinks from '../../components/Scholarship/NavLinks';
-import PostCard from '../../components/Scholarship/PostCard';
+import PostCard from '../../components/Scholarship/GotScholarPostCard';
 import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess } from './../../store/actions/auth/login';
+import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
-const Inventory = ({ match }) => {
+const ScholarshipScholar = ({ match }) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -96,7 +96,7 @@ const Inventory = ({ match }) => {
 
     function getData(owner) {
         let _posts = []
-        axios.get(`${apiUrl}/api/scholarship/` + owner)
+        axios.get(`${apiUrl}/api/scholarship/scholarItems/` + owner)
             .then((res) => {
                 console.log('response::::', res)
                 if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
@@ -115,7 +115,6 @@ const Inventory = ({ match }) => {
                         post.values['EXP'] = item.values.EXP
                         post.values['Element'] = 'None'
                         post.values['Energy'] = item.values.Energy
-                        // post.values['Price'] = "48000"
                         post.values['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
                         _posts.push(post);
                     })
@@ -131,7 +130,7 @@ const Inventory = ({ match }) => {
 
     return (
         <div>
-            <CurrenPageTitle title='Scholarship'></CurrenPageTitle>
+            <CurrenPageTitle title='Got Scholarship'></CurrenPageTitle>
             <NavLinks match={match} />
             {userId ?
                 <div className='container'>
@@ -202,4 +201,4 @@ const Inventory = ({ match }) => {
     );
 };
 
-export default Inventory;
+export default ScholarshipScholar

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
-import ChooseDearMonster from '../../components/TrainingGround/ChooseDearMonster';
+import ChooseDearMonsterScholar from '../../components/TrainingGround/ChooseDearMonsterScholar';
 import ChooseMinion from '../../components/TrainingGround/ChooseMinion';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
@@ -44,7 +44,7 @@ const TrainingGround = () => {
 	const [expGain, setExpGain] = useState('')
 	const [claimHistory, setClaimHistory] = useState([])
 
-	const match = {params : { slug: 'owned' }}
+	const match = {params : { slug: 'scholar' }}
 
 	useEffect(async () => {
 		if (window.ethereum) {
@@ -64,6 +64,7 @@ const TrainingGround = () => {
 		setAccount(accounts[0])
 
 		if (userId) {
+			// api to get user earnings
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
 					.then((response) => {
@@ -79,6 +80,8 @@ const TrainingGround = () => {
 					})
 			}
 			getAmount()
+
+			// resolved withdraw request, to show remaining time for next claim
 			function getWithdrawRequest() {
 				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
 					.then((response) => {
@@ -92,6 +95,7 @@ const TrainingGround = () => {
 			}
 			getWithdrawRequest()
 
+			// user's withdraw pending request
 			function getOpenWithdrawRequest() {
 				axios.get(`${apiUrl}/api/withdrawRequest/pending/${accounts[0]}`)
 					.then((response) => {
@@ -105,6 +109,7 @@ const TrainingGround = () => {
 			}
 			getOpenWithdrawRequest()
 
+			// user's claim history
 			function getClaimHistory() {
 				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}`)
 					.then((response) => {
@@ -200,9 +205,18 @@ const TrainingGround = () => {
 					updateAmount = amount + additionalReward
 				}
 
+				let managerShare = (parseInt(updateAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
+				let scholarShare = parseInt(updateAmount) - managerShare
+
+
+				console.log("====================================")
+				console.log(selectedMonster.owner)
+				console.log(selectedMonster.scholarshipsItems.profitShare.Manager_Share)
+				console.log("====================================")
+
 				const updateParams = new URLSearchParams()
 				updateParams.append('earnerAddress', account)
-				updateParams.append('totalAmount', parseInt(updateAmount))
+				updateParams.append('totalAmount', parseInt(scholarShare))
 
 				axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
 					.then((response) => {
@@ -214,6 +228,20 @@ const TrainingGround = () => {
 					.catch((error) => {
 						console.log(error)
 					})
+
+
+				const updateParams2 = new URLSearchParams()
+				updateParams2.append('earnerAddress', selectedMonster.owner)
+				updateParams2.append('totalAmount', parseInt(managerShare))
+
+				axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}`, updateParams2, config)
+					.then((response) => {
+						console.log('add or update earning ::', response)
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+					
 
 			})
 			.catch((e) => {
@@ -275,6 +303,7 @@ const TrainingGround = () => {
 							amount = Number(value)
 						}
 					})
+
 					rewardUpdateCall(amount)
 
 				} else {
@@ -459,7 +488,7 @@ const TrainingGround = () => {
 	}
 
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster}
+		return <ChooseDearMonsterScholar handleonSelect={handleonSelect} selectedMonster={selectedMonster}
 			updateMonsterAfterFight={updateMonsterAfterFight} />
 	}, [updateMonsterAfterFight, selectedMonster])
 
@@ -472,7 +501,7 @@ const TrainingGround = () => {
 
 	return (
 		<div>
-			<CurrenPageTitle title='Training Ground (Owner)'></CurrenPageTitle>
+			<CurrenPageTitle title='Training Ground (Scholar)'></CurrenPageTitle>
 			{
 				userId ?
 					<>
@@ -483,7 +512,7 @@ const TrainingGround = () => {
 									<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 								</div>
 								<section className='mt-5'>
-									<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+									<div className='header-Connect-btn py-3 w-250px center bold fs-13 cursor'
 										data-bs-toggle='modal'
 										data-bs-target='#ClaimRewardHistory'>
 										Claim Reward History
