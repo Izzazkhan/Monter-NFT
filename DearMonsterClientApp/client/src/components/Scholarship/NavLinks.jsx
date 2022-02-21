@@ -31,10 +31,10 @@ const NavLinks = ({ match }) => {
                 className='text-white me-7 center flex-column position-relative'
                 to='/scholarship/got-scholar'
             >
-                <p>Scholared Items</p>
+                <p>Scholared</p>
                 <img
                     src='/assets/imgs/arrow.png'
-                    className={`position-absolute ${match.params.slug == 'scholar' ? 'd-flex' : 'd-none'
+                    className={`position-absolute ${match.params.slug == 'scholared' ? 'd-flex' : 'd-none'
                         } `}
                     style={{ top: '43px' }}
                     alt=''

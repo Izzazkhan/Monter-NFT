@@ -138,7 +138,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                         {post.scholarshipsItems.assigned ? 'View Scholar' : 'View Request'}
                                     </div>
                                     <div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
-                                        <div className='modal-dialog'>
+                                        <div className='modal-dialog modal-lg'>
                                             <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
                                                 <div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
@@ -195,12 +195,18 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                                     {
                                                         !post.scholarshipsItems.assigned ?
                                                         
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => acceptScholarRequest(post)}>
-                                                                Accept Request
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
+                                                            onClick={() => acceptScholarRequest(post)}
+                                                            data-bs-dismiss='modal'
+                                                            >
+                                                                Accept Request 
                                                             </div>
                                                             :
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => revokeFunction(post)}>
-                                                                Cancel Scholar
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
+                                                            onClick={() => revokeFunction(post)}
+                                                            data-bs-dismiss='modal'
+                                                            >
+                                                                Revoke
                                                             </div>
                                                     }
                                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>

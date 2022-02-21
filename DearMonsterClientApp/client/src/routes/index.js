@@ -81,13 +81,13 @@ export const NavbarRoutes = [
 		hidden: true,
 		component: lazy(() => import('../views/pages/ScholarshipGotScholar')),
 	},
-	{
-		path: INSTRUCTIONS,
-		pathForNavabr: INSTRUCTIONS,
-		title: 'More',
-		exact: true,
-		component: lazy(() => import('../views/pages/HowToPlay')),
-	},
+	// {
+	// 	path: INSTRUCTIONS,
+	// 	pathForNavabr: INSTRUCTIONS,
+	// 	title: 'More',
+	// 	exact: true,
+	// 	component: lazy(() => import('../views/pages/HowToPlay')),
+	// },
 ];
 
 export const Routes = [
