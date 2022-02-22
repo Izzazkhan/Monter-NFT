@@ -19,12 +19,12 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 		function getDearMonster() {
 			let monsters = []
 			// const account = '0x7ACf46627094FA89339DB5b2EB862F0E8Ea4D9fc'
-			axios.get(`${apiUrl}/api/mintedMonster/ownerMonsters/` + userId)
+			axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + userId)
 				.then((res) => {
 					// console.log('owned minted', res)
 					if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 						res.data.mintedMonster.forEach(item => {
-							if (item.tradeitem.length < 1) {// && !item.scholarId) {
+							if (item.tradeitem.length < 1) {
 								let singleMonster = {}
 								let level
 								if (Number(item.values.EXP) < 450) {
@@ -53,6 +53,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 								singleMonster['rating'] = item.rating
 								singleMonster['totalRating'] = item.monster.totalRating
 								singleMonster['values'] = {}
+								singleMonster['scholarshipsItems'] = item.scholarshipsItems
 								singleMonster.values['Level'] = level
 								singleMonster.values['EXP'] = item.values.EXP
 								singleMonster.values['Element'] = 'None'
@@ -60,6 +61,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 								singleMonster.values['Price'] = item.monster.price
 								singleMonster['createdAt'] = item.createdAt
 								singleMonster.values['UpdateTime'] = item.values.UpdateTime
+								// singleMonster['scholarshipsItems'] = item.scholarshipsItems
 								singleMonster.values['OwnerID'] = `${userId.substring(0, 4)}...${userId.slice(-4)}`
 								monsters.push(singleMonster);
 							}
@@ -123,6 +125,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 										handleSelect={() => onSelect(post)}
 										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
 										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
+										type={'ownerMonster'}
 									/>
 								</SplideSlide>
 							);

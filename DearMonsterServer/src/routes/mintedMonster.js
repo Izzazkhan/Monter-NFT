@@ -14,9 +14,6 @@ router.post('/setEnergyTime/:id', MintedMonster.setEnergyTime);
 //INDEX
 router.get('/ownerItems/:owner', MintedMonster.index);
 
-//Owner Monsters
-router.get('/ownerMonsters/:owner', MintedMonster.owned);
-
 //STORE
 router.post('/', MintedMonster.store);
 

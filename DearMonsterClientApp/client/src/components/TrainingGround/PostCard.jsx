@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
-const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
-    // console.log('energyCalculate ===', post)
-
+const PostCard = ({ className, post, selectedMonster, type, handleSelect, updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange }) => {
     const [remainingTime, setRemainingTime] = useState(1)
     const [timeInMinute, setTimeInMinute] = useState(1)
     const [time, setTime] = useState('0d 0h 0m 0s')
-
 
     const energyUpdateCall = (energy, calculateTime) => {
 
@@ -172,9 +169,6 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
                         </div>
                     </div>
                     <div className='text-white center flex-column mt-5 fs-18'>
-
-                        {/* {console.log(post?.values)} */}
-
                         {Object.keys(post?.values).map((key, index) => {
                             if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP' || key == 'Owner_Share') {
                                 return (
@@ -189,6 +183,20 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
                                 );
                             }
                         })}
+                        {type === 'ownerMonster' && post.scholarshipsItems.length && post.scholarshipsItems[0].assigned ?
+							<div className='mb-4' >
+								<span className='me-2'>On scholarship</span>
+							</div> :
+							type === 'ownerMonster' && post.scholarshipsItems.length ?
+								<div className='mb-4' >
+									<span className='me-2'>Scholarship pending</span>
+								</div>
+								: type === 'ownerMonster' ?
+								<div className='mb-4' >
+									<span className='me-2'>Not on scholarship</span>
+								</div>
+                                : undefined
+						}
                     </div>
                     {/* <div className='timerBoard w-170px   ms-9 center py-3 bold'>{`${hours}h:${minutes}m:${seconds}s`}</div> */}
                     <div className='center center mt-5 mb-4  fs-19 text-white'>

@@ -129,6 +129,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 										handleSelect={() => onSelect(post)}
 										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
 										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
+										type={'scholarMonster'}
 									/>
 								</SplideSlide>
 							);
