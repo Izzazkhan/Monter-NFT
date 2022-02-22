@@ -19,12 +19,12 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 		function getDearMonster() {
 			let monsters = []
 			// const account = '0x7ACf46627094FA89339DB5b2EB862F0E8Ea4D9fc'
-			axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + userId)
+			axios.get(`${apiUrl}/api/mintedMonster/ownerMonsters/` + userId)
 				.then((res) => {
-					// console.log('response::', res)
+					// console.log('owned minted', res)
 					if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 						res.data.mintedMonster.forEach(item => {
-							if (item.tradeitem.length < 1) {
+							if (item.tradeitem.length < 1) {// && !item.scholarId) {
 								let singleMonster = {}
 								let level
 								if (Number(item.values.EXP) < 450) {

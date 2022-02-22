@@ -46,6 +46,37 @@ exports.index = async function (req, res) {
     res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
 };
 
+exports.owned = async function (req, res) {
+    const { owner } = req.params;
+
+    const allMonster = await MintedMonster.aggregate([
+        {
+            $match: { owner }
+        },
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'tradeitems',
+                foreignField: 'mintedMonsterId',
+                localField: '_id',
+                as: 'tradeitem'
+            }
+        },
+    ]);
+    const mintedMonster = allMonster.filter(item => !item.scholarId)
+    res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
+};
+
 
 exports.store = async (req, res) => {
     try {

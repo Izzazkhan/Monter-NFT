@@ -85,6 +85,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		}
 		axios.post(`${apiUrl}/api/scholarship/${post.mintedId}`, params, config)
 			.then((response) => {
+				getData(account)
 				Swal.fire({
 					icon: 'success',
 					title: 'Dear Monster Scholarship',
@@ -109,6 +110,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		}
 		axios.delete(`${apiUrl}/api/scholarship/${post.mintedId}`, config)
 			.then((response) => {
+				getData(account)
 				Swal.fire({
 					icon: 'success',
 					title: 'Dear Monster Scholarship',

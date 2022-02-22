@@ -36,6 +36,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 		}
 		axios.delete(`${apiUrl}/api/scholarship/${post.mintedId}`, config)
 			.then((response) => {
+                getData(account)
 				Swal.fire({
 					icon: 'success',
 					title: 'Dear Monster Scholarship',
@@ -172,7 +173,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                                             </div>
                                                             :
                                                             <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
-                                                            onClick={() => revokeFunction()}
+                                                            onClick={() => revokeFunction(post)}
                                                             data-bs-dismiss='modal'
                                                             >
                                                                 Cancel Scholar

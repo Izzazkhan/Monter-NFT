@@ -25,7 +25,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
         }
         axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${post.mintedId}`, params, config)
             .then((response) => {
-                console.log('Energy update::', response)
+                // console.log('Energy update::', response)
                 setUpdateMonsterAfterEnergyChange(!updateMonsterAfterEnergyChange)
                 // setTime('0d 0h 0m 0s')
 
@@ -173,7 +173,7 @@ const PostCard = ({ className, post, selectedMonster, handleSelect, updateMonste
                     </div>
                     <div className='text-white center flex-column mt-5 fs-18'>
 
-                        {console.log(post?.values)}
+                        {/* {console.log(post?.values)} */}
 
                         {Object.keys(post?.values).map((key, index) => {
                             if (key == 'Level' || key == 'Energy' || key == 'OwnerID' || key == 'EXP' || key == 'Owner_Share') {
