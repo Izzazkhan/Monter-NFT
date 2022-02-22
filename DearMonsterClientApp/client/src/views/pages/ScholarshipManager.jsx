@@ -11,7 +11,10 @@ import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
-const Inventory = ({ match }) => {
+
+
+
+const Inventory = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -21,6 +24,9 @@ const Inventory = ({ match }) => {
     const [account, setAccount] = useState();
     const [paths, setPaths] = useState([]);
     const [attributes, setAttributes] = useState([]);
+
+	const match = {params : { slug: 'manager' }}
+
 
     const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
         usePagination(posts, 30, history.location.pathname);

@@ -194,7 +194,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 										{post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending On Scholar'}
 									</div>
 									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
-										<div className='modal-dialog'>
+										<div className='modal-dialog modal-lg'>
 											<div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
 												<div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
@@ -267,8 +267,8 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 										Scholar
 									</div>
 									<div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
-										<div className='modal-dialog'>
-											<div style={{ padding: "20px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+										<div className='modal-dialog modal-lg'>
+											<div style={{ padding: "30px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 												<div className='modal-header mt-4 pb-2 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
 												</div>
 												<div className='modal-body'>

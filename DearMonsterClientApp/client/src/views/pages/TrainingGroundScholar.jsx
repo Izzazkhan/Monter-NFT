@@ -9,6 +9,7 @@ import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from './../../store/actions/auth/login';
 import NavLinks from '../../components/TrainingGround/NavLinks';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const config = {
 	headers: {
@@ -25,6 +26,32 @@ const EnergyText = {
 		</span>
 	)
 }
+
+
+const loaderParentStyle = {
+	display: "flex",
+	top: "0",
+	position: "fixed",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "100%",
+	height: "100%",
+	left: "0",
+	background: "#686868e0",
+	zIndex: "99999",
+}
+const loaderStyle = {
+	alignItems: "center",
+	justifyContent: "center",
+	display: "flex",
+	flexDirection: "column"
+}
+const textStyle = {
+	fontSize: "25px",
+	color: "orange",
+	fontWeight: "bold"
+}
+
 
 const TrainingGround = () => {
 
@@ -196,27 +223,26 @@ const TrainingGround = () => {
 			.then((res) => {
 				additionalReward = res.data.levelBonus[0][`${selectedMonster.values.Level}`]
 				additionalReward = additionalReward / 100
+
+
 				let updateAmount
+				let totalNewAmount = additionalReward + amount
+
+				let managerShare = (parseInt(totalNewAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
+				let scholarShare = parseInt(totalNewAmount) - managerShare
+
 
 				if (earnerData && Object.keys(earnerData).length > 0) {
-					updateAmount = earnerData.totalAmount + amount + additionalReward
+					updateAmount = earnerData.totalAmount + scholarShare
 				}
 				else {
-					updateAmount = amount + additionalReward
+					updateAmount = scholarShare
 				}
 
-				let managerShare = (parseInt(updateAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
-				let scholarShare = parseInt(updateAmount) - managerShare
-
-
-				console.log("====================================")
-				console.log(selectedMonster.owner)
-				console.log(selectedMonster.scholarshipsItems.profitShare.Manager_Share)
-				console.log("====================================")
 
 				const updateParams = new URLSearchParams()
 				updateParams.append('earnerAddress', account)
-				updateParams.append('totalAmount', parseInt(scholarShare))
+				updateParams.append('totalAmount', parseInt(updateAmount))
 
 				axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
 					.then((response) => {
@@ -230,18 +256,27 @@ const TrainingGround = () => {
 					})
 
 
-				const updateParams2 = new URLSearchParams()
-				updateParams2.append('earnerAddress', selectedMonster.owner)
-				updateParams2.append('totalAmount', parseInt(managerShare))
+				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}`)
+				.then((response) => {
+					if (response?.data?.earnerData) {
+						let managerShareTotal = response?.data?.earnerData?.totalAmount + managerShare
 
-				axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}`, updateParams2, config)
-					.then((response) => {
-						console.log('add or update earning ::', response)
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-					
+						const updateParams2 = new URLSearchParams()
+						updateParams2.append('earnerAddress', selectedMonster.owner)
+						updateParams2.append('totalAmount', parseInt(managerShareTotal))
+
+						axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}`, updateParams2, config)
+							.then((response) => {
+								console.log('add or update earning ::', response)
+							})
+							.catch((error) => {
+								console.log(error)
+							})
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})					
 
 			})
 			.catch((e) => {
@@ -257,6 +292,7 @@ const TrainingGround = () => {
 			setTotalReward('')
 		}
 		else {
+			setLoading(true)
 			if (selectedMonster.values.Energy >= 1) {
 				setLoading(true)
 				setExpGain('')
@@ -354,6 +390,7 @@ const TrainingGround = () => {
 				setExpGain('')
 				setTotalReward('')
 			}
+			setLoading(false)
 		}
 	}
 
@@ -501,6 +538,24 @@ const TrainingGround = () => {
 
 	return (
 		<div>
+
+
+			{
+				loading ?
+					<div style={loaderParentStyle} className='loader-div'>
+						<div style={loaderStyle}>
+							{/* <Oval color='orange' ariaLabel='loading' /> */}
+							<ClipLoader color='orange' loading={true} size={150} />
+ 
+							<p style={textStyle} > Please wait for minion fight to be completed </p>
+						</div>
+					</div>
+					:
+					''
+			}
+
+
+
 			<CurrenPageTitle title='Training Ground (Scholar)'></CurrenPageTitle>
 			{
 				userId ?

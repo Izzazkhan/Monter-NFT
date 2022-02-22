@@ -110,7 +110,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                         {post.scholarshipsItems[0].assigned ? 'View Scholar' : 'Pending on scholar'}
                                     </div>
                                     <div className='modal fade' id={`SellMonster${post?.id}`} tabIndex='-1' aria-labelledby='SellMonsterLabel' aria-hidden='true' >
-                                        <div className='modal-dialog'>
+                                        <div className='modal-dialog modal-lg'>
                                             <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
                                                 <div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}> Scholar DearMonster </h3>
@@ -167,11 +167,14 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
                                                     {
                                                         !post.scholarshipsItems[0].assigned ?
                                                         
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'>
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' data-bs-dismiss='modal'>
                                                                 Revoke Request
                                                             </div>
                                                             :
-                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' onClick={() => revokeFunction()}>
+                                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
+                                                            onClick={() => revokeFunction()}
+                                                            data-bs-dismiss='modal'
+                                                            >
                                                                 Cancel Scholar
                                                             </div>
                                                     }
