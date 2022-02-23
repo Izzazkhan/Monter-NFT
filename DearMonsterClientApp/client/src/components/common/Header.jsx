@@ -9,7 +9,7 @@ import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import evmChains from 'evm-chains';
 import Fortmatic from 'fortmatic';
-
+import axios from 'axios'
 import { apiUrl, appEnv, addressList } from '../../utils/constant'
 
 import DMSToken from '../../contracts/DMSToken.json';
@@ -29,6 +29,7 @@ const Header = () => {
 	const [active, setActive] = useState(false);
 	const [blance, setBlance] = useState(0);
 	const [web3Modal, setWeb3Modal] = useState(null);
+	const [landingMsg, setLandingMsg] = useState('');
 
 	const [walletConnected, setWalletConnected] = useState(false);
 	const [account, setAccount] = useState([]);
@@ -65,6 +66,21 @@ const Header = () => {
 		DMSTokenContract.methods.balanceOf(accounts[0]).call().then(async function (bal) {
 			setBlance(Math.floor(bal / (10 ** 18)));
 		})
+		function getMessage() {
+			axios.get(`${apiUrl}/api/levelBonus`)
+				.then((response) => {
+					if (response?.data?.levelBonus) {
+						setLandingMsg(response.data.levelBonus[0].message)
+					}
+					else {
+						setLandingMsg('')
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+		}
+		getMessage()
 	}, [userId, balance]);
 
 	function init() {
@@ -267,7 +283,7 @@ const Header = () => {
 					<div id='rssBlock '>
 						<p className='cnnContents overflow-x-auto'>
 							<span className='marqueeStyle  '>
-								Welcome to the DearMonsters Universe. An exciting and rewarding journey awaits you!
+								{landingMsg}
 							</span>
 						</p>
 					</div>

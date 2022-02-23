@@ -24,6 +24,8 @@ export const addBonus = (data, token) => dispatch => {
     params.append('4', Number(data['4']))
     params.append('5', Number(data['5']))
     params.append('6', Number(data['6']))
+    params.append('message', data['message'])
+
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -56,6 +58,7 @@ export const editBonus = (data, token) => dispatch => {
     params.append('4', Number(data['4']))
     params.append('5', Number(data['5']))
     params.append('6', Number(data['6']))
+    params.append('message', data['message'])
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

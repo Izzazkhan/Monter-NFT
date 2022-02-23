@@ -17,7 +17,8 @@ function BonusForm(props) {
         3: '',
         4: '',
         5: '',
-        6: ''
+        6: '',
+        message: ''
     })
 
 
@@ -36,7 +37,7 @@ function BonusForm(props) {
                 4: propsData['4'],
                 5: propsData['5'],
                 6: propsData['6'],
-
+                message: propsData['message']
             })
         }
     }, [])
@@ -78,14 +79,15 @@ function BonusForm(props) {
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
+        console.log(field)
         if (field !== '_id') {
             return (
-                <div className="form-group col-md-6" key={i}>
+                <div className={`form-group ${field === 'message' ? 'col-md-12' : 'col-md-6'}`} key={i}>
                     <label className="control-label">{`Additional Reward in % for level ${field}`}</label>
                     <input type="text" required="required" className="form-control" onChange={handleChange}
                         name={field} value={value}
                         placeholder={`Enter ${field}`}
-                        type='number'
+                        type={field !== 'message' && 'number'}
                     />
                 </div>
             )
@@ -102,7 +104,7 @@ function BonusForm(props) {
             4: '',
             5: '',
             6: '',
-
+            message: ''
         })
     }
 

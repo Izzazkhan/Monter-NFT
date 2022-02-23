@@ -24,6 +24,10 @@ const LevelBonusSchema = new mongoose.Schema({
     6: {
         type: Number,
         required: true,
+    },
+    message: {
+        type: String,
+        required: true
     }
 }, {timestamps: true});
 

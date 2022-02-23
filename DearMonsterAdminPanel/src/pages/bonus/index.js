@@ -45,6 +45,7 @@ function Bonus(props) {
                                     <th>Level 4</th>
                                     <th>Level 5</th>
                                     <th>Level 6</th>
+                                    <th>Landing Message</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -60,6 +61,8 @@ function Bonus(props) {
                                             <td>{data['4']}</td>
                                             <td>{data['5']}</td>
                                             <td>{data['6']}</td>
+                                            <td>{`${data['message'].substring(0, 6)}...${data['message'].slice(-6)}`}</td>
+                                            
 
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>
                                                 <button onClick={() => deleteBonus(data._id)}>DELETE</button>

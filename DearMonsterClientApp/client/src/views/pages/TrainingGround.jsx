@@ -62,10 +62,24 @@ const TrainingGround = () => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0])
+	}, [window.web3])
 
+	// useEffect(() => {
+	// 	if(window.ethereum) {
+	// 		window.ethereum.on('accountsChanged', function () {
+	// 			window.web3.eth.getAccounts(function(error, accounts) {
+	// 				setAccount(accounts[0])
+	// 			});
+	// 		});
+	// 	}
+
+	// }, [window.ethereum])
+
+
+	useEffect(() => {
 		if (userId) {
 			function getAmount() {
-				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}/owner`)
+				axios.get(`${apiUrl}/api/userEarning/${account}/owner`)
 					.then((response) => {
 						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
@@ -80,7 +94,7 @@ const TrainingGround = () => {
 			}
 			getAmount()
 			function getWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${account}/owner`)
 					.then((response) => {
 						if (response.data.withdrawRequest) {
 							setResolvedRewardRequest(response.data.withdrawRequest)
@@ -93,7 +107,7 @@ const TrainingGround = () => {
 			getWithdrawRequest()
 
 			function getOpenWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/pending/${accounts[0]}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/pending/${account}/owner`)
 					.then((response) => {
 						if (response.data.openWithdrawRequest) {
 							setNonResolvedRewardRequest(response.data.openWithdrawRequest)
@@ -106,7 +120,7 @@ const TrainingGround = () => {
 			getOpenWithdrawRequest()
 
 			function getClaimHistory() {
-				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${account}/owner`)
 					.then((response) => {
 						if (response.data.withdrawRequestApproved) {
 							setClaimHistory(response.data.withdrawRequestApproved)
@@ -118,8 +132,7 @@ const TrainingGround = () => {
 			}
 			getClaimHistory()
 		}
-
-	}, [window.web3, userId, totalReward])
+	}, [userId, totalReward]) // account
 
 
 	const timer = () => {
@@ -171,7 +184,6 @@ const TrainingGround = () => {
 	const energyExperienceUpdate = (params, EXP, status) => {
 		axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 			.then((response) => {
-				console.log('energy experienc update', response)
 				setExpGain(EXP)
 				setStatus(status)
 				setLoading(false)
@@ -206,7 +218,6 @@ const TrainingGround = () => {
 
 				axios.put(`${apiUrl}/api/userEarning/${account}/owner`, updateParams, config)
 					.then((response) => {
-						console.log('add or update earning ::', response)
 						if (response.data.userEarning) {
 							setTotalReward(amount + additionalReward)
 						}
@@ -313,7 +324,7 @@ const TrainingGround = () => {
 					params.append('values.UpdateTime', new Date())
 					axios.post(`${apiUrl}/api/mintedMonster/setEnergyTime/${selectedMonster.mintedId}`, params, config)
 						.then((response) => {
-							console.log('update time at fight', response)
+							console.log(response)
 						})
 						.catch((error) => {
 							console.log(error)
@@ -381,7 +392,6 @@ const TrainingGround = () => {
 									const rewardParam = new URLSearchParams()
 									rewardParam.append('requesterAddress', account)
 									rewardParam.append('amount', earnerData.totalAmount)
-									console.log('called here')
 									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest/owner`, rewardParam, config)
 									setTotalReward('')
 

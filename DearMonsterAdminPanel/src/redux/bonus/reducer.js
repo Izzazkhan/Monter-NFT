@@ -22,6 +22,7 @@ const BonusReducer = (state = initialstate, action) => {
                     (content, i) => content._id === action.payload._id ? {
                         ...content, 1: action.payload['1'], 2: action.payload['2']
                         , 3: action.payload['3'], 4: action.payload['4'], 5: action.payload['5'], 6: action.payload['6'],
+                        message: action.payload['message'],
                         image: action.payload.image
                     }
                         : content)
