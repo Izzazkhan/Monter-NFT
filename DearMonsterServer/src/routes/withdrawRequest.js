@@ -5,20 +5,20 @@ const WithdrawRequest = require('../controllers/withdrawRequest');
 const router = express.Router();
 
 //INDEX
-router.get('/userWithdrawRequest/:wallet', WithdrawRequest.userWithdrawRequest);
+router.get('/userWithdrawRequest/:wallet/:type', WithdrawRequest.userWithdrawRequest);
 
-router.get('/claimHistory/:wallet', WithdrawRequest.claimHistory);
+router.get('/claimHistory/:wallet/:type', WithdrawRequest.claimHistory);
 
 //INDEX
-router.get('/userResolvedWithdrawRequest/:wallet', WithdrawRequest.userResolvedWithdrawRequest);
+router.get('/userResolvedWithdrawRequest/:wallet/:type', WithdrawRequest.userResolvedWithdrawRequest);
 //INDEX
 router.get('/', WithdrawRequest.index);
 
 //PENDING
-router.get('/pending/:wallet', WithdrawRequest.pending);
+router.get('/pending/:wallet/:type', WithdrawRequest.pending);
 
 //STORE
-router.post('/', WithdrawRequest.store);
+router.post('/:type', WithdrawRequest.store);
 
 //UPDATE
 router.put('/:id', WithdrawRequest.update);

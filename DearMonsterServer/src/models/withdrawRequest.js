@@ -14,6 +14,9 @@ const WithdrawRequestSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    type: {
+        type: String
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model('WithdrawRequest', WithdrawRequestSchema);

@@ -93,7 +93,7 @@ const TrainingGround = () => {
 		if (userId) {
 			// api to get user earnings
 			function getAmount() {
-				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}`)
+				axios.get(`${apiUrl}/api/userEarning/${accounts[0]}/scholar`)
 					.then((response) => {
 						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
@@ -110,7 +110,7 @@ const TrainingGround = () => {
 
 			// resolved withdraw request, to show remaining time for next claim
 			function getWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}`)
+				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${accounts[0]}/scholar`)
 					.then((response) => {
 						if (response.data.withdrawRequest) {
 							setResolvedRewardRequest(response.data.withdrawRequest)
@@ -124,7 +124,7 @@ const TrainingGround = () => {
 
 			// user's withdraw pending request
 			function getOpenWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/pending/${accounts[0]}`)
+				axios.get(`${apiUrl}/api/withdrawRequest/pending/${accounts[0]}/scholar`)
 					.then((response) => {
 						if (response.data.openWithdrawRequest) {
 							setNonResolvedRewardRequest(response.data.openWithdrawRequest)
@@ -138,7 +138,7 @@ const TrainingGround = () => {
 
 			// user's claim history
 			function getClaimHistory() {
-				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}`)
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${accounts[0]}/scholar`)
 					.then((response) => {
 						if (response.data.withdrawRequestApproved) {
 							setClaimHistory(response.data.withdrawRequestApproved)
@@ -244,7 +244,7 @@ const TrainingGround = () => {
 				updateParams.append('earnerAddress', account)
 				updateParams.append('totalAmount', parseInt(updateAmount))
 
-				axios.put(`${apiUrl}/api/userEarning/${account}`, updateParams, config)
+				axios.put(`${apiUrl}/api/userEarning/${account}/scholar`, updateParams, config)
 					.then((response) => {
 						console.log('add or update earning ::', response)
 						if (response.data.userEarning) {
@@ -256,7 +256,7 @@ const TrainingGround = () => {
 					})
 
 
-				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}`)
+				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`)
 				.then((response) => {
 					if (response?.data?.earnerData) {
 						let managerShareTotal = response?.data?.earnerData?.totalAmount + managerShare
@@ -265,7 +265,7 @@ const TrainingGround = () => {
 						updateParams2.append('earnerAddress', selectedMonster.owner)
 						updateParams2.append('totalAmount', parseInt(managerShareTotal))
 
-						axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}`, updateParams2, config)
+						axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`, updateParams2, config)
 							.then((response) => {
 								console.log('add or update earning ::', response)
 							})
@@ -425,7 +425,7 @@ const TrainingGround = () => {
 	const claimRewardHandler = async () => {
 
 		try {
-			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}`)
+			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}/scholar`)
 			if (getWithdrawRequest?.data?.withdrawRequest?.length > 0) {
 				if (Object.keys(nonResolvedRewardRequest).length > 0) {
 					Swal.fire({
@@ -447,7 +447,7 @@ const TrainingGround = () => {
 									const rewardParam = new URLSearchParams()
 									rewardParam.append('requesterAddress', account)
 									rewardParam.append('amount', earnerData.totalAmount)
-									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest/scholar`, rewardParam, config)
 									setTotalReward('')
 
 									setEarnerData({...earnerData, totalAmount: 0})
@@ -494,7 +494,7 @@ const TrainingGround = () => {
 						const rewardParam = new URLSearchParams()
 						rewardParam.append('requesterAddress', account)
 						rewardParam.append('amount', earnerData.totalAmount)
-						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest`, rewardParam, config)
+						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest/scholar`, rewardParam, config)
 						setTotalReward('')
 						if (postWithdraw) {
 							Swal.fire({

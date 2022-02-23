@@ -17,6 +17,9 @@ const UserEarningSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    type: {
+        type: String
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model('UserEarning', UserEarningSchema);

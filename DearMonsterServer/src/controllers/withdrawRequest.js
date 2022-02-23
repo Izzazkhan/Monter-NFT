@@ -6,7 +6,7 @@ exports.userWithdrawRequest = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const withdrawRequest = await WithdrawRequest.find({ requesterAddress: wallet });
+    const withdrawRequest = await WithdrawRequest.find({ requesterAddress: wallet, type: req.params.type });
     res.status(200).json({ withdrawRequest });
 };
 
@@ -14,7 +14,7 @@ exports.claimHistory = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const withdrawRequestApproved = await WithdrawRequest.find({ requesterAddress: wallet, isResolved: true}, null, { sort: { 'updatedAt' : -1 }}).limit(5)
+    const withdrawRequestApproved = await WithdrawRequest.find({ requesterAddress: wallet, isResolved: true, type: req.params.type}, null, { sort: { 'updatedAt' : -1 }}).limit(5)
     res.status(200).json({ withdrawRequestApproved });
 };
 
@@ -22,7 +22,7 @@ exports.userResolvedWithdrawRequest = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const withdrawRequest = await WithdrawRequest.findOne({ isResolved: true, requesterAddress: wallet }, null, { sort: { 'updatedAt' : -1 }});
+    const withdrawRequest = await WithdrawRequest.findOne({ isResolved: true, requesterAddress: wallet, type: req.params.type }, null, { sort: { 'updatedAt' : -1 }});
     res.status(200).json({withdrawRequest});
 };
 
@@ -35,7 +35,7 @@ exports.pending = async function (req, res) {
 
     const wallet = req.params.wallet;
 
-    const openWithdrawRequest = await WithdrawRequest.findOne({ isResolved: false, requesterAddress: wallet }, null, { sort: { 'updatedAt' : -1 }});
+    const openWithdrawRequest = await WithdrawRequest.findOne({ isResolved: false, requesterAddress: wallet, type: req.params.type }, null, { sort: { 'updatedAt' : -1 }});
     res.status(200).json({ openWithdrawRequest });
 };
 
@@ -43,11 +43,11 @@ exports.pending = async function (req, res) {
 exports.store = async (req, res) => {
     try {
 
-        const newRequest = new WithdrawRequest({ ...req.body });
+        const newRequest = new WithdrawRequest({ ...req.body, type: req.params.type });
         const newRequest_ = await newRequest.save();
 
         const { requesterAddress } = req.body
-        let update = { totalAmount: 0, isRequested: true }
+        let update = { totalAmount: 0, isRequested: true, type: req.params.type }
 
         // UserEarning requesterAddress
         const earningRequestReset = await UserEarning.findOneAndUpdate({earnerAddress: requesterAddress}, { $set: update });
