@@ -236,7 +236,7 @@ const TrainingGround = () => {
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
 				const energyCalculate = selectedMonster.values.Energy - 1
-				if (true) { // random <= minion.values.Win_Rate
+				if (random <= minion.values.Win_Rate) { // true
 					status = 'You have won the fight.'
 
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
