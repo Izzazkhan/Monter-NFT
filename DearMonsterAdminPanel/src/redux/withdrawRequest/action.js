@@ -17,9 +17,12 @@ export const getWithdrawRequest = () => dispatch => {
 }
 
 
-export const markResolved = (id) => dispatch => {
+export const markResolved = (id, transactionHash) => dispatch => {
+    console.log('transactionHash', id, transactionHash)
     const params = new URLSearchParams()
     params.append('isResolved', true)
+    params.append('transactionHash', transactionHash)
+
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

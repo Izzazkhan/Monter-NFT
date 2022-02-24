@@ -43,6 +43,7 @@ const TrainingGround = () => {
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 	const [expGain, setExpGain] = useState('')
 	const [claimHistory, setClaimHistory] = useState([])
+	const [type, setType] = useState(localStorage.getItem('type'))
 
 	const match = {params : { slug: 'owned' }}
 
@@ -62,6 +63,9 @@ const TrainingGround = () => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0])
+		setType('owner')
+		localStorage.setItem("type", 'owner')
+		
 	}, [window.web3])
 
 	// useEffect(() => {
@@ -77,7 +81,7 @@ const TrainingGround = () => {
 
 
 	useEffect(() => {
-		if (userId) {
+		if (userId && type === 'owner') {
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${account}/owner`)
 					.then((response) => {
@@ -132,7 +136,7 @@ const TrainingGround = () => {
 			}
 			getClaimHistory()
 		}
-	}, [userId, totalReward]) // account
+	}, [userId, totalReward, type]) // account
 
 
 	const timer = () => {
@@ -506,7 +510,7 @@ const TrainingGround = () => {
 										aria-labelledby='ClaimRewardHistoryLabel'
 										aria-hidden='true'
 									>
-										<div className='modal-dialog instructionsBoard'>
+										{/* <div className='modal-dialog instructionsBoard'>
 											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
 												<div className='modal-body  fs-25'>
 													<div className='title'>
@@ -529,7 +533,35 @@ const TrainingGround = () => {
 													</div>
 												</div>
 											</div>
-										</div>
+										</div> */}
+
+                                        <div className='modal-dialog modal-lg'>
+                                            <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+                                                <div className='modal-body fs-25'>
+												<div className='title'>
+														<h3 className='modal-amount'>{'Approved Claims History'}</h3>
+													</div>
+
+													{claimHistory.length ? claimHistory.map((history, i) => {
+														return (
+															<div className='item'>
+																<span className='modal-amount'>{`${i + 1}.`}</span>
+																<span className='modal-amount'>{`${history.amount}`}</span>
+																<span className='modal-amount'>
+																	{`${ new Date(history.updatedAt).getMonth() + 1 }-${ new Date(history.updatedAt).getDate() }-2022`}
+																	
+																	</span>
+																<span className='modal-amount'>{`${history.transactionHash}`}</span>
+
+															</div>
+
+														)
+													}) : <span className='modal-amount'>{'No Claim History Found.'}</span> }
+                                                    
+
+                                                </div>
+                                            </div>
+                                        </div>
 									</div>
 								</section>
 								<section className='mt-5 d-flex align-items-center '>

@@ -70,6 +70,8 @@ const TrainingGround = () => {
 	const [nonResolvedRewardRequest, setNonResolvedRewardRequest] = useState({})
 	const [expGain, setExpGain] = useState('')
 	const [claimHistory, setClaimHistory] = useState([])
+	const [type, setType] = useState(localStorage.getItem('type'))
+
 
 	const match = {params : { slug: 'scholar' }}
 
@@ -89,11 +91,13 @@ const TrainingGround = () => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0])
+		localStorage.setItem("type", 'scholar')
+		setType('scholar')
 
 	}, [window.web3])
 
 	useEffect(() => {
-		if (userId) {
+		if (userId && type === 'scholar') {
 			// api to get user earnings
 			function getAmount() {
 				axios.get(`${apiUrl}/api/userEarning/${account}/scholar`)
@@ -153,7 +157,7 @@ const TrainingGround = () => {
 			}
 			getClaimHistory()
 		}
-	}, [userId, totalReward])
+	}, [userId, totalReward, type])
 
 
 	const timer = () => {
@@ -567,7 +571,7 @@ const TrainingGround = () => {
 									<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 								</div>
 								<section className='mt-5'>
-									<div className='header-Connect-btn py-3 w-250px center bold fs-13 cursor'
+									<div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
 										data-bs-toggle='modal'
 										data-bs-target='#ClaimRewardHistory'>
 										Claim Reward History
@@ -579,13 +583,13 @@ const TrainingGround = () => {
 										aria-labelledby='ClaimRewardHistoryLabel'
 										aria-hidden='true'
 									>
-										<div className='modal-dialog instructionsBoard'>
-											<div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
-												<div className='modal-body  fs-25'>
-													<div className='title'>
-														<span>{'Approved Claims History'}</span>
+										<div className='modal-dialog modal-lg'>
+                                            <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+                                                <div className='modal-body fs-25'>
+												<div className='title'>
+														<h3 className='modal-amount'>{'Approved Claims History'}</h3>
 													</div>
-													<div className='items-list'>
+
 													{claimHistory.length ? claimHistory.map((history, i) => {
 														return (
 															<div className='item'>
@@ -595,14 +599,17 @@ const TrainingGround = () => {
 																	{`${ new Date(history.updatedAt).getMonth() + 1 }-${ new Date(history.updatedAt).getDate() }-2022`}
 																	
 																	</span>
+																<span className='modal-amount'>{`${history.transactionHash}`}</span>
+
 															</div>
 
 														)
-													}) : 'No Claim History Found.'}
-													</div>
-												</div>
-											</div>
-										</div>
+													}) : <span className='modal-amount'>{'No Claim History Found.'}</span> }
+                                                    
+
+                                                </div>
+                                            </div>
+                                        </div>
 									</div>
 								</section>
 								<section className='mt-5 d-flex align-items-center '>

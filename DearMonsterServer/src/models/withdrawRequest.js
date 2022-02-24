@@ -16,6 +16,9 @@ const WithdrawRequestSchema = new mongoose.Schema({
     },
     type: {
         type: String
+    },
+    transactionHash: {
+        type: String,
     }
 }, {timestamps: true});
 

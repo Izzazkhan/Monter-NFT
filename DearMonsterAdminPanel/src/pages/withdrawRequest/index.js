@@ -1,22 +1,34 @@
 
-import React, { useEffect } from "react"
+import React, {useState, useEffect} from 'react'
 import "../../App.css";
 import { getWithdrawRequest, markResolved } from '../../redux/withdrawRequest/action';
 import { connect } from 'react-redux';
+import { Modal, Button } from "react-bootstrap"
 
 function WithdrawRequest(props) {
+    const [show, setShow] = useState({selectedRequest: '', isShow: false})
+    const [transactionHash, setTransactionHash] = useState('')
+
 
     useEffect(() => {
         props.getWithdrawRequest()
     }, [])
 
-
-    const markResolved = (id) => {
-        if (window.confirm("Are you sure?")) {
-            props.markResolved(id)
-        }
+    const handleClose = () => {
+        setShow(false)
+        setTransactionHash('')
+    }
+    const handleMark = () => {
+        props.markResolved(show.selectedRequest, transactionHash)
     }
 
+    const markResolved = (id) => {
+        setShow({selectedRequest: id, isShow: true})
+    }
+
+    const handleChange = (e) => {
+        setTransactionHash(e.target.value)
+    }
 
     return (
         <>
@@ -54,6 +66,30 @@ function WithdrawRequest(props) {
                     </div>
                 </div>
             </div>
+
+
+            <Modal show={show.isShow} onHide={handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>
+                        <div className="form-group col-md-12 mb-4">
+                                <label className="control-label">{'Transaction Hash'}</label>
+                                <input type="text" required="required" className="form-control" onChange={handleChange}
+                                    name={'transactionHash'} value={transactionHash}
+                                    placeholder={`Enter Transaction Hash`}
+                                />
+                        </div>
+                    </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="primary" onClick={handleMark}>
+                    Save Changes
+                </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
