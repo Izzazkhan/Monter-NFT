@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Modal, Button } from "react-bootstrap"
 
 function WithdrawRequest(props) {
-    const [show, setShow] = useState({selectedRequest: '', isShow: false})
+    const [show, setShow] = useState({selectedRequest: '', type: '', isShow: false})
     const [transactionHash, setTransactionHash] = useState('')
 
 
@@ -19,11 +19,12 @@ function WithdrawRequest(props) {
         setTransactionHash('')
     }
     const handleMark = () => {
-        props.markResolved(show.selectedRequest, transactionHash)
+        props.markResolved(show.selectedRequest, show.type, transactionHash)
     }
 
-    const markResolved = (id) => {
-        setShow({selectedRequest: id, isShow: true})
+    const markResolved = (data) => {
+        console.log('dataaaa', data)
+        setShow({selectedRequest: data._id, type: data.type, isShow: true})
     }
 
     const handleChange = (e) => {
@@ -56,7 +57,7 @@ function WithdrawRequest(props) {
                                             <td>{data.requesterAddress}</td>
                                             <td>{`${data.isResolved}`}</td>
                                             <td>
-                                                <button onClick={() => markResolved(data._id)}>Mark</button>
+                                                <button onClick={() => markResolved(data)}>Mark</button>
                                             </td>
                                         </tr>
                                     })}

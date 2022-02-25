@@ -17,8 +17,7 @@ export const getWithdrawRequest = () => dispatch => {
 }
 
 
-export const markResolved = (id, transactionHash) => dispatch => {
-    console.log('transactionHash', id, transactionHash)
+export const markResolved = (id, type, transactionHash) => dispatch => {
     const params = new URLSearchParams()
     params.append('isResolved', true)
     params.append('transactionHash', transactionHash)
@@ -30,7 +29,7 @@ export const markResolved = (id, transactionHash) => dispatch => {
         }
     }
     axios
-        .put(`${WithdrawRequest}/${id}`, params, config)
+        .put(`${WithdrawRequest}/${id}/${type}`, params, config)
         .then((res) => {
             return dispatch({
                 type: 'MARK_RESOLVED',
