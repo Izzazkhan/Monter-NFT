@@ -16,88 +16,80 @@ function SideSetting(props) {
     const dispatch = useDispatch()
     // const selector = useSelector((state) => state)
     // console.log('selectorselector', selector)
-    const { userId } = useSelector((state) => state.AuthReducer);
+    const { userId } = useSelector((state) => state.AuthReducer)
+
+    const [account, setAccount] = useState('')
+    const [owner, setOwner] = useState('')
+
     const [state, setState] = useState({
-        price: ''
+        price: '',
+        maxSupply: '',
+        maxPurchase: ''
     })
+
+    useEffect(async () => {
+        if(userId){
+            let web3 = window.web3
+		
+            let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
+    
+            const owner = await DearMonsterContract.methods.getOwner().call()
+            setOwner(owner)
+        }
+    }, [userId])
 
 
     useEffect(() => {
         if (props.location.state !== undefined) {
             const propsData = props.location.state.data
-            console.log('props ==', props)
-
-
             setState({
                 ...state,
                 _id: propsData._id,
-                price: propsData['price']
+                price: propsData['price'],
+                maxSupply: propsData['maxSupply'],
+                maxPurchase: propsData['maxPurchase']
             })
         }
     }, [])
 
-    console.log('state =====', state)
+    const handlePriceChange = async () => {
 
-
-
-
-
-    const submitData = async () => {
-
-        if (!state._id) {
-            // props.addBonus(state, JSON.parse(localStorage.getItem('token')))
-            // props.history.push('/additional-reward')
-            if (!userId) return
+        if (!userId) return
 
 		let web3 = window.web3
 		let accounts = await web3.eth.getAccounts()
-		// let networkId = await web3.eth.net.getId()
-		// let DearMonsterNetwork = DearMonster.networks[networkId]
-		// let DearMonsterContract = new web3.eth.Contract(DearMonster.abi, DearMonsterNetwork.address)
 		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
-        console.log('acountssssss', accounts, state.price)
 
 		await DearMonsterContract.methods.setPrice(parseInt(state.price)).send({ from: accounts[0] });
-
-        } else if (state._id) {
-            // props.editBonus(state, JSON.parse(localStorage.getItem('token')))
-            // props.history.push('/additional-reward')
-
-        } else {
-            alert('Enter Monster Details.');
-        }
-        clearData()
     }
 
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
 
+    const handleCaveLimitChange = async (e) => {
+		if (!userId) return
 
-    const InputField = Object.entries(state).map((item, i) => {
-        const field = item[0]
-        const value = item[1]
-        console.log(field)
-        if (field !== '_id') {
-            return (
-                <div className={`form-group ${field === 'message' ? 'col-md-12' : 'col-md-6'}`} key={i}>
-                    <label className="control-label">{`Price`}</label>
-                    <input type="text" required="required" className="form-control" onChange={handleChange}
-                        name={field} value={value}
-                        placeholder={`Enter ${field}`}
-                    />
-                </div>
-            )
-        }
+		let web3 = window.web3
+		let accounts = await web3.eth.getAccounts()
+		
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
+		await DearMonsterContract.methods.setMaxSupply(parseInt(state.maxSupply)).send({ from: accounts[0] });
+	}
 
-    });
+    const handleMaxPurchaseCount = async (e) => {
+		if (!userId) return
+
+		let web3 = window.web3
+		let accounts = await web3.eth.getAccounts()
+		
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
+		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(state.maxPurchase)).send({ from: accounts[0] });
+	}
 
 
-    const clearData = () => {
-        setState({
-            price: ''
-        })
-    }
+    console.log('statestate', state)
+
 
     const connectWallet = async () => {
         if (window.ethereum) {
@@ -119,37 +111,14 @@ function SideSetting(props) {
 		let web3 = window.web3
 		// Load account
 		let accounts = await web3.eth.getAccounts()
-        console.log('accounts', accounts)
-		// setAccount(accounts[0]);
+		setAccount(accounts[0]);
 
 		dispatch(connectUserSuccess(accounts[0]))
     }
 
     return (
         <>
-        {userId ?
-          <div className="col-lg-9 col-md-8">
-                <div className="content-wrapper">
-                    <div className="content-box">
-                        <h3>Price to set</h3>
-                        <div className="row">
-                            {InputField}
-                        </div>
-                        <div className="row" style={{ justifyContent: 'center', width: '200px', marginTop: '10px', marginLeft: '0px' }}>
-                            {state._id ? <button className="btn-default hvr-bounce-in" onClick={submitData}>UPDATE</button> :
-                                <button className="btn-default hvr-bounce-in" onClick={submitData}>ADD</button>
-                                }
-                        </div>
-                        {/* <div className="row" style={{ justifyContent: 'center', width: '200px' }}>
-                            <button className="btn-default hvr-bounce-in" onClick={clearData}>CLEAR</button>
-                        </div> */}
-                        <br />
-                    </div>
-                </div>
-            </div>
-
-            :
-
+        {!userId ?
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -160,9 +129,76 @@ function SideSetting(props) {
                     </div>
                 </div>
             </div>
-                                    
-        } 
-            
+            :
+            userId && account === owner ?
+            <div className="col-lg-9 col-md-8">
+                <div className="content-wrapper">
+                    <div className="content-box">
+                        <h3>Price to set</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Price`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'price'} value={state.price}
+                        placeholder={`Enter Price`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handlePriceChange}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+
+                    <div className="content-box">
+                        <h3>Maximum Supply</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Maximum Supply`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'maxSupply'} value={state.maxSupply}
+                        placeholder={`Enter Maximum Supply`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handleCaveLimitChange}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+
+                    <div className="content-box">
+                        <h3>Maximum Purchase Limit</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Maximum Purchase`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'maxPurchase'} value={state.maxPurchase}
+                        placeholder={`Enter Maximum Purchase`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handleMaxPurchaseCount}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+                </div>
+            </div>
+
+             :
+            <div className="col-lg-9 col-md-8">
+                <div className="content-wrapper">
+                    <div className="content-box">
+                            <span className="icon"> </span>
+                            {'You are not the owner'}
+                    </div>
+                </div>
+            </div>               
+        }   
         </>
     )
 }

@@ -23,7 +23,6 @@ function WithdrawRequest(props) {
     }
 
     const markResolved = (data) => {
-        console.log('dataaaa', data)
         setShow({selectedRequest: data._id, type: data.type, isShow: true})
     }
 
@@ -55,10 +54,16 @@ function WithdrawRequest(props) {
                                         return <tr key={(index + 1)}>
                                             <td>{`${data.amount}`}</td>
                                             <td>{data.requesterAddress}</td>
-                                            <td>{`${data.isResolved}`}</td>
+                                            <td>{data.isResolved ? 'Yes' : 'No'}</td>
+                                            {data.isResolved
+                                            ?
                                             <td>
-                                                <button onClick={() => markResolved(data)}>Mark</button>
+                                                <button>Marked</button>
                                             </td>
+                                            :
+                                            <td>
+                                            <button onClick={() => markResolved(data)}>Mark</button>
+                                        </td>}
                                         </tr>
                                     })}
 
