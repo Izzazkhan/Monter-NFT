@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useToken from '../hooks/useToken'
+import Web3 from 'web3';
+import { useSelector, useDispatch } from 'react-redux';
+import { connectUserSuccess } from '../redux/WalletAuth/login';
+
 const Header = (props) => {
+
+    const dispatch = useDispatch()
     const { token } = useToken()
     console.log('tokennnnnn', token)
     const [currentUser] = useState(JSON.parse(localStorage.getItem('token')));
@@ -9,6 +15,33 @@ const Header = (props) => {
     const logOut = () => {
         localStorage.removeItem('token')
     }
+    const {userId} = useSelector((state) => state.AuthReducer)
+
+    const connectWallet = async () => {
+        if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		} else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		} else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+
+		await window.ethereum.request({
+			method: "wallet_requestPermissions",
+			params: [{
+				eth_accounts: {}
+			}]
+		});
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		// setAccount(accounts[0]);
+
+		dispatch(connectUserSuccess(accounts[0]))
+    }
+
     return (
         <header id="header">
             <div className="container-fluid main-menu">
@@ -42,6 +75,18 @@ const Header = (props) => {
                                             <span className="icon"></span>{'Log Out'}
                                         </button>
                                     </a>
+                                    {userId ?
+                                        <button className="btn-default">
+                                        <span className="icon"> </span>
+                                        {userId && `${userId.substring(0, 4)}...${userId.slice(-4)}`}
+                                    </button>
+
+                                    :
+                                    <button className="btn-default" onClick={connectWallet}>
+                                        <span className="icon"> </span>
+                                        {'Connect Wallet'}
+                                    </button>
+                                   } 
                                 </>
                                 :
                                 <>

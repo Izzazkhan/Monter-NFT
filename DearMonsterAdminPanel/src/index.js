@@ -8,6 +8,8 @@ import MonsterReducer from './redux/monsters/reducer'
 import MinionsReducer from './redux/minions/reducer'
 import WithdrawRequestReducer from './redux/withdrawRequest/reducer'
 import BonusReducer from './redux/bonus/reducer'
+import AuthReducer from './redux/WalletAuth/reducer'
+
 
 
 import reportWebVitals from './reportWebVitals';
@@ -17,7 +19,8 @@ const rootReducer = combineReducers({
   MonsterReducer,
   MinionsReducer,
   WithdrawRequestReducer,
-  BonusReducer
+  BonusReducer,
+  AuthReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
