@@ -427,6 +427,12 @@ const TrainingGround = () => {
 	}
 
 	const claimRewardHandler = async () => {
+		Swal.fire({
+			icon: 'success',
+			title: 'Comming Soon.',
+			text: 'Please be patient, this functionality is coming soon.'
+		})
+		return
 
 		try {
 			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}/scholar`)
@@ -435,7 +441,7 @@ const TrainingGround = () => {
 					Swal.fire({
 						icon: 'error',
 						title: 'You have a pending claim.',
-						text: 'Please note that you can only claim reward once every 7 days.'
+						text: 'Please wait until your previous claim is resolved.'
 					})
 					return
 				} else {
