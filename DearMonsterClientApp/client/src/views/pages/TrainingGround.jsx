@@ -551,14 +551,15 @@ const TrainingGround = () => {
 
 													{claimHistory.length ? claimHistory.map((history, i) => {
 														return (
-															<div className='item'>
+															<div className='item' key={i}>
 																<span className='modal-amount'>{`${i + 1}.`}</span>
 																<span className='modal-amount'>{`${history.amount}`}</span>
 																<span className='modal-amount'>
 																	{`${ new Date(history.updatedAt).getMonth() + 1 }-${ new Date(history.updatedAt).getDate() }-2022`}
 																	
 																	</span>
-																<span className='modal-amount'>{`${history.transactionHash}`}</span>
+																	{history.transactionHash &&
+																<span className='modal-amount'>{`${history.transactionHash}`}</span>}
 
 															</div>
 
