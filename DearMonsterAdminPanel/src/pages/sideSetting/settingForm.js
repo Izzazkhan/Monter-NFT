@@ -203,10 +203,12 @@ function SideSetting(props) {
     }
 
     const deleteProbability = (id) => {
-        if (window.confirm("Are you sure?")) {
-            props.deleteProbability(id, JSON.parse(localStorage.getItem('token')))
+        alert('can not delete')
 
-        }
+        // if (window.confirm("Are you sure?")) {
+        //     props.deleteProbability(id, JSON.parse(localStorage.getItem('token')))
+
+        // }
     }
 
     return (

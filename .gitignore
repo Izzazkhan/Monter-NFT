@@ -14,4 +14,9 @@ DearMonsterServer/.env
 DearMonsterAdminPanel/.env
 DearMonsterClientApp/client/.env
 
+
+DearMonsterServer/package-lock.json
+DearMonsterAdminPanel/package-lock.json
+DearMonsterClientApp/client/package-lock.json
+
 .DS_Store

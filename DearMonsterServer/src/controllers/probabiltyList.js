@@ -9,11 +9,19 @@ exports.index = async function (req, res) {
 
 exports.store = async (req, res) => {
     try {
+        const probabiltyListPrev = await ProbabiltyList.find({});
 
-        const probabiltyList = new ProbabiltyList({...req.body});
-        const probabiltyList_ = await probabiltyList.save();
-        
-        res.status(200).json({message: 'Probabilty list created successfully', probabiltyList: probabiltyList_});
+        if(probabiltyListPrev.length > 0) {
+            res.status(403).json({message: 'Probabilty list already exist'});
+
+        } else {
+
+            const probabiltyList = new ProbabiltyList({...req.body});
+            const probabiltyList_ = await probabiltyList.save();
+            
+            res.status(200).json({message: 'Probabilty list created successfully', probabiltyList: probabiltyList_});
+
+        }
     } catch (error) {
         console.log(error.message)
         res.status(500).json({success: false, message: error.message})

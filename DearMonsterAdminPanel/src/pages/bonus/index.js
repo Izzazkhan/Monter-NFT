@@ -20,20 +20,20 @@ function Bonus(props) {
 
     const deleteBonus = (id) => {
         // clearData();
-        if (window.confirm("Are you sure?")) {
-            props.deleteBonus(id, JSON.parse(localStorage.getItem('token')));
+        // if (window.confirm("Are you sure?")) {
+        //     props.deleteBonus(id, JSON.parse(localStorage.getItem('token')));
 
-        }
+        // }
+        alert('can not delete')
     }
-
-
+    
     return (
         <>
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
                         <h3>Dear Monster Bonus (Additional Reward)</h3>
-                        {!props.bonus.bonus.length &&
+                        {!props?.bonus?.bonus?.length &&
                             <button className="btn-default" onClick={() => props.history.push('/additional-reward/create')}>ADD New</button>
                         }
                         <table className="table">
@@ -61,9 +61,12 @@ function Bonus(props) {
                                             <td>{data['4']}</td>
                                             <td>{data['5']}</td>
                                             <td>{data['6']}</td>
-                                            <td>{`${data['message'].substring(0, 6)}...${data['message'].slice(-6)}`}</td>
-                                            
-
+                                            {
+                                                data.message ?
+                                                    <td>{`${data['message'].substring(0, 6)}...${data['message'].slice(-6)}`}</td>
+                                                    :
+                                                    <td></td>
+                                            }
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>
                                                 <button onClick={() => deleteBonus(data._id)}>DELETE</button>
                                             </td>
