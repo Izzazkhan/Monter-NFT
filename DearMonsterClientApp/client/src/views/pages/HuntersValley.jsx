@@ -58,19 +58,19 @@ const HuntersValley = () => {
 				let prob_4 = res.data.probabiltyList[0].prob_4
 				let prob_5 = res.data.probabiltyList[0].prob_5
 
-			const prob_1_10 = prob_1 * 10
-			const prob_2_10 = prob_2 * 10
-			const prob_3_10 = prob_3 * 10
-			const prob_4_10 = prob_4 * 10
-			const prob_5_10 = prob_5 * 10
+				const prob_1_10 = prob_1 * 10
+				const prob_2_10 = prob_2 * 10
+				const prob_3_10 = prob_3 * 10
+				const prob_4_10 = prob_4 * 10
+				const prob_5_10 = prob_5 * 10
 
-		for (let i = 0; i < 1000; i++) {
-			if (i < prob_1_10) { localNumberlist[i] = 1 }
-			else if (i >= prob_1_10 && i < (prob_1_10 + prob_2_10)) { localNumberlist[i] = 2 }
-			else if (i >= (prob_1_10 + prob_2_10) && i < (prob_1_10 + prob_2_10 + prob_3_10)) { localNumberlist[i] = 3 }
-			else if (i >= (prob_1_10 + prob_2_10 + prob_3_10) && i < (prob_1_10 + prob_2_10 + prob_3_10 + prob_4_10)) { localNumberlist[i] = 4 }
-			else { localNumberlist[i] = 5 }
-		}
+				for (let i = 0; i < 1000; i++) {
+					if (i < prob_1_10) { localNumberlist[i] = 1 }
+					else if (i >= prob_1_10 && i < (prob_1_10 + prob_2_10)) { localNumberlist[i] = 2 }
+					else if (i >= (prob_1_10 + prob_2_10) && i < (prob_1_10 + prob_2_10 + prob_3_10)) { localNumberlist[i] = 3 }
+					else if (i >= (prob_1_10 + prob_2_10 + prob_3_10) && i < (prob_1_10 + prob_2_10 + prob_3_10 + prob_4_10)) { localNumberlist[i] = 4 }
+					else { localNumberlist[i] = 5 }
+				}
 				setNumberList([...localNumberlist])
 			})
 			.catch((e) => {
