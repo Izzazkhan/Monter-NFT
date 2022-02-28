@@ -56,11 +56,11 @@ const HuntersValley = () => {
 		const prob_4 = 1.5
 		const prob_5 = 0.5
 
-		const prob_1_10 = 530
-		const prob_2_10 = 350
-		const prob_3_10 = 100
-		const prob_4_10 = 15
-		const prob_5_10 = 5
+		const prob_1_10 = prob_1 * 10
+		const prob_2_10 = prob_2 * 10
+		const prob_3_10 = prob_3 * 10
+		const prob_4_10 = prob_4 * 10
+		const prob_5_10 = prob_5 * 10
 
 		for (let i = 0; i < 1000; i++) {
 			if (i < prob_1_10) { localNumberlist[i] = 1 }
