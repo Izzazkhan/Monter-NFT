@@ -372,12 +372,12 @@ const TrainingGround = () => {
 	}
 
 	const claimRewardHandler = async () => {
-		Swal.fire({
-			icon: 'success',
-			title: 'Comming Soon.',
-			text: 'Please be patient, this functionality is coming soon.'
-		})
-		return
+		// Swal.fire({
+		// 	icon: 'success',
+		// 	title: 'Comming Soon.',
+		// 	text: 'Please be patient, this functionality is coming soon.'
+		// })
+		// return
 
 
 		try {
