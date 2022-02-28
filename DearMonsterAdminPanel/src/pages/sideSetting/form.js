@@ -10,7 +10,13 @@ import DearMonsterTest from '../../contracts/DearMonsterTest.json'
 
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
 const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
-
+const star_mappings = {
+    'Star 1': 1,
+    'Star 2': 2,
+    'Star 3': 3,
+    'Star 4': 4,
+    'Star 5': 5
+};
 
 function SideSetting(props) {
     const dispatch = useDispatch()
@@ -20,12 +26,14 @@ function SideSetting(props) {
 
     const [account, setAccount] = useState('')
     const [owner, setOwner] = useState('')
-
+	const [attributes, setAttributes] = useState([]);
     const [state, setState] = useState({
         price: '',
         maxSupply: '',
-        maxPurchase: ''
+        maxPurchase: '',
+        selectStar: ''
     })
+    const headers = ['Token ID', 'Wallet'];
 
     useEffect(async () => {
         if(userId){
@@ -47,7 +55,8 @@ function SideSetting(props) {
                 _id: propsData._id,
                 price: propsData['price'],
                 maxSupply: propsData['maxSupply'],
-                maxPurchase: propsData['maxPurchase']
+                maxPurchase: propsData['maxPurchase'],
+                selectStar: propsData['selectStar']
             })
         }
     }, [])
@@ -116,9 +125,81 @@ function SideSetting(props) {
 		dispatch(connectUserSuccess(accounts[0]))
     }
 
+
+    const export_csv = (arrayHeader, arrayData, delimiter, fileName) => {
+		let header = arrayHeader.join(delimiter) + '\n';
+		let csv = header;
+		arrayData.forEach(array => {
+			csv += array.join(delimiter) + "\n";
+		});
+
+		let csvData = new Blob([csv], { type: 'text/csv' });
+		let csvUrl = URL.createObjectURL(csvData);
+
+		let hiddenElement = document.createElement('a');
+		hiddenElement.href = csvUrl;
+		hiddenElement.target = '_blank';
+		hiddenElement.download = fileName + '.csv';
+		hiddenElement.click();
+	}
+
+	useEffect(() => {
+		if (attributes && attributes.length > 0) {
+			exportToExcelFun()
+		}
+	}, [attributes])
+
+	const exportToExcel = async () => {
+
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
+		}
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
+		let DearMonsterContract = new web3.eth.Contract(nftContractAbi.abi, nftContractAddress)
+
+		var _attributes = await DearMonsterContract.methods.getAttributes().call()
+		setAttributes(_attributes)
+	}
+
+	const exportToExcelFun = () => {
+		if (attributes.length == 0) return
+
+		var star_key = document.getElementById("select-star").value;
+		var star_idx = star_mappings[star_key]
+		var csvData = []
+		var data1_cnt = 0
+		var data2_cnt = 0
+		var data3_cnt = 0
+		var data4_cnt = 0
+		var data5_cnt = 0
+		for (let i = 0; i < attributes.length; i++) {
+			if (parseInt(attributes[i][5]) === star_idx) {
+				csvData.push([i, attributes[i][0]])
+			}
+			if (parseInt(attributes[i][5]) === 1) data1_cnt += 1
+			else if (parseInt(attributes[i][5]) === 2) data2_cnt += 1
+			else if (parseInt(attributes[i][5]) === 3) data3_cnt += 1
+			else if (parseInt(attributes[i][5]) === 4) data4_cnt += 1
+			else if (parseInt(attributes[i][5]) === 5) data5_cnt += 1
+		}
+		export_csv(headers, csvData, ',', 'export.csv')
+		export_csv(['Star level', 'Total Count'],
+			[['Star1', data1_cnt], ['Star2', data2_cnt], ['Star3', data3_cnt], ['Star4', data4_cnt], ['Star5', data5_cnt]],
+			',', 'summary.csv'
+		)
+	}
+
     return (
         <>
-        {!userId ?
+        {/* {!userId ?
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -130,7 +211,7 @@ function SideSetting(props) {
                 </div>
             </div>
             :
-            userId && account === owner ?
+            userId && account === owner ? */}
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -186,10 +267,30 @@ function SideSetting(props) {
                     </div>
                         <br />
                     </div>
+
+                    <div className="content-box">
+                        <h3>Star level</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Maximum Purchase`}</label>
+                        <select id='selectStar' className='form-control  w-100px' onChange={handleChange}>
+										<option>Star 1</option>
+										<option>Star 2</option>
+										<option>Star 3</option>
+										<option>Star 4</option>
+										<option>Star 5</option>
+									</select>
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={exportToExcel}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
                 </div>
             </div>
 
-             :
+             {/* :
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -198,7 +299,7 @@ function SideSetting(props) {
                     </div>
                 </div>
             </div>               
-        }   
+        }    */}
         </>
     )
 }
