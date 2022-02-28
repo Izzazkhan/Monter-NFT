@@ -9,6 +9,8 @@ import MinionsReducer from './redux/minions/reducer'
 import WithdrawRequestReducer from './redux/withdrawRequest/reducer'
 import BonusReducer from './redux/bonus/reducer'
 import AuthReducer from './redux/WalletAuth/reducer'
+import ProbabilityReducer from './redux/probabilty/reducer'
+
 
 
 
@@ -20,7 +22,8 @@ const rootReducer = combineReducers({
   MinionsReducer,
   WithdrawRequestReducer,
   BonusReducer,
-  AuthReducer
+  AuthReducer,
+  ProbabilityReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

@@ -24,5 +24,7 @@ export const Minion = url + '/api/minion'
 export const Monster = url + '/api/monster'
 export const WithdrawRequest = url + '/api/withdrawRequest'
 export const Bonus = url + '/api/levelBonus'
+export const ProbilityList = url + '/api/probabiltyList'
+
 
 

@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from "react"
 import "../../App.css";
 import { useSelector, useDispatch } from 'react-redux'
-import {appEnv, addressList } from '../../utilities/constant'
+import {appEnv, addressList, ProbilityList } from '../../utilities/constant'
 import Web3 from 'web3';
 import { connectUserSuccess } from '../../redux/WalletAuth/login';
 import DearMonster from '../../contracts/DearMonster.json'
 import DearMonsterTest from '../../contracts/DearMonsterTest.json'
+import axios from 'axios'
+import { getProbabilty, addProbability, editProbability, deleteProbability } from '../../redux/probabilty/action';
+import { connect } from 'react-redux';
 
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
 const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
@@ -20,8 +23,6 @@ const star_mappings = {
 
 function SideSetting(props) {
     const dispatch = useDispatch()
-    // const selector = useSelector((state) => state)
-    // console.log('selectorselector', selector)
     const { userId } = useSelector((state) => state.AuthReducer)
 
     const [account, setAccount] = useState('')
@@ -33,6 +34,7 @@ function SideSetting(props) {
         maxPurchase: '',
         selectStar: ''
     })
+    
     const headers = ['Token ID', 'Wallet'];
 
     useEffect(async () => {
@@ -46,6 +48,9 @@ function SideSetting(props) {
         }
     }, [userId])
 
+    useEffect(() => {
+        props.getProbabilty();
+    }, [])
 
     useEffect(() => {
         if (props.location.state !== undefined) {
@@ -75,6 +80,7 @@ function SideSetting(props) {
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
+
 
     const handleCaveLimitChange = async (e) => {
 		if (!userId) return
@@ -168,9 +174,7 @@ function SideSetting(props) {
 
 	const exportToExcelFun = () => {
 		if (attributes.length == 0) return
-
-		var star_key = document.getElementById("select-star").value;
-		var star_idx = star_mappings[star_key]
+		var star_idx = star_mappings[state.selectStar]
 		var csvData = []
 		var data1_cnt = 0
 		var data2_cnt = 0
@@ -194,9 +198,22 @@ function SideSetting(props) {
 		)
 	}
 
+    const editDetails = (data) => {
+        props.history.push('/edit-probabilty', { data })
+    }
+
+    const deleteProbability = (id) => {
+        if (window.confirm("Are you sure?")) {
+            props.deleteProbability(id, JSON.parse(localStorage.getItem('token')))
+
+        }
+    }
+
     return (
         <>
-        {/* {!userId ?
+            <div className="col-lg-9 col-md-8">
+                <div className="content-wrapper">
+                {!userId ?
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -208,9 +225,8 @@ function SideSetting(props) {
                 </div>
             </div>
             :
-            userId && account === owner ? */}
-            <div className="col-lg-9 col-md-8">
-                <div className="content-wrapper">
+            userId && account === owner ?
+                    <div>
                     <div className="content-box">
                         <h3>Price to set</h3>
                         <div className="row">
@@ -283,11 +299,7 @@ function SideSetting(props) {
                         </div>
                     </div>
                         <br />
-                    </div>
-                </div>
-            </div>
-
-             {/* :
+                    </div></div> :
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
@@ -296,10 +308,57 @@ function SideSetting(props) {
                     </div>
                 </div>
             </div>               
-        }    */}
+        } 
+
+                    <div className="col-lg-9 col-md-8">
+                <div className="content-wrapper">
+                    <div className="content-box">
+                        <h3>Probabilty List</h3>
+                        {!props.probabilityList.probabilityList.length &&
+                        <button className="btn-default" onClick={() => props.history.push('/add-probabilty')}>ADD New</button>
+                        } 
+                        <table className="table">
+                            <thead className="table__head">
+                                <tr>
+                                    <th>Prob 1</th>
+                                    <th>Prob 2</th>
+                                    <th>Prob 3</th>
+                                    <th>Prob 4</th>
+                                    <th>Prob 5</th>
+                                </tr>
+                            </thead>
+
+                            <tbody className="table__body">
+
+                                {props.probabilityList.probabilityList
+                                    && props.probabilityList.probabilityList.map((data, index) => {
+                                        return <tr key={(index + 1)}>
+                                            <td>{data.prob_1}</td>
+                                            <td>{data.prob_2}</td>
+                                            <td>{data.prob_3}</td>
+                                            <td>{data.prob_4}</td>
+                                            <td>{data.prob_5}</td>
+                                            <td><button onClick={() => editDetails(data)}>EDIT</button>
+                                                <button onClick={() => deleteProbability(data._id)}>DELETE</button>
+                                            </td>
+                                        </tr>
+                                    })}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+                </div>
+            </div>
+
         </>
     )
 }
 
+const mapStateToProps = state => ({
+    probabilityList: state.ProbabilityReducer
+})
 
-export default SideSetting
+export default connect(mapStateToProps, { getProbabilty, addProbability, editProbability, deleteProbability })(SideSetting)

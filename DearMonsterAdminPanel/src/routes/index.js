@@ -8,7 +8,8 @@ import Minions from '../pages/minions/index'
 import MinionsForm from '../pages/minions/form'
 import WithdrawRequest from '../pages/withdrawRequest/index'
 import AdditionaReward from '../pages/bonus/index'
-import SideSetting from '../pages/sideSetting/form'
+import SideSetting from '../pages/sideSetting/settingForm'
+import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
 import AdditionaRewardForm from '../pages/bonus/form'
 
 
@@ -45,6 +46,8 @@ const MainRoutes = (props) => {
                         <Route exact path={'/withdraw-request'} component={WithdrawRequest} />
                         <Route exact path={'/additional-reward'} component={AdditionaReward} />
                         <Route exact path={'/side-setting'} component={SideSetting} />
+                        <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />
+                        <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/additional-reward/create'} component={AdditionaRewardForm} />
                         <Route exact path={'/additional-reward/edit'} component={AdditionaRewardForm} />
                         <Route path={'/forget-password'} component={ForgetPassword} />
