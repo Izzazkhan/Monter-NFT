@@ -47,10 +47,10 @@ exports.store = async (req, res) => {
         const newRequest_ = await newRequest.save();
 
         const { requesterAddress } = req.body
-        let update = { totalAmount: 0, isRequested: true, type: req.params.type }
+        let update = { isRequested: true, type: req.params.type }
 
         // UserEarning requesterAddress
-        const earningRequestReset = await UserEarning.findOneAndUpdate({earnerAddress: requesterAddress}, { $set: update });
+        await UserEarning.findOneAndUpdate({earnerAddress: requesterAddress, type: req.params.type, isRequested: false}, { $set: update });
         res.status(200).json({ message: 'Request created successfully', newRequest: newRequest_ });
 
     } catch (error) {
@@ -77,7 +77,13 @@ exports.update = async function (req, res) {
         const id = req.params.id;
         const update = req.body;
 
-        const withdrawRequest = await WithdrawRequest.findByIdAndUpdate(id, { $set: update }, { new: true });
+        // const withdrawRequest = await WithdrawRequest.findByIdAndUpdate(id, { $set: update }, { new: true });
+
+        let query = {id, type: req.params.type}
+        let updateData = {$set: update}
+        let options = { new: true }
+        
+        const withdrawRequest = await WithdrawRequest.findOneAndUpdate(query, updateData, options);
 
         //Attempt to upload to cloudinary
         // const result = await uploader(req);

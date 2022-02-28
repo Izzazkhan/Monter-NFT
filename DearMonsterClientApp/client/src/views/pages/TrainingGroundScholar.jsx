@@ -304,7 +304,7 @@ const TrainingGround = () => {
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
 				const energyCalculate = selectedMonster.values.Energy - 1
-				if (random <= minion.values.Win_Rate) { // true
+				if (random <= minion.values.Win_Rate) { // 
 					status = 'You have won the fight.'
 
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
@@ -427,12 +427,12 @@ const TrainingGround = () => {
 	}
 
 	const claimRewardHandler = async () => {
-		Swal.fire({
-			icon: 'success',
-			title: 'Comming Soon.',
-			text: 'Please be patient, this functionality is coming soon.'
-		})
-		return
+		// Swal.fire({
+		// 	icon: 'success',
+		// 	title: 'Comming Soon.',
+		// 	text: 'Please be patient, this functionality is coming soon.'
+		// })
+		// return
 
 		try {
 			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}/scholar`)
