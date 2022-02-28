@@ -83,7 +83,7 @@ const TrainingGround = () => {
 	useEffect(() => {
 		if (userId && type === 'owner') {
 			function getAmount() {
-				axios.get(`${apiUrl}/api/userEarning/${account}/owner`)
+				axios.get(`${apiUrl}/api/userEarning/${userId}/owner`)
 					.then((response) => {
 						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
@@ -98,7 +98,7 @@ const TrainingGround = () => {
 			}
 			getAmount()
 			function getWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${account}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${userId}/owner`)
 					.then((response) => {
 						if (response.data.withdrawRequest) {
 							setResolvedRewardRequest(response.data.withdrawRequest)
@@ -111,7 +111,7 @@ const TrainingGround = () => {
 			getWithdrawRequest()
 
 			function getOpenWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/pending/${account}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/pending/${userId}/owner`)
 					.then((response) => {
 						if (response.data.openWithdrawRequest) {
 							setNonResolvedRewardRequest(response.data.openWithdrawRequest)
@@ -124,7 +124,7 @@ const TrainingGround = () => {
 			getOpenWithdrawRequest()
 
 			function getClaimHistory() {
-				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${account}/owner`)
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${userId}/owner`)
 					.then((response) => {
 						if (response.data.withdrawRequestApproved) {
 							setClaimHistory(response.data.withdrawRequestApproved)
