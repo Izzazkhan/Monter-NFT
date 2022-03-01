@@ -6,11 +6,13 @@ import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
 import { useSelector } from 'react-redux';
-
+import Loading from '../common/Loading';
 
 const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight, userId }) => {
 
 	const [monsters, setMonsters] = useState([])
+	const [loading, setLoading] = useState(true)
+
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
 
 	// const { userId } = useSelector((state) => state.auth);
@@ -68,10 +70,13 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 						})
 					}
 					setMonsters(monsters)
+					setLoading(false)
+
 				})
 				.catch((e) => {
 					console.log("Error ----------------")
 					console.log(e)
+					setLoading(false)
 				})
 		}
 		getDearMonster()
@@ -115,8 +120,10 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 							},
 						}}
 					>
-						{monsters.map((post, i) => {
-							return (
+						{loading ?  
+							<Loading />
+						  		: monsters.map((post, i) => {
+								return (
 								<SplideSlide key={i}>
 									<PostCard
 										selectedMonster={selectedMonster}

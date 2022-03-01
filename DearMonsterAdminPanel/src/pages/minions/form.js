@@ -120,7 +120,6 @@ function MinionForm(props) {
     const InputField = Object.entries(state).map((item, i) => {
         const field = item[0]
         const value = item[1]
-        console.log('field', field)
         if (field !== '_id' && field !== 'Reward_Estimated') {
             return (
                 <div className="form-group col-md-6 mb-4" key={i}>
@@ -147,7 +146,8 @@ function MinionForm(props) {
                 <input type="text" required="required" className="form-control" onChange={handleRewardChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`}
-                    type='number'
+                    // type='number'
+                    // onWheel={event => { event.preventDefault()}}
                 />
             </div>
         )

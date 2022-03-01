@@ -19,7 +19,21 @@ function WithdrawRequest(props) {
         setTransactionHash('')
     }
     const handleMark = () => {
-        props.markResolved(show.selectedRequest, show.type, transactionHash)
+        if(transactionHash != ''){
+            if(/^0x([A-Fa-f0-9]{64})$/.test(transactionHash)){
+                props.markResolved(show.selectedRequest, show.type, transactionHash)
+                setShow(false)
+                setTransactionHash('')
+            }
+            else {
+                alert('Please enter a valid transaction hash')
+            }
+        }
+        else {
+            props.markResolved(show.selectedRequest, show.type, transactionHash)
+            setShow(false)
+            setTransactionHash('')
+        }   
     }
 
     const markResolved = (data) => {
