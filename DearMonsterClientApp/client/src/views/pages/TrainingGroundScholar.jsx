@@ -549,9 +549,9 @@ const TrainingGround = () => {
 	}
 
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonsterScholar handleonSelect={handleonSelect} selectedMonster={selectedMonster}
+		return <ChooseDearMonsterScholar handleonSelect={handleonSelect} selectedMonster={selectedMonster} userId={userId}
 			updateMonsterAfterFight={updateMonsterAfterFight} />
-	}, [updateMonsterAfterFight, selectedMonster])
+	}, [updateMonsterAfterFight, selectedMonster, userId])
 
 
 	const minion = useMemo(() => {

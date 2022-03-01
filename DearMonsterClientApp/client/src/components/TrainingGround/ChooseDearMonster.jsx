@@ -8,12 +8,12 @@ import axios from 'axios'
 import { useSelector } from 'react-redux';
 
 
-const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight }) => {
+const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight, userId }) => {
 
 	const [monsters, setMonsters] = useState([])
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
 
-	const { userId } = useSelector((state) => state.auth);
+	// const { userId } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		function getDearMonster() {
@@ -75,7 +75,7 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 				})
 		}
 		getDearMonster()
-	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight])
+	}, [updateMonsterAfterEnergyChange, updateMonsterAfterFight, userId])
 
 	const onSelect = (monster) => {
 		handleonSelect(monster)

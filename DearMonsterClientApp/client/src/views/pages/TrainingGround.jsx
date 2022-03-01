@@ -484,16 +484,16 @@ const TrainingGround = () => {
 	}
 
 	const dearMonster = useMemo(() => {
-		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster}
+		return <ChooseDearMonster handleonSelect={handleonSelect} selectedMonster={selectedMonster} userId={userId}
 			updateMonsterAfterFight={updateMonsterAfterFight} />
-	}, [updateMonsterAfterFight, selectedMonster])
+	}, [updateMonsterAfterFight, selectedMonster, userId])
 
 
 	const minion = useMemo(() => {
 		return <ChooseMinion minionFight={minionFight} loading={loading} status={status} totalReward={totalReward} selectedMonster={selectedMonster}
 			expGain={expGain}
 		/>
-	}, [status, loading, minionFight, totalReward, selectedMonster, expGain,])
+	}, [status, loading, minionFight, totalReward, selectedMonster, expGain])
 
 	return (
 		<div>
