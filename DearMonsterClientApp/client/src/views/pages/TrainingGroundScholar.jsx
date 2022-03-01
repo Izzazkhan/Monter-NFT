@@ -75,32 +75,46 @@ const TrainingGround = () => {
 
 	const match = {params : { slug: 'scholar' }}
 
-	useEffect(async () => {
-		if (window.ethereum) {
-			window.web3 = new Web3(window.ethereum)
-			await window.ethereum.enable();
-		}
-		else if (window.web3) {
-			window.web3 = new Web3(window.web3.currentProvider)
-			window.loaded_web3 = true
-		}
-		else {
-			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-		}
-		let web3 = window.web3
-		// Load account
-		let accounts = await web3.eth.getAccounts()
-		setAccount(accounts[0])
-		localStorage.setItem("type", 'scholar')
-		setType('scholar')
+	// useEffect(async () => {
+	// 	if (window.ethereum) {
+	// 		window.web3 = new Web3(window.ethereum)
+	// 		await window.ethereum.enable();
+	// 	}
+	// 	else if (window.web3) {
+	// 		window.web3 = new Web3(window.web3.currentProvider)
+	// 		window.loaded_web3 = true
+	// 	}
+	// 	else {
+	// 		window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+	// 	}
+	// 	let web3 = window.web3
+	// 	// Load account
+	// 	let accounts = await web3.eth.getAccounts()
+	// 	setAccount(accounts[0])
+	// 	localStorage.setItem("type", 'scholar')
+	// 	setType('scholar')
 
-	}, [window.web3])
+	// }, [window.web3])
+
+	useEffect(() => {
+		if(window.ethereum) {
+			window.ethereum.on('accountsChanged', function () {
+				window.web3.eth.getAccounts(function(error, accounts) {
+					setAccount(accounts[0])
+					localStorage.setItem("type", 'scholar')
+					setType('scholar')
+					dispatch(connectUserSuccess(accounts[0]))
+				});
+			});
+		}
+
+	}, [window.ethereum])
 
 	useEffect(() => {
 		if (userId && type === 'scholar') {
 			// api to get user earnings
 			function getAmount() {
-				axios.get(`${apiUrl}/api/userEarning/${account}/scholar`)
+				axios.get(`${apiUrl}/api/userEarning/${userId}/scholar`)
 					.then((response) => {
 						if (response?.data?.earnerData) {
 							setEarnerData(response.data.earnerData)
@@ -117,7 +131,7 @@ const TrainingGround = () => {
 
 			// resolved withdraw request, to show remaining time for next claim
 			function getWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${account}/scholar`)
+				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${userId}/scholar`)
 					.then((response) => {
 						if (response.data.withdrawRequest) {
 							setResolvedRewardRequest(response.data.withdrawRequest)
@@ -131,7 +145,7 @@ const TrainingGround = () => {
 
 			// user's withdraw pending request
 			function getOpenWithdrawRequest() {
-				axios.get(`${apiUrl}/api/withdrawRequest/pending/${account}/scholar`)
+				axios.get(`${apiUrl}/api/withdrawRequest/pending/${userId}/scholar`)
 					.then((response) => {
 						if (response.data.openWithdrawRequest) {
 							setNonResolvedRewardRequest(response.data.openWithdrawRequest)
@@ -145,7 +159,7 @@ const TrainingGround = () => {
 
 			// user's claim history
 			function getClaimHistory() {
-				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${account}/scholar`)
+				axios.get(`${apiUrl}/api/withdrawRequest/claimHistory/${userId}/scholar`)
 					.then((response) => {
 						if (response.data.withdrawRequestApproved) {
 							setClaimHistory(response.data.withdrawRequestApproved)
