@@ -75,40 +75,35 @@ const TrainingGround = () => {
 
 	const match = {params : { slug: 'scholar' }}
 
-	// useEffect(async () => {
-	// 	if (window.ethereum) {
-	// 		window.web3 = new Web3(window.ethereum)
-	// 		await window.ethereum.enable();
-	// 	}
-	// 	else if (window.web3) {
-	// 		window.web3 = new Web3(window.web3.currentProvider)
-	// 		window.loaded_web3 = true
-	// 	}
-	// 	else {
-	// 		window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-	// 	}
-	// 	let web3 = window.web3
-	// 	// Load account
-	// 	let accounts = await web3.eth.getAccounts()
-	// 	setAccount(accounts[0])
-	// 	localStorage.setItem("type", 'scholar')
-	// 	setType('scholar')
-
-	// }, [window.web3])
-
-	useEffect(() => {
-		if(window.ethereum) {
+	useEffect(async () => {
+		if (window.ethereum) {
+			window.web3 = new Web3(window.ethereum)
+			await window.ethereum.enable();
 			window.ethereum.on('accountsChanged', function () {
 				window.web3.eth.getAccounts(function(error, accounts) {
 					setAccount(accounts[0])
-					localStorage.setItem("type", 'scholar')
-					setType('scholar')
+					// localStorage.setItem("type", 'scholar')
+					// setType('scholar')
 					dispatch(connectUserSuccess(accounts[0]))
 				});
 			});
+			
 		}
+		else if (window.web3) {
+			window.web3 = new Web3(window.web3.currentProvider)
+			window.loaded_web3 = true
+		}
+		else {
+			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+		}
+		let web3 = window.web3
+		// Load account
+		let accounts = await web3.eth.getAccounts()
+		setAccount(accounts[0])
+		localStorage.setItem("type", 'scholar')
+		setType('scholar')
 
-	}, [window.ethereum])
+	}, [window.web3])
 
 	useEffect(() => {
 		if (userId && type === 'scholar') {
@@ -260,10 +255,10 @@ const TrainingGround = () => {
 
 
 				const updateParams = new URLSearchParams()
-				updateParams.append('earnerAddress', account)
+				updateParams.append('earnerAddress', userId)
 				updateParams.append('totalAmount', parseInt(updateAmount))
 
-				axios.put(`${apiUrl}/api/userEarning/${account}/scholar`, updateParams, config)
+				axios.put(`${apiUrl}/api/userEarning/${userId}/scholar`, updateParams, config)
 					.then((response) => {
 						if (response.data.userEarning) {
 							setTotalReward(amount + additionalReward)
@@ -318,7 +313,7 @@ const TrainingGround = () => {
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
 				const energyCalculate = selectedMonster.values.Energy - 1
-				if (random <= minion.values.Win_Rate) { // 
+				if (true) { // random <= minion.values.Win_Rate
 					status = 'You have won the fight.'
 
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain
@@ -449,7 +444,7 @@ const TrainingGround = () => {
 		// return
 
 		try {
-			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${account}/scholar`)
+			const getWithdrawRequest = await axios.get(`${apiUrl}/api/withdrawRequest/userWithdrawRequest/${userId}/scholar`)
 			if (getWithdrawRequest?.data?.withdrawRequest?.length > 0) {
 				if (Object.keys(nonResolvedRewardRequest).length > 0) {
 					Swal.fire({
@@ -469,7 +464,7 @@ const TrainingGround = () => {
 							try {
 								if (parseInt(earnerData.totalAmount) > 0) {
 									const rewardParam = new URLSearchParams()
-									rewardParam.append('requesterAddress', account)
+									rewardParam.append('requesterAddress', userId)
 									rewardParam.append('amount', earnerData.totalAmount)
 									const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest/scholar`, rewardParam, config)
 									setTotalReward('')
@@ -516,7 +511,7 @@ const TrainingGround = () => {
 				try {
 					if (parseInt(earnerData.totalAmount) > 0) {
 						const rewardParam = new URLSearchParams()
-						rewardParam.append('requesterAddress', account)
+						rewardParam.append('requesterAddress', userId)
 						rewardParam.append('amount', earnerData.totalAmount)
 						const postWithdraw = await axios.post(`${apiUrl}/api/withdrawRequest/scholar`, rewardParam, config)
 						setTotalReward('')
