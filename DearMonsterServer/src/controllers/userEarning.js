@@ -9,7 +9,7 @@ exports.show = async function (req, res) {
 
         // if (!earnerData) return res.status(401).json({message: 'record against earnerData does not exist'});
         
-        res.status(200).json({earnerData});
+        res.status(200).json({earnerData, message: 'earner scholar data fetched successfully'});
     } catch (error) {
         res.status(500).json({message: error.message})
     }

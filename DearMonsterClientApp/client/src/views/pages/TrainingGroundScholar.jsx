@@ -247,44 +247,51 @@ const TrainingGround = () => {
 					updateAmount = scholarShare
 				}
 
-
-				const updateParams = new URLSearchParams()
-				updateParams.append('earnerAddress', userId)
-				updateParams.append('totalAmount', parseInt(updateAmount))
-
-				axios.put(`${apiUrl}/api/userEarning/${userId}/scholar`, updateParams, config)
-					.then((response) => {
-						if (response.data.userEarning) {
-							setTotalReward(amount + additionalReward)
-						}
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-
-
 				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`)
 				.then((response) => {
-					if (response?.data?.earnerData) {
-						let managerShareTotal = response?.data?.earnerData?.totalAmount + managerShare
 
+					if (response?.data) {
+
+						let prevTotal = response?.data?.earnerData?.totalAmount
+						let grandTotal
+						
+						if(prevTotal) {
+							grandTotal = prevTotal + managerShare
+						} else {
+							grandTotal = managerShare
+						}
+						
 						const updateParams2 = new URLSearchParams()
 						updateParams2.append('earnerAddress', selectedMonster.owner)
-						updateParams2.append('totalAmount', parseInt(managerShareTotal))
+						updateParams2.append('totalAmount', parseInt(grandTotal))
 
 						axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`, updateParams2, config)
 							.then((response) => {
-								console.log(response)
+								const updateParams = new URLSearchParams()
+								updateParams.append('earnerAddress', userId)
+								updateParams.append('totalAmount', parseInt(updateAmount))
+				
+								axios.put(`${apiUrl}/api/userEarning/${userId}/scholar`, updateParams, config)
+									.then((response) => {
+										if (response.data.userEarning) {
+											setTotalReward(amount + additionalReward)
+										}
+									})
+									.catch((error) => {
+										console.log(error)
+									})
+				
+								.catch((error) => {
+									console.log(error)
+								})
+
+
 							})
 							.catch((error) => {
 								console.log(error)
 							})
 					}
 				})
-				.catch((error) => {
-					console.log(error)
-				})					
-
 			})
 			.catch((e) => {
 				console.log("error: ", e);
