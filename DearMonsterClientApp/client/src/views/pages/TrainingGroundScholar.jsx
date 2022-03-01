@@ -75,35 +75,29 @@ const TrainingGround = () => {
 
 	const match = {params : { slug: 'scholar' }}
 
-	useEffect(async () => {
+	useEffect(() => {
+		getConnection();
+	}, [window.web3])
+
+	const getConnection = async () => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
-			window.ethereum.on('accountsChanged', function () {
-				window.web3.eth.getAccounts(function(error, accounts) {
-					setAccount(accounts[0])
-					// localStorage.setItem("type", 'scholar')
-					// setType('scholar')
-					dispatch(connectUserSuccess(accounts[0]))
-				});
-			});
-			
-		}
-		else if (window.web3) {
+		} else if (window.web3) {
 			window.web3 = new Web3(window.web3.currentProvider)
 			window.loaded_web3 = true
-		}
-		else {
+		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
+
 		let web3 = window.web3
 		// Load account
 		let accounts = await web3.eth.getAccounts()
-		setAccount(accounts[0])
-		localStorage.setItem("type", 'scholar')
-		setType('scholar')
+		setAccount(accounts[0]);
 
-	}, [window.web3])
+		setType('scholar')
+		localStorage.setItem("type", 'scholar')
+	};
 
 	useEffect(() => {
 		if (userId && type === 'scholar') {

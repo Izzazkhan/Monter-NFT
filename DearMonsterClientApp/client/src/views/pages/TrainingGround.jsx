@@ -47,34 +47,30 @@ const TrainingGround = () => {
 
 	const match = {params : { slug: 'owned' }}
 
-	useEffect(async () => {
+
+	useEffect(() => {
+		getConnection();
+	}, [window.web3])
+
+	const getConnection = async () => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
-			await window.ethereum.enable()
-			window.ethereum.on('accountsChanged', function () {
-				window.web3.eth.getAccounts(function(error, accounts) {
-					setAccount(accounts[0])
-					// setType('owner')
-					// localStorage.setItem("type", 'owner')
-					dispatch(connectUserSuccess(accounts[0]))
-				});
-			});
-		}
-		else if (window.web3) {
+			await window.ethereum.enable();
+		} else if (window.web3) {
 			window.web3 = new Web3(window.web3.currentProvider)
 			window.loaded_web3 = true
-		}
-		else {
+		} else {
 			window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
 		}
+
 		let web3 = window.web3
 		// Load account
 		let accounts = await web3.eth.getAccounts()
-		setAccount(accounts[0])
+		setAccount(accounts[0]);
+
 		setType('owner')
 		localStorage.setItem("type", 'owner')
-		
-	}, [window.web3])
+	};
 
 	useEffect(() => {
 		if (userId && type === 'owner') {
@@ -93,6 +89,7 @@ const TrainingGround = () => {
 					})
 			}
 			getAmount()
+
 			function getWithdrawRequest() {
 				axios.get(`${apiUrl}/api/withdrawRequest/userResolvedWithdrawRequest/${userId}/owner`)
 					.then((response) => {
@@ -339,7 +336,6 @@ const TrainingGround = () => {
 		}
 	}
 
-
 	const handleConnect = async () => {
 
 		if (window.ethereum) {
@@ -362,9 +358,7 @@ const TrainingGround = () => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
-
 		dispatch(connectUserSuccess(accounts[0]))
-
 	}
 
 	const claimRewardHandler = async () => {
