@@ -9,9 +9,7 @@ const Header = (props) => {
 
     const dispatch = useDispatch()
     const { token } = useToken()
-    console.log('tokennnnnn', token)
-    const [currentUser] = useState(JSON.parse(localStorage.getItem('token')));
-    console.log('current', currentUser)
+    const [currentUser] = useState(JSON.parse(localStorage.getItem('token')))
     const logOut = () => {
         localStorage.removeItem('token')
     }

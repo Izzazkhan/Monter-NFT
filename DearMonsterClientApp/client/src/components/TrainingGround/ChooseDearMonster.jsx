@@ -88,58 +88,58 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 
 	return (
 		<div>
-			<div className='center'>
-				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-					CHOOSE A DEARMONSTER
-				</p>
-			</div>
-			<div className='mt-6'>
-				<div className=''>
-					<Splide
-						className='container'
-						options={{
-							rewind: true,
-							gap: '8rem',
-							perPage: 3, // monsters.length == 1 ? 1 : 3,
-							pagination: false,
-							drag: false,
-							perMove: 3,
-							breakpoints: {
-								1100: {
-									perPage: 2,
-								},
-								680: {
-									perPage: 1,
-								},
-							},
-							classes: {
-								arrows: '',
-								arrow: `splide__arrow text-white ${monsters.length == 1 ? 'd-none' : ''}`,
-								prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
-								next: 'splide__arrow--next  border rounded-circle p-2 ',
-							},
-						}}
-					>
-						{loading ?  
-							<Loading />
-						  		: monsters.map((post, i) => {
-								return (
-								<SplideSlide key={i}>
-									<PostCard
-										selectedMonster={selectedMonster}
-										post={post}
-										stepImg='/assets/imgs/droganBord.png'
-										handleSelect={() => onSelect(post)}
-										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
-										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
-										type={'ownerMonster'}
-									/>
-								</SplideSlide>
-							);
-						})}
-					</Splide>
+				<div className='center'>
+					<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
+						CHOOSE A DEARMONSTER
+					</p>
 				</div>
-			</div>
+				{loading ? <div className='center mt-6'><Loading /></div> :
+					<div className='mt-6'>
+						<div className=''>
+							<Splide
+								className='container'
+								options={{
+									rewind: true,
+									gap: '8rem',
+									perPage: 3, // monsters.length == 1 ? 1 : 3,
+									pagination: false,
+									drag: false,
+									perMove: 3,
+									breakpoints: {
+										1100: {
+											perPage: 2,
+										},
+										680: {
+											perPage: 1,
+										},
+									},
+									classes: {
+										arrows: '',
+										arrow: `splide__arrow text-white ${monsters.length == 1 ? 'd-none' : ''}`,
+										prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
+										next: 'splide__arrow--next  border rounded-circle p-2 ',
+									},
+								}}
+							>
+								{monsters.map((post, i) => {
+										return (
+										<SplideSlide key={i}>
+											<PostCard
+												selectedMonster={selectedMonster}
+												post={post}
+												stepImg='/assets/imgs/droganBord.png'
+												handleSelect={() => onSelect(post)}
+												updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
+												setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
+												type={'ownerMonster'}
+											/>
+										</SplideSlide>
+									);
+								})}
+							</Splide>
+						</div>
+					</div>
+				}
 		</div>
 	);
 }

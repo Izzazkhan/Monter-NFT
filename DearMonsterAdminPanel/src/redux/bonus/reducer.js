@@ -3,7 +3,6 @@ const initialstate = {
 };
 
 const BonusReducer = (state = initialstate, action) => {
-    console.log('state=', state, action)
     switch (action.type) {
         case 'GET_BONUS':
             return {

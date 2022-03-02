@@ -137,6 +137,14 @@ function MinionForm(props) {
 
     });
 
+    const numberInputOnWheelPreventChange = (e) => {
+        e.target.blur()
+        e.stopPropagation()
+        setTimeout(() => {
+          e.target.focus()
+        }, 0)
+      }
+
     const rewardEstimated = Object.entries(state.Reward_Estimated).map((item, i) => {
         const field = item[0]
         const value = item[1]
@@ -146,8 +154,8 @@ function MinionForm(props) {
                 <input type="text" required="required" className="form-control" onChange={handleRewardChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`}
-                    // type='number'
-                    // onWheel={event => { event.preventDefault()}}
+                    type='number'
+                    onWheel={numberInputOnWheelPreventChange}
                 />
             </div>
         )

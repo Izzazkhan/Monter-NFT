@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 const NavigationMenu = (props) => {
-    console.log('navigation', props)
     return (
         <div className="col-lg-3 col-md-4">
             <div className="sidebar">
@@ -32,6 +31,12 @@ const NavigationMenu = (props) => {
                     <div className="other-info">
                         <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
                             className="icon fas fa-plus"></span>Additional Reward</button>
+                    </div>
+                </Link>
+                <Link to='/fight-history'>
+                    <div className="other-info">
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
+                            className="icon fas fa-plus"></span>Fight History</button>
                     </div>
                 </Link>
                 <Link to='/side-setting'>

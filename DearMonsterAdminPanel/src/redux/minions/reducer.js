@@ -3,7 +3,6 @@ const initialstate = {
 };
 
 const MinionReducer = (state = initialstate, action) => {
-    console.log('stateeeeeee', state, action.payload)
     switch (action.type) {
         case 'GET_MINIONS':
             return {

@@ -11,7 +11,7 @@ import AdditionaReward from '../pages/bonus/index'
 import SideSetting from '../pages/sideSetting/settingForm'
 import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
 import AdditionaRewardForm from '../pages/bonus/form'
-
+import FightHistory from '../pages/FightHistory/index'
 
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
@@ -44,6 +44,7 @@ const MainRoutes = (props) => {
                         <Route exact path={'/minions/create'} component={MinionsForm} />
                         <Route exact path={'/minions/edit'} component={MinionsForm} />
                         <Route exact path={'/withdraw-request'} component={WithdrawRequest} />
+                        <Route exact path={'/fight-history'} component={FightHistory} />
                         <Route exact path={'/additional-reward'} component={AdditionaReward} />
                         <Route exact path={'/side-setting'} component={SideSetting} />
                         <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />

@@ -230,7 +230,7 @@ const TrainingGround = () => {
 			.get(`${apiUrl}/api/levelBonus`)
 			.then((res) => {
 				additionalReward = res.data.levelBonus[0][`${selectedMonster.values.Level}`]
-				additionalReward = additionalReward / 100
+				additionalReward = ( additionalReward / 100 ) * amount
 
 
 				let updateAmount
@@ -298,6 +298,23 @@ const TrainingGround = () => {
 			})
 	}
 
+	const fightLogCall = (fightStatus, minionId,  monsterId) => {
+
+		const updateParams = new URLSearchParams()
+		updateParams.append('type', 'scholar')
+		updateParams.append('fightStatus', fightStatus)
+		updateParams.append('minionId', minionId)
+		updateParams.append('monsterId', monsterId)
+
+		axios.post(`${apiUrl}/api/fightHistory`, updateParams, config)
+			.then((response) => {
+				console.log('fight log', response)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+}
+
 	const minionFight = (minion) => {
 		if (Object.keys(selectedMonster).length === 0) {
 			setLoading(false)
@@ -344,6 +361,7 @@ const TrainingGround = () => {
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
 					params.append('values.Energy', energyCalculate)
+					fightLogCall('win', minion._id, selectedMonster.monsterId)
 					energyExperienceUpdate(params, minion.values.Exp_Gain, status)
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
@@ -385,6 +403,7 @@ const TrainingGround = () => {
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
 					params.append('values.Energy', energyCalculate)
+					fightLogCall('lose', minion._id, selectedMonster.monsterId)
 					energyExperienceUpdate(params, minion.values.Lose_Exp_Gain, status)
 				}
 				if (Number(selectedMonster.values.Energy) === 2) {

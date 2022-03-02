@@ -5,7 +5,6 @@ export const getWithdrawRequest = () => dispatch => {
     axios
         .get(`${WithdrawRequest}`)
         .then((res) => {
-            console.log('with draw request', res)
             return dispatch({
                 type: 'GET_WITHDRAW_REQUEST',
                 payload: res.data.withdrawRequest

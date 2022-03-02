@@ -6,11 +6,12 @@ import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import { apiUrl } from '../../utils/constant'
 import axios from 'axios'
 import { useSelector } from 'react-redux';
-
+import Loading from '../common/Loading';
 
 const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfterFight, userId }) => {
 
 	const [monsters, setMonsters] = useState([])
+	const [loading, setLoading] = useState(true)
 	const [updateMonsterAfterEnergyChange, setUpdateMonsterAfterEnergyChange] = useState(false)
 
 	useEffect(() => {
@@ -70,10 +71,12 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 						})
 					}
 					setMonsters(monsters)
+					setLoading(false)
 				})
 				.catch((e) => {
 					console.log("Error ----------------")
 					console.log(e)
+					setLoading(false)
 				})
 		}
 		getDearMonster()
@@ -86,56 +89,58 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 	return (
 		<div>
 			<div className='center'>
-				<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
-					CHOOSE A DEARMONSTER
-				</p>
-			</div>
-			<div className='mt-6'>
-				<div className=''>
-					<Splide
-						className='container'
-						options={{
-							rewind: true,
-							gap: '8rem',
-							perPage: 3, // monsters.length == 1 ? 1 : 3,
-							pagination: false,
-							drag: false,
-							perMove: 3,
-							breakpoints: {
-								1100: {
-									perPage: 2,
-								},
-								680: {
-									perPage: 1,
-								},
-							},
-							classes: {
-								arrows: '',
-								arrow: `splide__arrow text-white ${monsters.length == 1 ? 'd-none' : ''}`,
-								prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
-								next: 'splide__arrow--next  border rounded-circle p-2 ',
-							},
-						}}
-					>
-						{monsters.map((post, i) => {
-							return (
-								<SplideSlide key={i}>
-									<PostCard
-										selectedMonster={selectedMonster}
-										post={post}
-										stepImg='/assets/imgs/droganBord.png'
-										handleSelect={() => onSelect(post)}
-										updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
-										setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
-										type={'scholarMonster'}
-									/>
-								</SplideSlide>
-							);
-						})}
-					</Splide>
+					<p className='text-white mt-9 sm-fs-29 fs-21 whiteSpace-nowrap'>
+						CHOOSE A DEARMONSTER
+					</p>
 				</div>
+				{loading ? <div className='center mt-6'><Loading /></div> :
+					<div className='mt-6'>
+						<div className=''>
+							<Splide
+								className='container'
+								options={{
+									rewind: true,
+									gap: '8rem',
+									perPage: 3, // monsters.length == 1 ? 1 : 3,
+									pagination: false,
+									drag: false,
+									perMove: 3,
+									breakpoints: {
+										1100: {
+											perPage: 2,
+										},
+										680: {
+											perPage: 1,
+										},
+									},
+									classes: {
+										arrows: '',
+										arrow: `splide__arrow text-white ${monsters.length == 1 ? 'd-none' : ''}`,
+										prev: 'splide__arrow--prev your-class-prev border rounded-circle p-2',
+										next: 'splide__arrow--next  border rounded-circle p-2 ',
+									},
+								}}
+							>
+								{monsters.map((post, i) => {
+									return (
+										<SplideSlide key={i}>
+											<PostCard
+												selectedMonster={selectedMonster}
+												post={post}
+												stepImg='/assets/imgs/droganBord.png'
+												handleSelect={() => onSelect(post)}
+												updateMonsterAfterEnergyChange={updateMonsterAfterEnergyChange}
+												setUpdateMonsterAfterEnergyChange={setUpdateMonsterAfterEnergyChange}
+												type={'scholarMonster'}
+											/>
+										</SplideSlide>
+									);
+								})}
+							</Splide>
+						</div>
+					</div>
+				}
 			</div>
-		</div>
 	);
 }
 

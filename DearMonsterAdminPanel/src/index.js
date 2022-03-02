@@ -10,9 +10,7 @@ import WithdrawRequestReducer from './redux/withdrawRequest/reducer'
 import BonusReducer from './redux/bonus/reducer'
 import AuthReducer from './redux/WalletAuth/reducer'
 import ProbabilityReducer from './redux/probabilty/reducer'
-
-
-
+import FightHistoryReducer from './redux/fightHistory/reducer'
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
@@ -23,7 +21,8 @@ const rootReducer = combineReducers({
   WithdrawRequestReducer,
   BonusReducer,
   AuthReducer,
-  ProbabilityReducer
+  ProbabilityReducer,
+  FightHistoryReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

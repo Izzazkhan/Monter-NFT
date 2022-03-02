@@ -10,7 +10,7 @@ const mintedMonster = require('./mintedMonster');
 const tradeItem = require('./tradeItem');
 const levelBonus = require('./levelBonus');
 const probabiltyList = require('./probabiltyList');
-
+const fightHistory = require('./fightHistory');
 const userEarning = require('./userEarning');
 const withdrawRequest = require('./withdrawRequest');
 const scholarship = require('./scholarship');
@@ -40,6 +40,7 @@ router.use('/userEarning', userEarning);
 router.use('/withdrawRequest', withdrawRequest);
 router.use('/levelBonus', levelBonus);
 router.use('/probabiltyList', probabiltyList);
+router.use('/fightHistory', fightHistory);
 router.use('/scholarship', scholarship);
 
 module.exports = router
