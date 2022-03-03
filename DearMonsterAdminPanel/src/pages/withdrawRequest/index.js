@@ -1,25 +1,65 @@
-
 import React, {useState, useEffect} from 'react'
 import "../../App.css";
 import { getWithdrawRequest, markResolved } from '../../redux/withdrawRequest/action';
 import { connect } from 'react-redux';
-import { Modal, Button } from "react-bootstrap"
+import { Modal, Button, Spinner } from "react-bootstrap"
 import { usePagination } from '../../hooks/userPagination';
-
 function WithdrawRequest(props) {
     const [show, setShow] = useState({selectedRequest: '', type: '', isShow: false})
     const [transactionHash, setTransactionHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
+	const [data, setData] = useState([])
+	const [filteredData, setFilteredData] = useState(null)
+	const [filterObject, setFilterObject] = useState({})
+	const [loading, setLoading] = useState(true)
 
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(props.withdrawRequest.withdrawRequests, 5)
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30)
 
     useEffect(() => {
         props.getWithdrawRequest()
     }, [])
 
     useEffect(() => {
-		doPagination(props.withdrawRequest.withdrawRequests)
+        setData(props.withdrawRequest.withdrawRequests)
+        doPagination(props.withdrawRequest.withdrawRequests)
     }, [props])
+
+    useEffect(() => {
+        if(data.length) {
+            setLoading(false)
+        }
+    }, [data])
+
+    useEffect(() => {
+        setLoading(true)
+		if (Object.keys(filterObject).length > 0) {
+			let localFilterData = []
+			let filterApplied = false
+
+			if (filterObject.searchedWallet && filterObject.searchedWallet != '') {
+				let searchDataLocal
+				if (filterApplied) {
+					searchDataLocal = localFilterData.filter((element) => element.requesterAddress == filterObject.searchedWallet)
+				} else {
+					searchDataLocal = data.filter((element) => element.requesterAddress == filterObject.searchedWallet)
+					filterApplied = true
+				}
+				localFilterData = searchDataLocal
+			}
+
+			if (filterApplied) {
+				setFilteredData(localFilterData)
+				doPagination(localFilterData)
+                setLoading(false)
+			}
+		} else {
+			if (data && data.length > 0) {
+				setFilteredData(data)
+				doPagination(data)
+                setLoading(false)
+			}
+		}
+	}, [filterObject])
 
     const handleClose = () => {
         setShow(false)
@@ -53,13 +93,15 @@ function WithdrawRequest(props) {
 
     const onChangeWallet = (e) => {
         setWalletAddress(e.target.value)
-        const filteredData = props.withdrawRequest.withdrawRequests.filter(wallet => wallet.requesterAddress === e.target.value)
-        if(filteredData.length){
-            doPagination(filteredData)
-        }
-        else {
-            doPagination(props.withdrawRequest.withdrawRequests)
-        }
+        const searchedWallet = e.target.value
+        if (searchedWallet != '') {
+			setFilterObject({ ...filterObject, searchedWallet })
+		} else {
+			let tempObj = { ...filterObject }
+			delete tempObj.searchedWallet
+
+			setFilterObject(tempObj)
+		}
     }
 
     const formatDate = (date) => {
@@ -88,7 +130,6 @@ function WithdrawRequest(props) {
         );
       };
 
-    
 
     return (
         <>
@@ -118,10 +159,17 @@ function WithdrawRequest(props) {
                             </thead>
 
                             <tbody className="table__body">
-
-                                {pageData.length
-                                    && pageData.map((data, index) => {
-                                        return <tr key={(index + 1)}>
+                            { loading ?  <Spinner animation="border" /> :
+								filteredData ?
+									<>
+										{filteredData?.length === 0 ? (
+											<div className='text-center'>
+												<h3>{'No Data'}</h3>
+											</div>
+										) : (
+											pageData.length > 0 ? pageData.map((data, index) => {
+												return (
+													<tr key={(index + 1)}>
                                             <td>{`${data.amount}`}</td>
                                             <td>{data.requesterAddress}</td>
                                             <td>{formatDate(data.createdAt)}</td>
@@ -138,8 +186,42 @@ function WithdrawRequest(props) {
                                             <button onClick={() => markResolved(data)}>Mark</button>
                                         </td>}
                                         </tr>
-                                    })}
+												);
+											}) : ""
+										)}
+									</>
+									:
+									<>
+										{data?.length === 0 ? (
+											<div className='text-center'>
+												<h3>{'No Data'}</h3>
+											</div>
+										) : (
+											pageData.length > 0 ? pageData.map((data, index) => {
+												return (
+													<tr key={(index + 1)}>
+                                            <td>{`${data.amount}`}</td>
+                                            <td>{data.requesterAddress}</td>
+                                            <td>{formatDate(data.createdAt)}</td>
+                                            <td>{formatDate(data.updatedAt)}</td>
+                                            <td>{data.isResolved ? 'Yes' : 'No'}</td>
+                                            
+                                            {data.isResolved
+                                            ?
+                                            <td>
+                                                <button>Marked</button>
+                                            </td>
+                                            :
+                                            <td>
+                                            <button onClick={() => markResolved(data)}>Mark</button>
+                                        </td>}
+                                        </tr>
+												);
+											}) : ""
+										)}
+									</>
 
+							}
                             </tbody>
                         </table>
                         {pageData?.length == 0 ? (

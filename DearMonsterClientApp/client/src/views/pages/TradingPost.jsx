@@ -151,6 +151,9 @@ const TradingPost = ({ }) => {
 		}
 	}
 
+    console.log('filteredData', pageData, currentPage, totalPages)
+
+
 	const searchData = (tokenId) => {
 		if (tokenId != '') {
 			setFilterObject({ ...filterObject, tokenId })

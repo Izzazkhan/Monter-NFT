@@ -9,7 +9,10 @@ export const usePagination = (data, itemsPerPage) => {
 	const [pageData, setPageData] = React.useState([]);
 	const [totalPages, setTotalPages] = React.useState(0);
 
+	console.log('totalData::', totalData)
+
 	const paginate = (pageNumber) => {
+		console.log('pageNumberpageNumber', pageNumber)
 
 		setCurrentPage(pageNumber);
 		setPageData(
@@ -40,7 +43,9 @@ export const usePagination = (data, itemsPerPage) => {
 	};
 
 	const doPagination = (data, itemsPerPage, currentPage) => {
+		console.log('current page', data)
 		if (data == null || data.length === 0) {
+	// console.log('currentPage:::', currentPage)
 			setTotalData([]);
 			setTotalPages(0);
 			setPageData([]);
@@ -62,6 +67,7 @@ export const usePagination = (data, itemsPerPage) => {
 		setTotalPages(totalPages);
 		setPageData(totalData.slice(0, totalItemsPerPage));
 	}, [totalPages, totalItemsPerPage]);
+
 
 	return {
 		pageData,

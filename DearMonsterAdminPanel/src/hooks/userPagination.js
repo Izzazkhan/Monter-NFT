@@ -25,7 +25,6 @@ export const usePagination = (data, itemsPerPage) => {
 	};
 
 	const nextPage = () => {
-		console.log(currentPage, totalData.length);
 		if (currentPage < Math.ceil(totalData.length / totalItemsPerPage)) {
 			paginate(currentPage + 1);
 		}
@@ -40,20 +39,22 @@ export const usePagination = (data, itemsPerPage) => {
 	};
 
 	const doPagination = (data, itemsPerPage, currentPage) => {
+
 		if (data == null || data.length === 0) {
 			setTotalData([]);
 			setTotalPages(0);
 			setPageData([]);
 			setCurrentPage(1);
-		} else {
+		} else if(data.length) {
 			data.length > 0 && setTotalData(data);
 			data.length > 0 && setPageData(data.slice(0, totalItemsPerPage));
 			const totalPages = Math.ceil(data.length / totalItemsPerPage);
 			data.length > 0 && setTotalPages(totalPages);
 			itemsPerPage && setTotalItemsPerPage(itemsPerPage);
-			currentPage && setCurrentPage(currentPage);
+			currentPage &&  setCurrentPage(currentPage);
 
 		}
+		setCurrentPage(1);
 
 	};
 
