@@ -77,13 +77,13 @@ exports.update = async function (req, res) {
         const id = req.params.id;
         const update = req.body;
 
-        // const withdrawRequest = await WithdrawRequest.findByIdAndUpdate(id, { $set: update }, { new: true });
+        const withdrawRequest = await WithdrawRequest.findByIdAndUpdate(id, { $set: update }, { new: true });
 
-        let query = {id, type: req.params.type}
-        let updateData = {$set: update}
-        let options = { new: true }
+        // let query = {id, type: req.params.type}
+        // let updateData = {$set: update}
+        // let options = { new: true }
         
-        const withdrawRequest = await WithdrawRequest.findOneAndUpdate(query, updateData, options);
+        // const withdrawRequest = await WithdrawRequest.findOneAndUpdate(query, updateData, options);
 
         //Attempt to upload to cloudinary
         // const result = await uploader(req);

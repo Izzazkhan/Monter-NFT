@@ -21,7 +21,7 @@ router.get('/pending/:wallet/:type', WithdrawRequest.pending);
 router.post('/:type', WithdrawRequest.store);
 
 //UPDATE
-router.put('/:id/:type', WithdrawRequest.update);
+router.put('/:id', WithdrawRequest.update);
 
 //DELETE
 router.delete('/:id', WithdrawRequest.destroy);

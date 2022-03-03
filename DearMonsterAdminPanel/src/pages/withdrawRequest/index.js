@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Spinner } from "react-bootstrap"
 import { usePagination } from '../../hooks/userPagination';
 function WithdrawRequest(props) {
-    const [show, setShow] = useState({selectedRequest: '', type: '', isShow: false})
+    const [show, setShow] = useState({selectedRequest: '', isShow: false})
     const [transactionHash, setTransactionHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
 	const [data, setData] = useState([])
@@ -68,7 +68,7 @@ function WithdrawRequest(props) {
     const handleMark = () => {
         if(transactionHash != ''){
             if(/^0x([A-Fa-f0-9]{64})$/.test(transactionHash)){
-                props.markResolved(show.selectedRequest, show.type, transactionHash)
+                props.markResolved(show.selectedRequest, transactionHash)
                 setShow(false)
                 setTransactionHash('')
             }
@@ -77,14 +77,14 @@ function WithdrawRequest(props) {
             }
         }
         else {
-            props.markResolved(show.selectedRequest, show.type, transactionHash)
+            props.markResolved(show.selectedRequest, transactionHash)
             setShow(false)
             setTransactionHash('')
         }   
     }
 
     const markResolved = (data) => {
-        setShow({selectedRequest: data._id, type: data.type, isShow: true})
+        setShow({selectedRequest: data._id, isShow: true})
     }
 
     const handleChange = (e) => {
