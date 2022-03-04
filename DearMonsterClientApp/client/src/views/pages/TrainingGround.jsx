@@ -229,13 +229,14 @@ const TrainingGround = () => {
 			})
 	}
 
-	const fightLogCall = (fightStatus, minionId,  monsterId) => {
+	const fightLogCall = (fightStatus, minionId,  monsterId, rating) => {
 
 				const updateParams = new URLSearchParams()
 				updateParams.append('type', 'owner')
 				updateParams.append('fightStatus', fightStatus)
 				updateParams.append('minionId', minionId)
 				updateParams.append('monsterId', monsterId)
+				updateParams.append('rating', rating)
 
 				axios.post(`${apiUrl}/api/fightHistory`, updateParams, config)
 					.then((response) => {
@@ -291,7 +292,7 @@ const TrainingGround = () => {
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
 					params.append('values.Energy', energyCalculate)
-					fightLogCall('win', minion._id, selectedMonster.monsterId)
+					fightLogCall('win', minion._id, selectedMonster.monsterId, selectedMonster.rating)
 					energyExperienceUpdate(params, minion.values.Exp_Gain, status)
 					let amount = 0
 					Object.entries(JSON.parse(minion.values.Reward_Estimated)).map((item, i) => {
@@ -332,7 +333,7 @@ const TrainingGround = () => {
 					params.append('values.EXP', experienceCalculate)
 					params.append('values.Level', localLevel)
 					params.append('values.Energy', energyCalculate)
-					fightLogCall('lose', minion._id, selectedMonster.monsterId)
+					fightLogCall('lose', minion._id, selectedMonster.monsterId, selectedMonster.rating)
 					energyExperienceUpdate(params, minion.values.Lose_Exp_Gain, status)
 				}
 				if (Number(selectedMonster.values.Energy) === 2) {

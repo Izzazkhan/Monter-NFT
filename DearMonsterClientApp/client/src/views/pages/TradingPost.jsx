@@ -30,6 +30,8 @@ const TradingPost = ({ }) => {
 		getTradingData()
 	}, [])
 
+	console.log("data:::", data)
+
 	useEffect(() => {
 		if (Object.keys(filterObject).length > 0) {
 			let localFilterData = []

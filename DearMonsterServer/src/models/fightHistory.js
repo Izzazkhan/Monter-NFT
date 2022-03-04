@@ -16,7 +16,10 @@ const FightHistorySchema = new mongoose.Schema({
     },
     fightStatus: {
         type: String
-    }
+    },
+    // rating: {
+    //     type: Number
+    // }
     
 }, {timestamps: true});
 

@@ -3,18 +3,29 @@ import React, { useState, useEffect } from "react"
 import "../../App.css";
 import { getBonus, addBonus, editBonus, deleteBonus } from '../../redux/bonus/action';
 import { connect } from 'react-redux';
+import { Modal, Button, Spinner } from "react-bootstrap"
 
 function Bonus(props) {
 
-    console.log('propsssssss', props)
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState([])
 
     useEffect(() => {
         props.getBonus()
     }, [])
 
+    useEffect(() => {
+        setLoading(true)
+        setData(props.bonus.bonus)
+    }, [props])
+
+    useEffect(() => {
+        if(data.length) {
+            setLoading(false)
+        }
+    }, [data])
 
     const editDetails = (data) => {
-        console.log('data', data)
         props.history.push('/additional-reward/create', { data })
     }
 
@@ -33,7 +44,7 @@ function Bonus(props) {
                 <div className="content-wrapper">
                     <div className="content-box">
                         <h3>Dear Monster Bonus (Additional Reward)</h3>
-                        {!props?.bonus?.bonus?.length &&
+                        {!data.length &&
                             <button className="btn-default" onClick={() => props.history.push('/additional-reward/create')}>ADD New</button>
                         }
                         <table className="table">
@@ -52,8 +63,8 @@ function Bonus(props) {
 
                             <tbody className="table__body">
 
-                                {props.bonus.bonus
-                                    && props.bonus.bonus.map((data, index) => {
+                                {loading ?  <Spinner animation="border" />
+                                    : data.length ? data.map((data, index) => {
                                         return <tr key={(index + 1)}>
                                             <td>{data['1']}</td>
                                             <td>{data['2']}</td>
@@ -71,7 +82,9 @@ function Bonus(props) {
                                                 <button onClick={() => deleteBonus(data._id)}>DELETE</button>
                                             </td>
                                         </tr>
-                                    })}
+                                    }) : <div className='text-center'>
+                                    <h3>{'No Data'}</h3>
+                                </div>}
 
                             </tbody>
                         </table>

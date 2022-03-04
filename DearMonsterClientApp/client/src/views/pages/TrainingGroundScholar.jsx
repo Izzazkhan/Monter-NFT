@@ -111,6 +111,7 @@ const TrainingGround = () => {
 						else {
 							setEarnerData({})
 						}
+						
 					})
 					.catch((error) => {
 						console.log(error)
@@ -232,9 +233,9 @@ const TrainingGround = () => {
 				additionalReward = res.data.levelBonus[0][`${selectedMonster.values.Level}`]
 				additionalReward = ( additionalReward / 100 ) * amount
 
-
 				let updateAmount
 				let totalNewAmount = additionalReward + amount
+				totalNewAmount = totalNewAmount - (parseInt(totalNewAmount) * (10/100))
 
 				let managerShare = (parseInt(totalNewAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
 				let scholarShare = parseInt(totalNewAmount) - managerShare
@@ -246,7 +247,7 @@ const TrainingGround = () => {
 				else {
 					updateAmount = scholarShare
 				}
-
+				
 				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`)
 				.then((response) => {
 

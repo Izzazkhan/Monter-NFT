@@ -1,21 +1,33 @@
 
-import React, { useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import "../../App.css";
 import { getMinions, addMinions, editMinions, deleteMinions } from '../../redux/minions/action';
 import { connect } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux'
+import { Modal, Button, Spinner } from "react-bootstrap"
 
 function Minions(props) {
-    // const dispatch = useDispatch()
-    // const reduxState = useSelector((state) => state)
+    
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState([])
 
     useEffect(() => {
         props.getMinions(JSON.parse(localStorage.getItem('token')))
     }, [])
 
+    useEffect(() => {
+        setLoading(true)
+        setData(props.minions.minions)
+    }, [props])
+
+    useEffect(() => {
+        if(data.length) {
+            setLoading(false)
+        }
+    }, [data])
+
 
     const editDetails = (data) => {
-        console.log('data', data)
         props.history.push('/minions/edit', { data })
     }
 
@@ -50,8 +62,9 @@ function Minions(props) {
 
                             <tbody className="table__body">
 
-                                {props.minions.minions
-                                    && props.minions.minions.map((data, index) => {
+                                {loading ?  <Spinner animation="border" />
+                                    : data.length
+                                    ? data.map((data, index) => {
                                         return <tr key={(index + 1)}>
                                             {/* <td>{(index + 1)}</td> */}
                                             {/* <td>{data._id}</td> */}
@@ -68,7 +81,10 @@ function Minions(props) {
                                                 <button onClick={() => deleteMinions(data._id)}>DELETE</button>
                                             </td>
                                         </tr>
-                                    })}
+                                    }) : <div className='text-center'>
+                                            <h3>{'No Data'}</h3>
+                                        </div>
+                                    }
 
                             </tbody>
                         </table>
