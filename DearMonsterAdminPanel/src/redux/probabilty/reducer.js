@@ -20,8 +20,8 @@ const ProbabilityListReducer = (state = initialstate, action) => {
                 probabilityList: state.probabilityList.map(
                     (content, i) => content._id === action.payload._id ? {
                         ...content, prob_1: action.payload.prob_1, prob_2: action.payload.prob_2
-                        , prob_3: action.payload.prob_3, prob_4: action.payload.values.prob_4,
-                            prob_5: action.payload.values.prob_5,
+                        , prob_3: action.payload.prob_3, prob_4: action.payload.prob_4,
+                        prob_5: action.payload.prob_5,
                     }
                         : content)
             };

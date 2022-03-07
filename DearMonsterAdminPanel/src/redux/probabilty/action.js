@@ -37,7 +37,7 @@ export const addProbability = (numberList, token) => dispatch => {
             console.log('response', res)
             return dispatch({
                 type: 'ADD_PROBABILITY',
-                payload: res.data.probabiltyList
+                payload: res.data.probabilityList
             })
         }).catch((e) => {
             console.log("Error", e)
@@ -64,7 +64,7 @@ export const editProbability = (numberList, token) => dispatch => {
             console.log('response', res)
             return dispatch({
                 type: 'EDIT_PROBABILITY',
-                payload: res.data.probabiltyList
+                payload: res.data.probabilityList
             })
         }).catch((e) => {
             console.log("Error", e)

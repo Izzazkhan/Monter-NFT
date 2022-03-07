@@ -108,11 +108,19 @@ function MinionForm(props) {
     }
 
     const handleChange = (e) => {
-        setState({ ...state, [e.target.name]: e.target.value })
+        let targetValue
+        if(e.target.name === 'rating' || e.target.name === 'totalRating' || e.target.name === 'price' ||
+        e.target.name === 'Win_Rate' || e.target.name === 'Lose_Exp_Gain' || e.target.name === 'Exp_Gain'){
+            targetValue = e.target.value.replace(/\D/,'')
+        }
+        else {
+            targetValue = e.target.value
+        }
+        setState({ ...state, [e.target.name]: targetValue })
     }
 
     const handleRewardChange = (e) => {
-        setState({ ...state, Reward_Estimated: { ...state.Reward_Estimated, [e.target.name]: e.target.value } })
+        setState({ ...state, Reward_Estimated: { ...state.Reward_Estimated, [e.target.name]: e.target.value.replace(/\D/,'') } })
 
     }
 
@@ -128,22 +136,12 @@ function MinionForm(props) {
                         name={field} value={value}
                         disabled={ field === 'img' ? 'disabled' : ''}
                         placeholder={`Enter ${field}`}
-                        type={(field === 'rating' || field === 'totalRating' || field === 'price' || field === 'Win_Rate' ||
-                            field === 'Lose_Exp_Gain' || field === 'Exp_Gain') && 'number'}
                     />
                 </div>
             )
         }
 
     });
-
-    const numberInputOnWheelPreventChange = (e) => {
-        e.target.blur()
-        e.stopPropagation()
-        setTimeout(() => {
-          e.target.focus()
-        }, 0)
-      }
 
     const rewardEstimated = Object.entries(state.Reward_Estimated).map((item, i) => {
         const field = item[0]
@@ -154,8 +152,6 @@ function MinionForm(props) {
                 <input type="text" required="required" className="form-control" onChange={handleRewardChange}
                     name={field} value={value}
                     placeholder={`Enter ${field}`}
-                    type='number'
-                    onWheel={numberInputOnWheelPreventChange}
                 />
             </div>
         )
