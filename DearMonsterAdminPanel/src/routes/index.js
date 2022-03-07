@@ -11,6 +11,7 @@ import AdditionaReward from '../pages/bonus/index'
 import SideSetting from '../pages/sideSetting/settingForm'
 import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
 import AdditionaRewardForm from '../pages/bonus/form'
+import RewardByWallet from '../pages/rewardByWallet/index'
 import FightHistory from '../pages/FightHistory/index'
 
 import NotFound from '../components/NotFound'
@@ -46,6 +47,8 @@ const MainRoutes = (props) => {
                         <Route exact path={'/withdraw-request'} component={WithdrawRequest} />
                         <Route exact path={'/fight-history'} component={FightHistory} />
                         <Route exact path={'/additional-reward'} component={AdditionaReward} />
+                        <Route exact path={'/wallet-reward'} component={RewardByWallet} />
+
                         <Route exact path={'/side-setting'} component={SideSetting} />
                         <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />

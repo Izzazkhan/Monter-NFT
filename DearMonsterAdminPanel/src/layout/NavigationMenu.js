@@ -33,6 +33,12 @@ const NavigationMenu = (props) => {
                             className="icon fas fa-plus"></span>Additional Reward</button>
                     </div>
                 </Link>
+                <Link to='/wallet-reward'>
+                    <div className="other-info">
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
+                            className="icon fas fa-plus"></span>Reward By Wallet</button>
+                    </div>
+                </Link>
                 <Link to='/fight-history'>
                     <div className="other-info">
                         <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span

@@ -39,6 +39,14 @@ exports.pending = async function (req, res) {
     res.status(200).json({ openWithdrawRequest });
 };
 
+exports.rewardByWallet = async function (req, res) {
+
+    const wallet = req.params.wallet;
+
+    const rewardByWallet = await WithdrawRequest.find({ isResolved: false, requesterAddress: wallet }, null);
+    res.status(200).json({ rewardByWallet });
+};
+
 
 exports.store = async (req, res) => {
     try {

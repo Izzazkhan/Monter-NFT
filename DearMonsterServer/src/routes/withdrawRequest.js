@@ -17,6 +17,9 @@ router.get('/', WithdrawRequest.index);
 //PENDING
 router.get('/pending/:wallet/:type', WithdrawRequest.pending);
 
+//REWARD BY WALLET
+router.get('/rewardByWallet/:wallet', WithdrawRequest.rewardByWallet);
+
 //STORE
 router.post('/:type', WithdrawRequest.store);
 
