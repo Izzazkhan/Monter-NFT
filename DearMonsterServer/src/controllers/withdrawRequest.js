@@ -27,7 +27,7 @@ exports.userResolvedWithdrawRequest = async function (req, res) {
 };
 
 exports.index = async function (req, res) {
-    const withdrawRequest = await WithdrawRequest.find({});
+    const withdrawRequest = await WithdrawRequest.find({}).sort({'createdAt': -1}).limit(500);
     res.status(200).json({ withdrawRequest });
 };
 
