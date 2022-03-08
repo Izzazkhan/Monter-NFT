@@ -3,8 +3,11 @@ const { uploader } = require('../utils/index');
 
 
 exports.index = async function (req, res) {
-    const monsters = await Monster.find({});
-    res.status(200).json({ monsters });
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const count = await Monster.find().countDocuments()
+    const monsters = await Monster.find({}).skip(skip).limit(limit)
+    res.status(200).json({ monsters, count });
 };
 
 

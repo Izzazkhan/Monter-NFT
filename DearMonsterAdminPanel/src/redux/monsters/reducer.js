@@ -1,5 +1,6 @@
 const initialstate = {
-    dearMonsters: []
+    dearMonsters: [], 
+    count: 0
 };
 
 const MonsterReducer = (state = initialstate, action) => {
@@ -7,8 +8,8 @@ const MonsterReducer = (state = initialstate, action) => {
         case 'GET_DEARMONSTERS':
             return {
                 ...state,
-                dearMonsters: action.payload
-
+                dearMonsters: action.payload.monsters,
+                count: action.payload.count
             };
         case 'ADD_DEARMONSTERS':
             return {

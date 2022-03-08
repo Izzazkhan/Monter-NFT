@@ -235,17 +235,18 @@ const TrainingGround = () => {
 
 				let updateAmount
 				let totalNewAmount = additionalReward + amount
-				totalNewAmount = totalNewAmount - (parseInt(totalNewAmount) * (10/100))
+				totalNewAmount = totalNewAmount - (totalNewAmount * (10/100))
 
 				let managerShare = (parseInt(totalNewAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
 				let scholarShare = parseInt(totalNewAmount) - managerShare
-
+				const roundedManagerShare = Math.round(managerShare / 0.5) * 0.5
+				const roundedScholarShare = Math.round(scholarShare / 0.5) * 0.5
 
 				if (earnerData && Object.keys(earnerData).length > 0) {
-					updateAmount = earnerData.totalAmount + scholarShare
+					updateAmount = earnerData.totalAmount + roundedScholarShare
 				}
 				else {
-					updateAmount = scholarShare
+					updateAmount = roundedScholarShare
 				}
 				
 				axios.get(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`)
@@ -257,9 +258,9 @@ const TrainingGround = () => {
 						let grandTotal
 						
 						if(prevTotal) {
-							grandTotal = prevTotal + managerShare
+							grandTotal = prevTotal + roundedManagerShare
 						} else {
-							grandTotal = managerShare
+							grandTotal = roundedManagerShare
 						}
 						
 						const updateParams2 = new URLSearchParams()
@@ -332,7 +333,7 @@ const TrainingGround = () => {
 				const random = Math.floor(Math.random() * 100) + 1
 				let status = '';
 				const energyCalculate = selectedMonster.values.Energy - 1
-				if (random <= minion.values.Win_Rate) { // true
+				if (true) { // true
 					status = 'You have won the fight.'
 
 					let experienceCalculate = Number(selectedMonster.values.EXP) + minion.values.Exp_Gain

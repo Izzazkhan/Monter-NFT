@@ -10,11 +10,15 @@ function Monsters(props) {
 
     const [data, setData] = useState([])
 	const [loading, setLoading] = useState(true)
+    const [limit, setLimit] = useState(4);
+    const [skip, setSkip] = useState(0);
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30)
 
+    console.log('props', props)
+
     useEffect(() => {
-        props.getDearMonsters();
-    }, [])
+        props.getDearMonsters(limit, skip)
+    }, [skip, limit])
 
     useEffect(() => {
         setData(props.dearMonsters.dearMonsters)
@@ -26,6 +30,14 @@ function Monsters(props) {
             setLoading(false)
         }
     }, [data])
+
+    const nextPagee = () => {
+        setSkip(skip + limit)
+    }
+
+    const previousPagee = () => {
+        setSkip(skip - limit)
+    }
 
 
     const editDetails = (data) => {
@@ -69,7 +81,7 @@ function Monsters(props) {
 												<h3>{'No Data'}</h3>
 											</div>
 										) : (
-											pageData.length > 0 ? pageData.map((data, index) => {
+											data.length > 0 ? data.map((data, index) => {
 												return (
 													<tr key={(index + 1)}>
                                                         <td>{data._id}</td>
@@ -95,26 +107,30 @@ function Monsters(props) {
 
                             </tbody>
                         </table>
-                        {pageData?.length == 0 ? (
+                        {data?.length == 0 ? (
 							''
 						) : (
                             <div className="row">
                                 <div className='col-md-4'>
+                                    {(skip/limit) + 1 != 1 &&
                                 <img
 									src='/assets/imgs/ArrowLeft.png'
                                     style={{cursor: 'pointer'}}
-									onClick={previousPage}
-								/>
+									onClick={previousPagee}
+								/> }
                                 </div>
                                 <div className='col-md-4'>
                                 <p className='col-md-2'>
-									{currentPage}/{totalPages}
+									{(skip/limit) + 1}/{Math.ceil(props.dearMonsters.count/limit)}
 								</p>
                                 </div>
                                 <div className='col-md-4'>
-                                <img src='/assets/imgs/ArrowRight.png' 
+                                    { (skip/limit) + 1 != Math.ceil(props.dearMonsters.count/limit) &&
+                                    <img src='/assets/imgs/ArrowRight.png' 
                                     style={{cursor: 'pointer'}}
-                                    className='col-md-4' onClick={nextPage} />
+                                    className='col-md-4' onClick={nextPagee} />
+                                    }
+                                
                                 </div>
                                 
                                 </div>

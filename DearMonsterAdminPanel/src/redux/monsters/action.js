@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { Monster } from '../../utilities/constant'
 
-export const getDearMonsters = () => dispatch => {
+export const getDearMonsters = (limit, skip) => dispatch => {
     axios
-        .get(`${Monster}`)
+        .get(`${Monster}?limit=${limit}&skip=${skip}`)
         .then((res) => {
             return dispatch({
                 type: 'GET_DEARMONSTERS',
-                payload: res.data.monsters
+                payload: res.data
             })
         })
         .catch((e) => {
