@@ -2,7 +2,8 @@ import axios from 'axios'
 import { RewardByWallet } from '../../utilities/constant'
 
 export const getRewardByWallet = (walletAddress) => dispatch => {
-    axios
+    if(walletAddress != '') {
+        axios
         .get(`${RewardByWallet}/${walletAddress}`)
         .then((res) => {
             return dispatch({
@@ -13,6 +14,14 @@ export const getRewardByWallet = (walletAddress) => dispatch => {
         .catch((e) => {
             console.log("error: ", e);
         })
+    }
+    else {
+        return dispatch({
+            type: 'GET_REWARD_BY_WALLET',
+            payload: []
+        })
+    }
+   
 }
 
 

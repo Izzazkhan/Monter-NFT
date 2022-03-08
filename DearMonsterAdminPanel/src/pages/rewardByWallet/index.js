@@ -15,23 +15,16 @@ function WithdrawRequest(props) {
     }
 
     useEffect(() => {
-        // console.log('walletRewardwalletRewardwalletRewardwalletRewardwalletReward', walletReward)
         if(props.rewardByWallet.rewardByWallet.length) {
             const ownerReward = props.rewardByWallet.rewardByWallet.find(item => item.type === 'owner')
-            console.log('ownerReward', typeof ownerReward)
             setOwnerReward(ownerReward)
             if(ownerReward){
                 setOwnerReward(ownerReward)
-            // } else {
-            //     setOwnerReward([])
 
             }
             const scholarReward = props.rewardByWallet.rewardByWallet.find(item => item.type === 'scholar')
-            console.log('scholarReward', typeof scholarReward)
             if(scholarReward){
                 setScholarReward(scholarReward)
-            // } else {
-            //     setScholarReward([])
             }
         }
         else {
@@ -39,8 +32,6 @@ function WithdrawRequest(props) {
             setScholarReward([])
         }
     }, [props])
-
-    console.log('ownerRewardownerRewardownerReward', ownerReward, scholarReward)
 
     return (
         <>
