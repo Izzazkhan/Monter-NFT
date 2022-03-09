@@ -20,6 +20,9 @@ router.get('/pending/:wallet/:type', WithdrawRequest.pending);
 //REWARD BY WALLET
 router.get('/rewardByWallet/:wallet', WithdrawRequest.rewardByWallet);
 
+// REQUEST BY WALLET
+router.get('/requestByWallet/:wallet', WithdrawRequest.requestByWallet);
+
 //STORE
 router.post('/:type', WithdrawRequest.store);
 

@@ -27,8 +27,11 @@ exports.userResolvedWithdrawRequest = async function (req, res) {
 };
 
 exports.index = async function (req, res) {
-    const withdrawRequest = await WithdrawRequest.find({}).sort({'createdAt': -1}).limit(500);
-    res.status(200).json({ withdrawRequest });
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const count = await WithdrawRequest.find().countDocuments()
+    const withdrawRequest = await WithdrawRequest.find({}).skip(skip).limit(limit)
+    res.status(200).json({ withdrawRequest, count });
 };
 
 exports.pending = async function (req, res) {
@@ -45,6 +48,18 @@ exports.rewardByWallet = async function (req, res) {
 
     const rewardByWallet = await WithdrawRequest.find({ isResolved: false, requesterAddress: wallet }, null);
     res.status(200).json({ rewardByWallet });
+};
+
+exports.requestByWallet = async function (req, res) {
+
+    const wallet = req.params.wallet;
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const count = await WithdrawRequest.find({ requesterAddress: wallet }).countDocuments()
+
+    const withdrawRequest = await WithdrawRequest.find({ requesterAddress: wallet }).skip(skip).limit(limit);
+    console.log(withdrawRequest)
+    res.status(200).json({ withdrawRequest, count });
 };
 
 

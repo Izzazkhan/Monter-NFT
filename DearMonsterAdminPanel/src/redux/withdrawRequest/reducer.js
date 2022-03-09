@@ -1,5 +1,6 @@
 const initialstate = {
-    withdrawRequests: []
+    withdrawRequests: [],
+    count: 0
 };
 
 const WithdrawRequestReducer = (state = initialstate, action) => {
@@ -7,24 +8,22 @@ const WithdrawRequestReducer = (state = initialstate, action) => {
         case 'GET_WITHDRAW_REQUEST':
             return {
                 ...state,
-                withdrawRequests: [...action.payload]
+                withdrawRequests: [...action.payload.withdrawRequest],
+                count: action.payload.count
             }
-        // case 'ADD_MINIONS':
-        //     return {
-        //         ...state,
-        //         minions: state.minions.concat(action.payload)
-        //     };
-        // case 'EDIT_MINIONS':
-        //     return {
-        //         ...state,
-        // minions: state.minions.map(
-        //     (content, i) => content.id === action.payload.id ? {
-        //         ...content, name: action.payload.name, element: action.payload.element
-        //         , level: action.payload.level, exp: action.payload.exp, star: action.payload.star, energy: action.payload.energy,
-        //         image: action.payload.image
-        //     }
-        //         : content)
-        //     };
+        case 'GET_WITHDRAW_REQUEST_BY_WALLET':
+            return {
+                ...state,
+                withdrawRequests: [...action.payload.withdrawRequest],
+                count: action.payload.count
+            }
+        case 'GET_EMPTY_WITHDRAW_REQUEST':
+            return {
+                ...state,
+                withdrawRequests: [],
+                count: 0
+            }
+        
         case 'MARK_RESOLVED':
             return {
                 ...state,

@@ -211,7 +211,7 @@ const TrainingGround = () => {
 
 				const updateParams = new URLSearchParams()
 				updateParams.append('earnerAddress', userId)
-				updateParams.append('totalAmount', parseInt(updateAmount))
+				updateParams.append('totalAmount', Math.round(updateAmount / 0.5) * 0.5)
 
 				axios.put(`${apiUrl}/api/userEarning/${userId}/owner`, updateParams, config)
 					.then((response) => {

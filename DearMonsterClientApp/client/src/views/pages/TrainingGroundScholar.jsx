@@ -237,8 +237,8 @@ const TrainingGround = () => {
 				let totalNewAmount = additionalReward + amount
 				totalNewAmount = totalNewAmount - (totalNewAmount * (10/100))
 
-				let managerShare = (parseInt(totalNewAmount) * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
-				let scholarShare = parseInt(totalNewAmount) - managerShare
+				let managerShare = (totalNewAmount * selectedMonster.scholarshipsItems.profitShare.Manager_Share) / 100
+				let scholarShare = totalNewAmount - managerShare
 				const roundedManagerShare = Math.round(managerShare / 0.5) * 0.5
 				const roundedScholarShare = Math.round(scholarShare / 0.5) * 0.5
 
@@ -265,13 +265,13 @@ const TrainingGround = () => {
 						
 						const updateParams2 = new URLSearchParams()
 						updateParams2.append('earnerAddress', selectedMonster.owner)
-						updateParams2.append('totalAmount', parseInt(grandTotal))
+						updateParams2.append('totalAmount', grandTotal)
 
 						axios.put(`${apiUrl}/api/userEarning/${selectedMonster.owner}/scholar`, updateParams2, config)
 							.then((response) => {
 								const updateParams = new URLSearchParams()
 								updateParams.append('earnerAddress', userId)
-								updateParams.append('totalAmount', parseInt(updateAmount))
+								updateParams.append('totalAmount', updateAmount)
 				
 								axios.put(`${apiUrl}/api/userEarning/${userId}/scholar`, updateParams, config)
 									.then((response) => {

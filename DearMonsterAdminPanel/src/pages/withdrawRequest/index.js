@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import "../../App.css";
-import { getWithdrawRequest, markResolved } from '../../redux/withdrawRequest/action';
+import { getWithdrawRequest, getWithdrawRequestByWallet, markResolved } from '../../redux/withdrawRequest/action';
 import { connect } from 'react-redux';
 import { Modal, Button, Spinner } from "react-bootstrap"
 import { usePagination } from '../../hooks/userPagination';
@@ -9,20 +9,33 @@ function WithdrawRequest(props) {
     const [transactionHash, setTransactionHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
 	const [data, setData] = useState([])
+    const [limit] = useState(4);
+    const [skip, setSkip] = useState(0);
+    const [searchLimit] = useState(4);
+    const [searchSkip, setSearchSkip] = useState(0);
 	const [filteredData, setFilteredData] = useState(null)
-	const [filterObject, setFilterObject] = useState({})
 	const [loading, setLoading] = useState(true)
 
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30)
+    useEffect(() => {
+        props.getWithdrawRequest(limit, skip)
+    }, [skip, limit])
 
     useEffect(() => {
-        props.getWithdrawRequest()
-    }, [])
+        if(searchSkip != 0) {
+        props.getWithdrawRequestByWallet(walletAddress, searchLimit, searchSkip)
+    }
+    }, [searchSkip, searchLimit])
 
     useEffect(() => {
-        setData(props.withdrawRequest.withdrawRequests)
-        doPagination(props.withdrawRequest.withdrawRequests)
-    }, [props])
+
+        if(walletAddress != '') {
+            setFilteredData(props.withdrawRequest.withdrawRequests)
+        } else {
+            setFilteredData(null)
+            setData(props.withdrawRequest.withdrawRequests)
+        }
+        
+    }, [props, searchSkip, searchLimit])
 
     useEffect(() => {
         if(data.length) {
@@ -30,36 +43,22 @@ function WithdrawRequest(props) {
         }
     }, [data])
 
-    useEffect(() => {
-        setLoading(true)
-		if (Object.keys(filterObject).length > 0) {
-			let localFilterData = []
-			let filterApplied = false
+    const nextPage = () => {
+        setSkip(skip + limit)
+    }
 
-			if (filterObject.searchedWallet && filterObject.searchedWallet != '') {
-				let searchDataLocal
-				if (filterApplied) {
-					searchDataLocal = localFilterData.filter((element) => element.requesterAddress == filterObject.searchedWallet)
-				} else {
-					searchDataLocal = data.filter((element) => element.requesterAddress == filterObject.searchedWallet)
-					filterApplied = true
-				}
-				localFilterData = searchDataLocal
-			}
+    const previousPage = () => {
+        setSkip(skip - limit)
+    }
 
-			if (filterApplied) {
-				setFilteredData(localFilterData)
-				doPagination(localFilterData)
-                setLoading(false)
-			}
-		} else {
-			if (data && data.length > 0) {
-				setFilteredData(data)
-				doPagination(data)
-                setLoading(false)
-			}
-		}
-	}, [filterObject])
+    const nextSearchPage = () => {
+        setSearchSkip(searchSkip + searchLimit)
+    }
+
+    const previousSearchPage = () => {
+        setSearchSkip(searchSkip - searchLimit)
+    }
+
 
     const handleClose = () => {
         setShow(false)
@@ -93,15 +92,12 @@ function WithdrawRequest(props) {
 
     const onChangeWallet = (e) => {
         setWalletAddress(e.target.value)
-        const searchedWallet = e.target.value
-        if (searchedWallet != '') {
-			setFilterObject({ ...filterObject, searchedWallet })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.searchedWallet
+        if(e.target.value != ''){
+            props.getWithdrawRequestByWallet(e.target.value, limit, skip)
+        } else {
+            props.getWithdrawRequestByWallet('', limit, skip)
 
-			setFilterObject(tempObj)
-		}
+        }
     }
 
     const formatDate = (date) => {
@@ -149,10 +145,11 @@ function WithdrawRequest(props) {
                         <table className="table">
                             <thead className="table__head">
                                 <tr>
-                                    <th>Amount</th>
                                     <th>Requester Address</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
                                     <th>Create Time</th>
-                                    <th>Resolved Time</th>
+                                    <th>Resolve Time</th>
                                     <th>Resolved</th>
                                     <th>Mark Resolved</th>
                                 </tr>
@@ -167,11 +164,12 @@ function WithdrawRequest(props) {
 												<h3>{'No Data'}</h3>
 											</div>
 										) : (
-											pageData.length > 0 ? pageData.map((data, index) => {
+											filteredData.length > 0 ? filteredData.map((data, index) => {
 												return (
 													<tr key={(index + 1)}>
+                                            <td>{`${data.requesterAddress.substring(0, 4)}...${data.requesterAddress.slice(-4)}`}</td>
+                                            <td>{data.type}</td>
                                             <td>{`${data.amount}`}</td>
-                                            <td>{data.requesterAddress}</td>
                                             <td>{formatDate(data.createdAt)}</td>
                                             <td>{formatDate(data.updatedAt)}</td>
                                             <td>{data.isResolved ? 'Yes' : 'No'}</td>
@@ -197,11 +195,12 @@ function WithdrawRequest(props) {
 												<h3>{'No Data'}</h3>
 											</div>
 										) : (
-											pageData.length > 0 ? pageData.map((data, index) => {
+											data.length > 0 ? data.map((data, index) => {
 												return (
 													<tr key={(index + 1)}>
+                                            <td>{`${data.requesterAddress.substring(0, 4)}...${data.requesterAddress.slice(-4)}`}</td>
+                                            <td>{data.type}</td>
                                             <td>{`${data.amount}`}</td>
-                                            <td>{data.requesterAddress}</td>
                                             <td>{formatDate(data.createdAt)}</td>
                                             <td>{formatDate(data.updatedAt)}</td>
                                             <td>{data.isResolved ? 'Yes' : 'No'}</td>
@@ -224,29 +223,59 @@ function WithdrawRequest(props) {
 							}
                             </tbody>
                         </table>
-                        {pageData?.length == 0 ? (
+                        {filteredData && filteredData?.length == 0 ? (
 							''
-						) : (
+						) : (filteredData && filteredData.length) ? 
+                        
+                        <div className="row">
+                                <div className='col-md-4'>
+                                    {(searchSkip/limit) + 1 != 1 &&
+                                <img
+									src='/assets/imgs/ArrowLeft.png'
+                                    style={{cursor: 'pointer'}}
+									onClick={previousSearchPage}
+								/> }
+                                </div>
+                                <div className='col-md-4'>
+                                <p className='col-md-2'>
+									{(searchSkip/limit) + 1}/{Math.ceil(props.withdrawRequest.count/limit)}
+								</p>
+                                </div>
+                                <div className='col-md-4'>
+                                    { (searchSkip/limit) + 1 != Math.ceil(props.withdrawRequest.count/limit) &&
+                                    <img src='/assets/imgs/ArrowRight.png' 
+                                    style={{cursor: 'pointer'}}
+                                    className='col-md-4' onClick={nextSearchPage} />
+                                    }
+                                
+                                </div>
+                                
+                                </div> : data?.length == 0 ? '' : (
                             <div className="row">
                                 <div className='col-md-4'>
+                                    {(skip/limit) + 1 != 1 &&
                                 <img
 									src='/assets/imgs/ArrowLeft.png'
                                     style={{cursor: 'pointer'}}
 									onClick={previousPage}
-								/>
+								/> }
                                 </div>
                                 <div className='col-md-4'>
                                 <p className='col-md-2'>
-									{currentPage}/{totalPages}
+									{(skip/limit) + 1}/{Math.ceil(props.withdrawRequest.count/limit)}
 								</p>
                                 </div>
                                 <div className='col-md-4'>
-                                <img src='/assets/imgs/ArrowRight.png' 
+                                    { (skip/limit) + 1 != Math.ceil(props.withdrawRequest.count/limit) &&
+                                    <img src='/assets/imgs/ArrowRight.png' 
                                     style={{cursor: 'pointer'}}
                                     className='col-md-4' onClick={nextPage} />
+                                    }
+                                
                                 </div>
                                 
                                 </div>
+                                
 							
 						)}
                     </div>
@@ -284,4 +313,4 @@ const mapStateToProps = state => ({
     withdrawRequest: state.WithdrawRequestReducer
 });
 
-export default connect(mapStateToProps, { getWithdrawRequest, markResolved })(WithdrawRequest); 
+export default connect(mapStateToProps, { getWithdrawRequest, getWithdrawRequestByWallet, markResolved })(WithdrawRequest); 

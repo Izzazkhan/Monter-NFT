@@ -1,18 +1,38 @@
 import axios from 'axios'
-import { WithdrawRequest } from '../../utilities/constant'
+import { WithdrawRequest, RequestByWallet } from '../../utilities/constant'
 
-export const getWithdrawRequest = () => dispatch => {
+export const getWithdrawRequest = (limit, skip) => dispatch => {
     axios
-        .get(`${WithdrawRequest}`)
+        .get(`${WithdrawRequest}?limit=${limit}&skip=${skip}`)
         .then((res) => {
             return dispatch({
                 type: 'GET_WITHDRAW_REQUEST',
-                payload: res.data.withdrawRequest
+                payload: res.data
             })
         })
         .catch((e) => {
             console.log("error: ", e);
         })
+}
+
+export const getWithdrawRequestByWallet = (walletAddress, limit, skip) => dispatch => {
+    if(walletAddress != '') {
+        axios
+            .get(`${RequestByWallet}/${walletAddress}?limit=${limit}&skip=${skip}`)
+            .then((res) => {
+                return dispatch({
+                    type: 'GET_WITHDRAW_REQUEST_BY_WALLET',
+                    payload: res.data
+                })
+            })
+            .catch((e) => {
+                console.log("error: ", e);
+            })
+    } else {
+        return dispatch({
+            type: 'GET_EMPTY_WITHDRAW_REQUEST'
+        })
+    }
 }
 
 
