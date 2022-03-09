@@ -27,6 +27,15 @@ exports.store = async (req, res) => {
     }
 };
 
+exports.rewardByWallet = async function (req, res) {
+
+    const wallet = req.params.earnerAddress;
+    console.log(wallet)
+
+    const rewardByWallet = await UserEarning.find({ isRequested: false, earnerAddress: wallet });
+    res.status(200).json({ rewardByWallet });
+};
+
 exports.update = async function (req, res) {
     try {
 

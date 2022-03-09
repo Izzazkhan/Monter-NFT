@@ -51,11 +51,11 @@ function WithdrawRequest(props) {
                         <div className="row" style={{marginTop: 20}}>
                             <div className={`col-md-6`}>
                                 <h3>Owner Rewards</h3>
-                                <span>{ownerReward == undefined || ownerReward.length == 0 ? 'No Owner Reward' : ownerReward.amount}</span>
+                                <span>{ownerReward == undefined || ownerReward.length == 0 ? 'No Owner Reward' : ownerReward.totalAmount}</span>
                             </div>
                             <div className={`col-md-6`}>
                                 <h3>Scholar Rewards</h3>
-                                <span>{scholarReward == undefined || scholarReward.length == 0 ? 'No Scholar Reward' : scholarReward.amount}</span>
+                                <span>{scholarReward == undefined || scholarReward.length == 0 ? 'No Scholar Reward' : scholarReward.totalAmount}</span>
                             </div>
                         </div>
                         

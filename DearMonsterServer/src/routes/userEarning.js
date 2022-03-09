@@ -4,6 +4,9 @@ const UserEarning = require('../controllers/userEarning');
 
 const router = express.Router();
 
+//REWARD BY WALLET
+router.get('/rewardByWallet/:earnerAddress', UserEarning.rewardByWallet);
+
 //INDEX
 router.get('/:earnerAddress/:type', UserEarning.show);
 
