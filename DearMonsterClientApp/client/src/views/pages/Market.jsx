@@ -95,7 +95,7 @@ const TradingPost = ({ }) => {
 				try {
 					await DMSTokenContract.methods.approve(DMSExchangeContractAddress, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
                     let DMSExchangeContract = new web3.eth.Contract(DMSExchangeContractContractAbi.abi, DMSExchangeContractAddress)
-					const amountReturned = await DMSExchangeContract.methods.deposit(web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
+					await DMSExchangeContract.methods.deposit(web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 
                         axios.get(`${apiUrl}/api/userEarning/rewardByWallet/${userId}`)
                             .then((res) => {
@@ -103,9 +103,9 @@ const TradingPost = ({ }) => {
 								let depositAmount 
 
                                 if(ownerReward != undefined) {
-									depositAmount = ownerReward.totalAmount + quantity
+									depositAmount = ownerReward.totalAmount + ( quantity * ( extraTokens / 100 ))
 								} else {
-									depositAmount = quantity
+									depositAmount = quantity * ( extraTokens / 100 )
 								}
                                     const updateParams = new URLSearchParams()
                                     updateParams.append('earnerAddress', userId)
@@ -123,7 +123,7 @@ const TradingPost = ({ }) => {
 											Swal.fire({
 												icon: 'success',
 												title: 'Offline DMS ',
-												text:  `You got ${response.data.userEarning.totalAmount} DMS`
+												text:  `You got ${quantity * ( extraTokens / 100 )} new DMS`
 											})
                                         })
                                         .catch((error) => {
