@@ -81,20 +81,28 @@ const TradingPost = ({ }) => {
 
 				try {
 					const approveReturned = await DMSTokenContract.methods.approve(DMSExchangeContractAddress, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-                    console.log("approveReturned", approveReturned)
                     let DMSExchangeContract = new web3.eth.Contract(DMSExchangeContractContractAbi.abi, DMSExchangeContractAddress)
 					const amountReturned = await DMSExchangeContract.methods.deposit(web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
-                    console.log('amountReturned::', amountReturned)
 
                         axios.get(`${apiUrl}/api/userEarning/rewardByWallet/${userId}`)
                             .then((res) => {
                                 const ownerReward = res.data.rewardByWallet.find(item => item.type === 'owner')
+								let depositAmount 
 
                                 if(ownerReward != undefined) {
+									depositAmount = ownerReward.totalAmount + quantity
+								} else {
+									depositAmount = quantity
+								}
                                     const updateParams = new URLSearchParams()
                                     updateParams.append('earnerAddress', userId)
-                                    updateParams.append('totalAmount', ownerReward.totalAmount + quantity)
-
+                                    updateParams.append('totalAmount', depositAmount)
+									const config = {
+										headers: {
+											'Content-Type': 'application/x-www-form-urlencoded',
+											'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+										}
+									}
                                     axios.put(`${apiUrl}/api/userEarning/${userId}/owner`, updateParams, config)
                                         .then((response) => {
                                             console.log('response owner', response)
@@ -103,7 +111,7 @@ const TradingPost = ({ }) => {
                                         .catch((error) => {
                                             console.log(error)
                                         })
-                                }
+                                
                                 
                             })
                             .catch((e) => {
