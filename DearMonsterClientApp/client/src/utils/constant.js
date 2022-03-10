@@ -9,7 +9,10 @@ export const addressList = {
     nftAddressTest: '0x180b36a4293507bd31f56fd211c7b879f2827286',
 
     tradingAddress: '0x9Bb677527369922e1cC9d55D49025843b86Ad467',
-    tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5'
+    tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5',
+
+    DMSExchange: '',
+    DMSExchangeTest: '0xa7cd665093d18efddd348738e58f23014825dd44'
 }
 
 export const xapiUrl = 'http://aedd-119-155-21-243.ngrok.io'

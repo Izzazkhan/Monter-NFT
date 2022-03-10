@@ -9,5 +9,6 @@ export const TRAINING_GROUND_SCHOLAR = '/training-ground/scholar';
 export const SCHOLARSHIP_MANAGER = '/scholarship/manager';
 export const ON_SCHOLARSHIP_SCHOLAR = '/scholarship/on-scholar';
 export const GOT_SCHOLARSHIP_SCHOLAR = '/scholarship/got-scholar';
+export const MARKET = '/market';
 
 

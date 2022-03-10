@@ -9,7 +9,8 @@ import {
 	TRAINING_GROUND_SCHOLAR,
 	SCHOLARSHIP_MANAGER,
 	ON_SCHOLARSHIP_SCHOLAR,
-	GOT_SCHOLARSHIP_SCHOLAR
+	GOT_SCHOLARSHIP_SCHOLAR,
+	MARKET
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -80,6 +81,13 @@ export const NavbarRoutes = [
 		exact: true,
 		hidden: true,
 		component: lazy(() => import('../views/pages/ScholarshipGotScholar')),
+	},
+	{
+		path: MARKET,
+		pathForNavabr: MARKET,
+		title: 'Market',
+		exact: true,
+		component: lazy(() => import('../views/pages/Market')),
 	},
 	// {
 	// 	path: INSTRUCTIONS,
