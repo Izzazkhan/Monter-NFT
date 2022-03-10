@@ -82,7 +82,7 @@ const HuntersValley = () => {
 	}, [])
 
 	const getMonstersData = () => {
-		axios.get(`${apiUrl}/api/monster`)
+		axios.get(`${apiUrl}/api/monster/monsterList`)
 			.then((res) => {
 				setData(res.data.monsters)
 			})

@@ -10,6 +10,10 @@ const router = express.Router();
 
 // const upload = multer().single('profileImage');
 
+
+//MONSTER LIST
+router.get('/monsterList', Monster.monsterList);
+
 //INDEX
 router.get('/', Monster.index);
 

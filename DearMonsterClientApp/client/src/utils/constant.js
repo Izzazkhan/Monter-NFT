@@ -12,7 +12,7 @@ export const addressList = {
     tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5',
 
     DMSExchange: '',
-    DMSExchangeTest: '0xa7cd665093d18efddd348738e58f23014825dd44'
+    DMSExchangeTest: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf'
 }
 
 export const xapiUrl = 'http://aedd-119-155-21-243.ngrok.io'

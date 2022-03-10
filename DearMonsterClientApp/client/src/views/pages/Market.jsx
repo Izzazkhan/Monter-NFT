@@ -27,7 +27,19 @@ const TradingPost = ({ }) => {
 	const dispatch = useDispatch();
 	const [account, setAccount] = useState();
 	const [quantity, setQuantity] = useState(10);
-    const [owner, setOwner] = useState(userId ? userId : null);
+    const [owner, setOwner] = useState(userId ? userId : null)
+    const [extraTokens, setExtraToken] = useState(0);
+
+	useEffect( () => {
+		async function  getExtraToken() {
+			let web3 = window.web3
+			let DMSExchangeContract = new web3.eth.Contract(DMSExchangeContractContractAbi.abi, DMSExchangeContractAddress)
+			const profit = await DMSExchangeContract.methods.getProfit().call()
+			setExtraToken(profit)
+		}
+		getExtraToken()
+		
+	}, [])
 
 	const handleConnect = async () => {
 		await window.ethereum.request({
@@ -41,6 +53,7 @@ const TradingPost = ({ }) => {
 		let accounts = await web3.eth.getAccounts()
 		setOwner(accounts[0])
 		dispatch(connectUserSuccess(accounts[0]))
+	
 	}
 
     const handlePurchase = async () => {
@@ -80,7 +93,7 @@ const TradingPost = ({ }) => {
 				}
 
 				try {
-					const approveReturned = await DMSTokenContract.methods.approve(DMSExchangeContractAddress, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
+					await DMSTokenContract.methods.approve(DMSExchangeContractAddress, web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
                     let DMSExchangeContract = new web3.eth.Contract(DMSExchangeContractContractAbi.abi, DMSExchangeContractAddress)
 					const amountReturned = await DMSExchangeContract.methods.deposit(web3.utils.toBN(amount.toString())).send({ from: accounts[0] });
 
@@ -107,12 +120,15 @@ const TradingPost = ({ }) => {
                                         .then((response) => {
                                             console.log('response owner', response)
                                             dispatch(stopLoading(false))
+											Swal.fire({
+												icon: 'success',
+												title: 'Offline DMS ',
+												text:  `You got ${response.data.userEarning.totalAmount} DMS`
+											})
                                         })
                                         .catch((error) => {
                                             console.log(error)
                                         })
-                                
-                                
                             })
                             .catch((e) => {
                                 console.log("error: ", e);
@@ -139,53 +155,54 @@ const TradingPost = ({ }) => {
 	return (
 		<div>
 			<CurrenPageTitle title='Market'></CurrenPageTitle>
-			<div className='mt-lg-9 mt-7 container '>
-				<div className='row  px-md-auto justify-content-center'>
-					<div className='col-md-5 col-lg-3 col-12'>
-						
+			<div className='container center mt-6'>
+				<div className={`${userId && 'discoveryCaveBg'} py-2 w-md-lg2 w-md2 mb-8`}>
+					<div className='center'>
+						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
 					</div>
-					<div className='col-lg-9 col-md-7 col-12'>
-						<div className='px-md-0'>
+					<div className='center fs-19 flex-column'>
+						<div className='center'>
+							<div className='header-Connect-btn py-3 w-190px center bold fs-13'>
+								You will get {`${extraTokens}%`} extra token
+							</div>
 						</div>
-						
+						{userId &&
+							<div className=' justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
+								<p>Enter amount of token you want to buy</p>
+								<div className='center mt-4'>
+								<input
+									type='number'
+									name='quantity'
+									className='form-control  w-100px'
+									id='quantity'
+									value={quantity}
+									onChange={handleQuantityChange}
+								/>
+								</div>
+							</div>
+						}
+						<footer className='center mt-4 flex align-items-center pb-4 mb-4'>
+							{userId ? (
+								<div>
+									<div className='header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor'
+										onClick={handlePurchase}
+									>
+										Deposit
+									</div>
+								</div>
+							) : (
+								<div
+									className='header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor'
+									onClick={handleConnect}
+								>
+									Connect
+								</div>
+							)}
+						</footer>
 					</div>
-				</div>
-                { userId &&
-                    <div className='center mt-6'>
-                                {/* <p>Select quantity</p> */}
-                                <input
-                                    type='number'
-                                    name='quantity'
-                                    className='form-control  w-100px'
-                                    id='quantity'
-                                    value={quantity}
-                                    onChange={handleQuantityChange}
-                                />
-                    </div>
-                }
 			</div>
-
-            <footer className='center mt-6'>
-				{userId ?
-					
-                    (
-                        <div className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
-                            onClick={handlePurchase}>
-                            Deposit
-                        </div>
-                    )
-					:
-					(
-						<div
-							className='header-Connect-btn h-40px center w-100px px-2 bold  cursor'
-							onClick={handleConnect}
-						>
-							Connect
-						</div>
-					)
-				}
-			</footer>
 		</div>
+	</div>
 	);
 };
 

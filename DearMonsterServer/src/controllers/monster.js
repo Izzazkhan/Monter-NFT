@@ -10,6 +10,11 @@ exports.index = async function (req, res) {
     res.status(200).json({ monsters, count });
 };
 
+exports.monsterList = async function (req, res) {
+    const monsters = await Monster.find({})
+    res.status(200).json({ monsters });
+};
+
 
 exports.store = async (req, res) => {
     try {
