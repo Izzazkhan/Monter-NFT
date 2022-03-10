@@ -10,11 +10,8 @@ function Monsters(props) {
 
     const [data, setData] = useState([])
 	const [loading, setLoading] = useState(true)
-    const [limit, setLimit] = useState(4);
+    const [limit, setLimit] = useState(30);
     const [skip, setSkip] = useState(0);
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(data, 30)
-
-    console.log('props', props)
 
     useEffect(() => {
         props.getDearMonsters(limit, skip)
@@ -22,7 +19,6 @@ function Monsters(props) {
 
     useEffect(() => {
         setData(props.dearMonsters.dearMonsters)
-        doPagination(props.dearMonsters.dearMonsters)
     }, [props])
 
     useEffect(() => {

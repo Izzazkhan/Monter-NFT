@@ -24,7 +24,7 @@ function WithdrawRequest(props) {
 	const [filterObject, setFilterObject] = useState({})
     const [state, setState] = useState({monsterType: '', rating: 1})
 
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 5)
+	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30)
 
     useEffect(() => {
         props.getWithdrawRequest()

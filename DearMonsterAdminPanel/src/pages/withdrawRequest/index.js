@@ -9,9 +9,9 @@ function WithdrawRequest(props) {
     const [transactionHash, setTransactionHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
 	const [data, setData] = useState([])
-    const [limit] = useState(4);
+    const [limit] = useState(30);
     const [skip, setSkip] = useState(0);
-    const [searchLimit] = useState(4);
+    const [searchLimit] = useState(30);
     const [searchSkip, setSearchSkip] = useState(0);
 	const [filteredData, setFilteredData] = useState(null)
 	const [loading, setLoading] = useState(true)
