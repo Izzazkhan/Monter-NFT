@@ -11,7 +11,7 @@ export const addressList = {
     tradingAddress: '0x9Bb677527369922e1cC9d55D49025843b86Ad467',
     tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5',
 
-    DMSExchange: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf',
+    DMSExchange: '0xC2518Fa5f776F09f012186a2E7a1541182f8AEDf',
     DMSExchangeTest: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf'
 }
 
