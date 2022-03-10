@@ -4,23 +4,19 @@ import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl, appEnv, addressList } from '../../utils/constant'
 import Web3 from 'web3';
-import DMSExchangeTest from "../../contracts/DMSExchange.json";
-import DearMonster from '../../contracts/DearMonster.json';
+import DMSExchangeTest from "../../contracts/DMSExchangeTest.json";
+import DMSExchange from "../../contracts/DMSExchange.json";
 import DMSToken from "../../contracts/DMSToken.json";
-import DearMonsterTest from '../../contracts/DearMonsterTest.json';
 import DMSTokenTest from "../../contracts/DMSTokenTest.json";
 import { notification } from "../../utils/notification";
 import Swal from 'sweetalert2';
 import axios from 'axios'
 
-const DMSExchangeContractContractAbi = appEnv === 'test' ? DMSExchangeTest : DMSExchangeTest
+const DMSExchangeContractContractAbi = appEnv === 'test' ? DMSExchangeTest : DMSExchange
 const DMSExchangeContractAddress = appEnv === 'test' ? addressList.DMSExchangeTest : addressList.DMSExchange
 
 const tokenContractAbi = appEnv === 'test' ? DMSTokenTest : DMSToken
-const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
-
 const tokenContractAddress = appEnv === 'test' ? addressList.tokenAddressTest : addressList.tokenAddress
-const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
 
 const TradingPost = ({ }) => {
 	const { userId } = useSelector(state => state.auth)
