@@ -87,7 +87,6 @@ export const NavbarRoutes = [
 		pathForNavabr: MARKET,
 		title: 'Market',
 		exact: true,
-		hidden: true,
 		component: lazy(() => import('../views/pages/Market')),
 	},
 	// {

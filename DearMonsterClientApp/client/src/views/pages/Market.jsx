@@ -173,11 +173,13 @@ const TradingPost = ({ }) => {
 						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
 					</div>
 					<div className='center fs-19 flex-column'>
-						<div className='center'>
-							<div className='header-Connect-btn py-3 w-190px center bold fs-13'>
-								You will get {`${extraTokens}%`} extra token
+						{userId &&
+							<div className='center'>
+								<div className='header-Connect-btn py-3 w-190px center bold fs-13'>
+									You will get {`${extraTokens}%`} extra token
+								</div>
 							</div>
-						</div>
+						}
 						{userId &&
 							<div className=' justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
 								<div className='d-flex justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
