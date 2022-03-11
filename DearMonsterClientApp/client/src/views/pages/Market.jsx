@@ -25,9 +25,11 @@ const TradingPost = ({ }) => {
 	const [quantity, setQuantity] = useState(10);
     const [owner, setOwner] = useState(userId ? userId : null)
     const [extraTokens, setExtraToken] = useState(0);
+    const [type, setType] = useState('owner');
+
 
 	useEffect( () => {
-		async function  getExtraToken() {
+		async function getExtraToken() {
 			let web3 = window.web3
 			let DMSExchangeContract = new web3.eth.Contract(DMSExchangeContractContractAbi.abi, DMSExchangeContractAddress)
 			const profit = await DMSExchangeContract.methods.getProfit().call()
@@ -50,6 +52,10 @@ const TradingPost = ({ }) => {
 		setOwner(accounts[0])
 		dispatch(connectUserSuccess(accounts[0]))
 	
+	}
+
+	const onSelectType = (e) => {
+		setType(e.target.value)
 	}
 
     const handlePurchase = async () => {
@@ -95,14 +101,24 @@ const TradingPost = ({ }) => {
 
                         axios.get(`${apiUrl}/api/userEarning/rewardByWallet/${userId}`)
                             .then((res) => {
-                                const ownerReward = res.data.rewardByWallet.find(item => item.type === 'owner')
 								let depositAmount 
+								const ownerReward = res.data.rewardByWallet.find(item => item.type === 'owner')
+								const scholarReward = res.data.rewardByWallet.find(item => item.type === 'scholar')
 
-                                if(ownerReward != undefined) {
-									depositAmount = ownerReward.totalAmount + ( quantity * ( extraTokens / 100 ))
+								if(type == 'owner') {
+									if(ownerReward != undefined) {
+										depositAmount = ownerReward.totalAmount + ( quantity * ( extraTokens / 100 ))
+									} else {
+										depositAmount = quantity * ( extraTokens / 100 )
+									}
 								} else {
-									depositAmount = quantity * ( extraTokens / 100 )
+									if(scholarReward != undefined) {
+										depositAmount = scholarReward.totalAmount + ( quantity * ( extraTokens / 100 ))
+									} else {
+										depositAmount = quantity * ( extraTokens / 100 )
+									}
 								}
+                                
                                     const updateParams = new URLSearchParams()
                                     updateParams.append('earnerAddress', userId)
                                     updateParams.append('totalAmount', depositAmount)
@@ -112,9 +128,9 @@ const TradingPost = ({ }) => {
 											'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 										}
 									}
-                                    axios.put(`${apiUrl}/api/userEarning/${userId}/owner`, updateParams, config)
+                                    axios.put(`${apiUrl}/api/userEarning/${userId}/${type}`, updateParams, config)
                                         .then((response) => {
-                                            console.log('response owner', response)
+                                            console.log(`response type ${response.data.userEarning.type}`, response)
                                             dispatch(stopLoading(false))
 											Swal.fire({
 												icon: 'success',
@@ -164,6 +180,16 @@ const TradingPost = ({ }) => {
 						</div>
 						{userId &&
 							<div className=' justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
+								<div className='d-flex justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
+									<p>Select Type</p>
+									<div className='d-flex align-items-center'>
+											<select id='select-type' className='form-control w-100px' onChange={onSelectType}>
+												<option value={'owner'}>Owner</option>
+												<option value={'scholar'}>Scholar</option>
+											</select>
+									</div>
+								</div>
+
 								<p>Enter amount of token you want to buy</p>
 								<div className='center mt-4'>
 								<input
