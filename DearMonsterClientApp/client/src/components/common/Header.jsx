@@ -207,7 +207,7 @@ const Header = () => {
 					<img src='/assets/imgs/coin.png' className='w-50px' />
 					{userId && (
 						<div className='dms-block h-40px ms-4 center px-2'>
-							<div className='dms-btn w-100 me-2 center balance-div'>{blance}</div>
+							<div className='dms-btn w-100 me-2 center balance-div'>{Math.round(blance / 0.5) * 0.5}</div>
 							<div className='dms-btn w-100  center'>DMS</div>
 						</div>
 					)}
