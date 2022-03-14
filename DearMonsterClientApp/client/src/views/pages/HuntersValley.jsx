@@ -383,13 +383,25 @@ const HuntersValley = () => {
 						}
 						axios.post(`${apiUrl}/api/mintedMonster`, params, config)
 							.then((res) => {
-
 								dispatch(stopLoading(false))
 								Swal.fire({
 									icon: 'success',
 									title: 'Cave Minted Successfully',
 									text: 'Please check Inventory for minted Cave!'
 								})
+
+								let newParams = new URLSearchParams()
+								newParams.append('name', 'Minted Monster')
+								newParams.append('type', 'CaveMinting')
+								newParams.append('activityDetails.mintedMonsterId', res.data.mintedMonster_._id)
+								axios.post(`${apiUrl}/api/activity`, newParams, config)
+									.then((res) => {
+										console.log('Activity has been created')
+									})
+									.catch((e) => {
+										console.log(e)
+									})
+
 							})
 							.catch((e) => {
 								dispatch(stopLoading(false))

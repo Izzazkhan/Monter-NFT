@@ -42,6 +42,19 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 					title: 'Dear Monster Scholarship',
 					text: 'Dear Monster scholar is removed'
 				})
+
+                let newParams = new URLSearchParams()
+					newParams.append('name', 'Monster on scholar Removed')
+					newParams.append('type', 'monsterOnScholarRemoved')
+					newParams.append('activityDetails.mintedMonsterId', post.mintedId)
+					axios.post(`${apiUrl}/api/activity`, newParams, config)
+						.then((res) => {
+							console.log('Activity has been created')
+						})
+						.catch((e) => {
+							console.log(e)
+						})
+
 			})
 			.catch((error) => {
 				console.log(error)

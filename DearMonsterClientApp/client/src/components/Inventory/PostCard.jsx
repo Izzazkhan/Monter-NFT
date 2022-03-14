@@ -96,6 +96,19 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 								title: 'Item Added To Sell',
 								text: 'Please check Inventory Trading for items on trade!'
 							})
+
+							let newParams = new URLSearchParams()
+								newParams.append('name', 'Monster added to sell')
+								newParams.append('type', 'tradeMonster')
+								newParams.append('activityDetails.tradeItemId', res.data.tradeItem._id)
+								newParams.append('activityDetails.mintedMonsterId', res.data.tradeItem.mintedMonsterId)
+								axios.post(`${apiUrl}/api/activity`, newParams, config)
+									.then((res) => {
+										console.log('Activity has been created')
+									})
+									.catch((e) => {
+										console.log(e)
+									})
 						})
 						.catch((e) => {
 							console.log(e)

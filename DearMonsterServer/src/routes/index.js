@@ -14,6 +14,7 @@ const fightHistory = require('./fightHistory');
 const userEarning = require('./userEarning');
 const withdrawRequest = require('./withdrawRequest');
 const scholarship = require('./scholarship');
+const activity = require('./activity');
 
 
 const authenticate = require('../middlewares/authenticate');
@@ -42,5 +43,6 @@ router.use('/levelBonus', levelBonus);
 router.use('/probabiltyList', probabiltyList);
 router.use('/fightHistory', fightHistory);
 router.use('/scholarship', scholarship);
+router.use('/activity', activity);
 
 module.exports = router

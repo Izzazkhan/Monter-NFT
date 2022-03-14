@@ -16,6 +16,12 @@ import DearMonsterTradingTest from '../../contracts/DearMonsterTradingTest.json'
 const tradingContractAbi = appEnv === 'test' ? DearMonsterTradingTest : DearMonsterTrading
 const tradingContractAddress = appEnv === 'test' ? addressList.tradingAddressTest : addressList.tradingAddress
 
+const config = {
+	headers: {
+		'Content-Type': 'application/x-www-form-urlencoded',
+		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+	}
+}
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
 	console.log('post ====', post)
@@ -77,6 +83,20 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 						title: 'Item Removed From Trading',
 						text: 'Please check Inventory Trading for items on trade!'
 					})
+
+					let newParams = new URLSearchParams()
+						newParams.append('name', 'Monster removed from trading')
+						newParams.append('type', 'tradeMonster')
+						newParams.append('activityDetails.tradeItemId', post.tradeId)
+						newParams.append('activityDetails.mintedMonsterId', post.mintedId)
+						axios.post(`${apiUrl}/api/activity`, newParams, config)
+							.then((res) => {
+								console.log('Activity has been created')
+							})
+							.catch((e) => {
+								console.log(e)
+							})
+
 				}).catch((e) => {
 					console.log("error: ", e);
 					dispatch(stopLoading(false))

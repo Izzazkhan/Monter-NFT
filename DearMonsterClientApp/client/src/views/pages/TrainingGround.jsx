@@ -192,7 +192,7 @@ const TrainingGround = () => {
 			})
 	}
 
-	const rewardUpdateCall = (amount) => {
+	const rewardUpdateCall = (amount, fightStatus, minionId,  monsterId) => {
 
 		let additionalReward
 		axios
@@ -217,6 +217,7 @@ const TrainingGround = () => {
 					.then((response) => {
 						if (response.data.userEarning) {
 							setTotalReward(amount + additionalReward)
+							activityLog(fightStatus, minionId, monsterId, amount + additionalReward)
 						}
 					})
 					.catch((error) => {
@@ -230,7 +231,6 @@ const TrainingGround = () => {
 	}
 
 	const fightLogCall = (fightStatus, minionId,  monsterId, rating) => {
-
 				const updateParams = new URLSearchParams()
 				updateParams.append('type', 'owner')
 				updateParams.append('fightStatus', fightStatus)
@@ -246,6 +246,26 @@ const TrainingGround = () => {
 						console.log(error)
 					})
 	}
+
+	const activityLog = (fightStatus, minionId, monsterId, rewards) => {
+		let newParams = new URLSearchParams()
+		newParams.append('name', 'Monster fight with minion')
+		newParams.append('type', 'dearMonsterFight')
+		newParams.append('activityDetails.minionId', minionId)
+		newParams.append('activityDetails.mintedMonsterId', monsterId)
+		newParams.append('activityDetails.fightDetails.fightStatus', fightStatus)
+		newParams.append('activityDetails.fightDetails.rewards', rewards)
+		newParams.append('activityDetails.fightDetails.type', 'owner')
+		axios.post(`${apiUrl}/api/activity`, newParams, config)
+			.then((res) => {
+				console.log('Activity has been created')
+			})
+			.catch((e) => {
+				console.log(e)
+			})
+	}
+
+	
 
 	const minionFight = (minion) => {
 		if (Object.keys(selectedMonster).length === 0) {
@@ -302,7 +322,7 @@ const TrainingGround = () => {
 							amount = Number(value)
 						}
 					})
-					rewardUpdateCall(amount)
+					rewardUpdateCall(amount, 'win', minion._id, selectedMonster.monsterId)
 
 				} else {
 					status = 'You have lost the fight.'
@@ -334,6 +354,7 @@ const TrainingGround = () => {
 					params.append('values.Level', localLevel)
 					params.append('values.Energy', energyCalculate)
 					fightLogCall('lose', minion._id, selectedMonster.monsterId, selectedMonster.rating)
+					activityLog('lose', minion._id, selectedMonster.monsterId, 0)
 					energyExperienceUpdate(params, minion.values.Lose_Exp_Gain, status)
 				}
 				if (Number(selectedMonster.values.Energy) === 2) {
