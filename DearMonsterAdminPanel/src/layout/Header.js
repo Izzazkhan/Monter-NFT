@@ -9,7 +9,7 @@ const Header = (props) => {
 
     const dispatch = useDispatch()
     const { token } = useToken()
-    const [currentUser] = useState(JSON.parse(localStorage.getItem('token')))
+    const [currentUser] = useState(JSON.parse(localStorage.getItem('token')));
     const logOut = () => {
         localStorage.removeItem('token')
     }
@@ -88,14 +88,14 @@ const Header = (props) => {
                                 </>
                                 :
                                 <>
-                                    {/* <Link to='/login'>
+                                    <Link to='/login'>
                                         <button className="btn-default hvr-bounce-in"><span className="icon">
                                         </span>Login</button>
                                     </Link>
                                     <Link to='/register'>
                                         <button className="btn-default hvr-bounce-in"><span className="icon">
                                         </span>Sign Up</button>
-                                    </Link> */}
+                                    </Link>
                                 </>}
                             <div className="flags-dropdown btn-group">
                                 <button type="button" className="btn" data-toggle="dropdown" aria-haspopup="true"

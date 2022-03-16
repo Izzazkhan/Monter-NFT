@@ -20,7 +20,7 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use('/uploads', express.static('uploads'));
 
 app.use(function (req, res, next) {
   // console.log(req.headers)

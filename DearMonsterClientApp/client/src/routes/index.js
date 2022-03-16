@@ -10,7 +10,8 @@ import {
 	SCHOLARSHIP_MANAGER,
 	ON_SCHOLARSHIP_SCHOLAR,
 	GOT_SCHOLARSHIP_SCHOLAR,
-	MARKET
+	MARKET,
+	INVENTORY_ITEMS
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -42,6 +43,14 @@ export const NavbarRoutes = [
 		exact: true,
 		hidden: true,
 		component: lazy(() => import('../views/pages/InventoryTrading')),
+	},
+	{
+		path: INVENTORY_ITEMS,
+		title: 'Inventory Items',
+		pathForNavabr: '/inventory/items',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/InventoryItems')),
 	},
 	{
 		path: TRAINING_GROUND_OWNED,

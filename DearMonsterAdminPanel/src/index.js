@@ -12,6 +12,7 @@ import AuthReducer from './redux/WalletAuth/reducer'
 import ProbabilityReducer from './redux/probabilty/reducer'
 import FightHistoryReducer from './redux/fightHistory/reducer'
 import RewardByWalletReducer from './redux/rewardByWallet/reducer'
+import CrystalShardReducer from './redux/crystalShard/reducer'
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   AuthReducer,
   ProbabilityReducer,
   FightHistoryReducer,
-  RewardByWalletReducer
+  RewardByWalletReducer,
+  CrystalShardReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

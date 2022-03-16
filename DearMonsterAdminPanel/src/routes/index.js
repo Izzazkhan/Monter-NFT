@@ -13,6 +13,8 @@ import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
 import AdditionaRewardForm from '../pages/bonus/form'
 import RewardByWallet from '../pages/rewardByWallet/index'
 import FightHistory from '../pages/FightHistory/index'
+import CrystalShardForm from '../pages/crystalShard/form'
+import CrystalShard from '../pages/crystalShard/index'
 
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
@@ -48,7 +50,9 @@ const MainRoutes = (props) => {
                         <Route exact path={'/fight-history'} component={FightHistory} />
                         <Route exact path={'/additional-reward'} component={AdditionaReward} />
                         <Route exact path={'/wallet-reward'} component={RewardByWallet} />
-
+                        <Route exact path={'/crystal-shard'} component={CrystalShard} />
+                        <Route exact path={'/crystal-shard/create'} component={CrystalShardForm} />
+                        <Route exact path={'/crystal-shard/edit'} component={CrystalShardForm} />
                         <Route exact path={'/side-setting'} component={SideSetting} />
                         <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />

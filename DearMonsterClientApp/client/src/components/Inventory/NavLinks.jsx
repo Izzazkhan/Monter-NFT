@@ -29,6 +29,20 @@ const NavLinks = ({match}) => {
 						alt=''
 					/>
 				</Link>
+				<Link
+					className='text-white me-7 center flex-column position-relative'
+					to='/inventory/items'
+				>
+					<p>Inventory Items</p>
+					<img
+						src='/assets/imgs/arrow.png'
+						className={`position-absolute ${
+							match.params.slug == 'items' ? 'd-flex' : 'd-none'
+						} `}
+						style={{ top: '43px' }}
+						alt=''
+					/>
+				</Link>
 			</nav>
 		);
 }

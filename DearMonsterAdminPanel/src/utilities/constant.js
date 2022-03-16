@@ -28,3 +28,5 @@ export const RequestByWallet = url + '/api/withdrawRequest/requestByWallet'
 export const Bonus = url + '/api/levelBonus'
 export const ProbilityList = url + '/api/probabiltyList'
 export const FightHistory = url + '/api/fightHistory'
+export const CrystalShard = url + '/api/crystalShard'
+export const uploadsUrl = "http://localhost:4000/uploads/";
