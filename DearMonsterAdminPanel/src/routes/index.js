@@ -15,6 +15,8 @@ import RewardByWallet from '../pages/rewardByWallet/index'
 import FightHistory from '../pages/FightHistory/index'
 import CrystalShardForm from '../pages/crystalShard/form'
 import CrystalShard from '../pages/crystalShard/index'
+import FortuneWheelForm from '../pages/fortuneWheel/form'
+import FortuneWheel from '../pages/fortuneWheel/index'
 
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
@@ -58,6 +60,10 @@ const MainRoutes = (props) => {
                         <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/additional-reward/create'} component={AdditionaRewardForm} />
                         <Route exact path={'/additional-reward/edit'} component={AdditionaRewardForm} />
+                        <Route exact path={'/fortune-wheel/create'} component={FortuneWheelForm} />
+                        <Route exact path={'/fortune-wheel/edit'} component={FortuneWheelForm} />
+                        <Route exact path={'/fortune-wheel'} component={FortuneWheel} />
+
                         <Route path={'/forget-password'} component={ForgetPassword} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
                             <Route path="/login" component={LoginPage} /> */}

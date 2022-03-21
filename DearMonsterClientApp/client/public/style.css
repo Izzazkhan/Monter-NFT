@@ -167,3 +167,35 @@
   nav > a > p:hover{
     background-color: #FF901D;
   }
+
+  .wheel-wrapper {
+    display: inline-block;
+    position: relative;
+  }
+  
+  .wheel-wrapper .inner-first {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #ffffff59;
+    z-index: 999;
+    border-radius: 50%;
+  }
+  .wheel-wrapper .inner-second {
+    width: 75%;
+    height: 75%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #ffffff33;
+    z-index: 999;
+    border-radius: 50%;
+  }

@@ -51,6 +51,12 @@ const NavigationMenu = (props) => {
                             className="icon fas fa-plus"></span>Crystal Shard</button>
                     </div>
                 </Link>
+                <Link to='/fortune-wheel'>
+                    <div className="other-info">
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
+                            className="icon fas fa-plus"></span>Fortune Wheel</button>
+                    </div>
+                </Link>
                 <Link to='/side-setting'>
                     <div className="other-info">
                         <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span

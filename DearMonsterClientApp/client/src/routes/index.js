@@ -11,7 +11,8 @@ import {
 	ON_SCHOLARSHIP_SCHOLAR,
 	GOT_SCHOLARSHIP_SCHOLAR,
 	MARKET,
-	INVENTORY_ITEMS
+	INVENTORY_ITEMS,
+	FORTUNE_WHEEL
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -98,6 +99,13 @@ export const NavbarRoutes = [
 		exact: true,
 		hidden: true,
 		component: lazy(() => import('../views/pages/Market')),
+	},
+	{
+		path: FORTUNE_WHEEL,
+		pathForNavabr: FORTUNE_WHEEL,
+		title: 'Fortune Wheel',
+		exact: true,
+		component: lazy(() => import('../views/pages/FortuneWheel')),
 	},
 	// {
 	// 	path: INSTRUCTIONS,
