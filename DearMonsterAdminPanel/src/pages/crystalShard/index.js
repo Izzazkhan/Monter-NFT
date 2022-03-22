@@ -28,6 +28,8 @@ function Bonus(props) {
         }
     }, [data])
 
+    // console.log('data', data)
+
 
     const editDetails = (data) => {
         props.history.push('/crystal-shard/edit', { data })

@@ -7,6 +7,14 @@ import Swal from 'sweetalert2';
 import axios from 'axios'
 import { Wheel } from 'react-custom-roulette'
 
+const config = {
+	headers: {
+		'Content-Type': 'application/x-www-form-urlencoded',
+		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+	}
+}
+
+
 const FortuneWheel = ({ }) => {
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
@@ -15,13 +23,10 @@ const FortuneWheel = ({ }) => {
 
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
+    const [spinCost, setSpinCost] = useState(80)
+    const [buyAs, setBuyAs] = useState('owner')
 
     const handleSpinClick = () => {
-        // const newPrizeNumber = Math.floor(Math.random() * slots.length) + 1
-        // var randomObject = slots[Math.floor(Math.random() * slots.length)]
-        // console.log('randomObject', randomObject)
-        // setMustSpin(true)
-        // setPrizeNumber(newPrizeNumber)
 
         let trackerArray = []
         let indexArray = []
@@ -34,24 +39,12 @@ const FortuneWheel = ({ }) => {
             }
         })
 
-        // console.log("indexArray")
-        // console.log(indexArray)
-
         //generate random number from 1 to 1000
-        var random = Math.floor(Math.random() * 1000);
-
-        // console.log("random")
-        // console.log(random)
+        var random = Math.floor(Math.random() * 1000)
 
         let myValue =  indexArray[random - 1]
 
-        // console.log("myValue")
-        // console.log(myValue)
-
         let filterVal = trackerArray.find(item => item.number == myValue)
-
-        // console.log("filterVal")
-        // console.log(filterVal)
 
         let index = slots.findIndex(item => item.option === filterVal.name)
 
@@ -88,6 +81,40 @@ const FortuneWheel = ({ }) => {
 			})
 	}
 
+    const handleBuyAs = (e) => {
+        setBuyAs(e.target.value)
+    }
+
+    const buySpinsHandler = () => {
+        axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
+        .then((response) => {
+            if (response?.data?.earnerData) {
+                const updateParams = new URLSearchParams()
+                updateParams.append('earnerAddress', userId)
+                updateParams.append('totalAmount', response.data.earnerData.totalAmount - Number(spinCost))
+
+                axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
+                    .then((response) => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reward Deduction',
+                            text: `${spinCost} Rewards deducted from the ${buyAs} wallet`
+                        })
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+            }
+            // else {
+            //     setEarnerData({})
+            // }
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
 	return (
 		<div>
 			<CurrenPageTitle title='Fortune Wheel'></CurrenPageTitle>
@@ -108,7 +135,7 @@ const FortuneWheel = ({ }) => {
 						<footer className='center mt-4 flex align-items-center pb-4 mb-4'>
 							{userId ? (
 								<div>
-									<div className="wheel-wrapper">
+                                    <div className={`wheel-wrapper  ${mustSpin ? 'rotate' :''} `}>
                                         <Wheel
                                         mustStartSpinning={mustSpin}
                                         onStopSpinning={() => setMustSpin(!mustSpin)}
@@ -116,13 +143,15 @@ const FortuneWheel = ({ }) => {
                                         data={slots}
                                         outerBorderColor='#E0E1DE'
                                         outerBorderWidth='15'
-                                        innerBorderColor='#8B8B8B'
+                                        innerBorderColor='#051746'
                                         innerBorderWidth='40'
-                                        radiusLineColor='#eee'
+                                        radiusLineColor='#b1b1b1'
+                                        radiusLineWidth='2'
                                         backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
                                         textColors={['#ffffff']}
+                                        fontSize='25'
                                         />
-                                        <span className="inner-first"></span>
+                                        <span className="inner-first">SPIN</span>
                                         <span className="inner-second"></span>
                                         
                                     </div>
@@ -147,6 +176,81 @@ const FortuneWheel = ({ }) => {
                                     <div className="header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor" onClick={handleSpinClick}>
                                         Spin
                                     </div>
+                                    <>
+                                        <div
+                                            className={`header-Connect-btn py-3 px-4 w-100px center bold fs-13 cursor`}
+                                            data-bs-toggle='modal'
+                                            data-bs-target={`#BuySpin`}
+                                        >
+                                            {'Buy Spins'}
+                                        </div>
+                                        <div className='modal fade' id={`BuySpin`} tabIndex='-1' aria-labelledby='BuySpinLabel' aria-hidden='true' >
+                                            <div className='modal-dialog modal-lg'>
+                                                <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
+
+                                                    <div className='modal-header p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}>Spin Cost</h3>
+                                                    </div>
+                                                    <div className='modal-body p-4'>
+                                                        <p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
+
+                                                        </p>
+                                                        <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                            <div> <h4 style={{ color: "black", fontSize: "15px" }}>Select Spin Cost</h4> </div>
+                                                            <div className='d-flex align-items-center w-60 text-black'>
+                                                                <select
+                                                                    className='form-select w-75 mt-1'
+                                                                    onChange={(e) => {
+                                                                        setSpinCost(e.target.value);
+                                                                    }}
+                                                                >
+                                                                    <option value={80}>1 Spin Cost</option>
+                                                                    <option value={380}>5 Spin Cost</option>
+                                                                </select>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                            <div> <h4 style={{ color: "black", fontSize: "15px" }}>Select Buy As</h4> </div>
+                                                            <div className='d-flex align-items-center w-60 text-black'>
+                                                                <select
+                                                                    className='form-select w-75 mt-1'
+                                                                    onChange={handleBuyAs}
+                                                                >
+                                                                    <option value={'owner'}>Owner</option>
+                                                                    <option value={'scholar'}>Scholar</option>
+                                                                </select>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div className='modal-footer border-top-0 mb-5'>
+                                                        {/* {
+                                                            !post.scholarshipsItems.assigned ? */}
+                                                            
+                                                                <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
+                                                                onClick={buySpinsHandler}
+                                                                data-bs-dismiss='modal'
+                                                                >
+                                                                    Buy Spins
+                                                                </div>
+                                                                {/* :
+                                                                <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor' 
+                                                                onClick={() => revokeFunction(post)}
+                                                                data-bs-dismiss='modal'
+                                                                >
+                                                                    Revoke
+                                                                </div>
+                                                        } */}
+                                                        <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
 								</div>
                             )}
 						</footer>

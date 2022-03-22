@@ -18,6 +18,7 @@ const activity = require('./activity');
 const crystalShard = require('./crystalShard');
 const userShard = require('./userShard');
 const fortuneWheel = require('./fortuneWheel');
+const spinCost = require('./spinCost');
 
 const authenticate = require('../middlewares/authenticate');
 
@@ -49,6 +50,7 @@ router.use('/activity', activity);
 router.use('/crystalShard', crystalShard);
 router.use('/userShard', userShard);
 router.use('/fortuneWheel', fortuneWheel);
+router.use('/spinCost', spinCost);
 
 
 module.exports = router

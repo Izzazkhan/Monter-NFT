@@ -8,7 +8,8 @@ import { connectUserSuccess } from '../../redux/WalletAuth/login';
 import DearMonster from '../../contracts/DearMonster.json'
 import DearMonsterTest from '../../contracts/DearMonsterTest.json'
 import axios from 'axios'
-import { getProbabilty, addProbability, editProbability, deleteProbability } from '../../redux/probabilty/action';
+import { getProbabilty, deleteProbability } from '../../redux/probabilty/action';
+import { getSpinCost } from '../../redux/spinCost/action';
 import { connect } from 'react-redux';
 
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
@@ -49,8 +50,11 @@ function SideSetting(props) {
     }, [userId])
 
     useEffect(() => {
-        props.getProbabilty();
+        props.getProbabilty()
+        props.getSpinCost()
     }, [])
+
+    console.log('propsssss', props)
 
     useEffect(() => {
         if (props.location.state !== undefined) {
@@ -211,6 +215,14 @@ function SideSetting(props) {
         // }
     }
 
+    const editSpinCost = (data) => {
+        props.history.push('/edit-spinCost', { data })
+    }
+
+    const deleteSpinCost = (id) => {
+        alert('can not delete')
+    }
+
     return (
         <>
             <div className="col-lg-9 col-md-8">
@@ -349,6 +361,35 @@ function SideSetting(props) {
                             </tbody>
                         </table>
                     </div>
+
+                    <div className="content-box">
+                        <h3>Spin Cost</h3>
+                        {!props.spinCost.spinCost.length &&
+                        <button className="btn-default" onClick={() => props.history.push('/add-spinCost')}>ADD New</button>
+                        } 
+                        <table className="table">
+                            <thead className="table__head">
+                                <tr>
+                                    <th>1 Spin Cost</th>
+                                    <th>5 Spin Cost</th>
+                                </tr>
+                            </thead>
+
+                            <tbody className="table__body">
+                                {props.spinCost.spinCost
+                                    && props.spinCost.spinCost.map((data, index) => {
+                                        return <tr key={(index + 1)}>
+                                            <td>{data.spin_1_cost}</td>
+                                            <td>{data.spin_5_cost}</td>
+                                            <td><button onClick={() => editSpinCost(data)}>EDIT</button>
+                                                <button onClick={() => deleteSpinCost(data._id)}>DELETE</button>
+                                            </td>
+                                        </tr>
+                                    })}
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -360,7 +401,8 @@ function SideSetting(props) {
 }
 
 const mapStateToProps = state => ({
-    probabilityList: state.ProbabilityReducer
+    probabilityList: state.ProbabilityReducer,
+    spinCost: state.SpinCostReducer
 })
 
-export default connect(mapStateToProps, { getProbabilty, addProbability, editProbability, deleteProbability })(SideSetting)
+export default connect(mapStateToProps, { getProbabilty, deleteProbability, getSpinCost })(SideSetting)

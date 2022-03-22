@@ -44,37 +44,37 @@ const Inventory = ({ match }) => {
 		setAccount(accounts[0]);
 		dispatch(connectUserSuccess(accounts[0]))
 
-        let params = new URLSearchParams()
-        params.append('userId', accounts[0])
-        params.append('shardId', '62304c9123c9a0878cda622e')
-        params.append('count', 2)
+        // let params = new URLSearchParams()
+        // params.append('userId', accounts[0])
+        // params.append('shardId', '62304c9123c9a0878cda622e')
+        // params.append('count', 2)
 
-        const config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
-            }
-        }
-        axios.post(`${apiUrl}/api/userShard`, params, config)
-            .then((res) => {
-                console.log('response:::::::::', res)
-                // getData(userId)
-                // dispatch(stopLoading(false))
-                // Swal.fire({
-                // 	icon: 'success',
-                // 	title: 'Item Added To Sell',
-                // 	text: 'Please check Inventory Trading for items on trade!'
-                // })
-            })
-            .catch((e) => {
-                console.log(e)
-                // dispatch(stopLoading(false))
-                // Swal.fire({
-                // 	icon: 'error',
-                // 	title: 'Error',
-                // 	text: 'Oops, Something went wrong'
-                // })
-            })
+        // const config = {
+        //     headers: {
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //         'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+        //     }
+        // }
+        // axios.post(`${apiUrl}/api/userShard`, params, config)
+        //     .then((res) => {
+        //         console.log('response:::::::::', res)
+        //         // getData(userId)
+        //         // dispatch(stopLoading(false))
+        //         // Swal.fire({
+        //         // 	icon: 'success',
+        //         // 	title: 'Item Added To Sell',
+        //         // 	text: 'Please check Inventory Trading for items on trade!'
+        //         // })
+        //     })
+        //     .catch((e) => {
+        //         console.log(e)
+        //         // dispatch(stopLoading(false))
+        //         // Swal.fire({
+        //         // 	icon: 'error',
+        //         // 	title: 'Error',
+        //         // 	text: 'Oops, Something went wrong'
+        //         // })
+        //     })
 	};
 
 	useEffect(() => {

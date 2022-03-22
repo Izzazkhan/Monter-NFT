@@ -10,6 +10,7 @@ import WithdrawRequest from '../pages/withdrawRequest/index'
 import AdditionaReward from '../pages/bonus/index'
 import SideSetting from '../pages/sideSetting/settingForm'
 import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
+import SpinCostForm from '../pages/sideSetting/spinCostForm'
 import AdditionaRewardForm from '../pages/bonus/form'
 import RewardByWallet from '../pages/rewardByWallet/index'
 import FightHistory from '../pages/FightHistory/index'
@@ -58,6 +59,8 @@ const MainRoutes = (props) => {
                         <Route exact path={'/side-setting'} component={SideSetting} />
                         <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />
+                        <Route exact path={'/add-spinCost'} component={SpinCostForm} />
+                        <Route exact path={'/edit-spinCost'} component={SpinCostForm} />
                         <Route exact path={'/additional-reward/create'} component={AdditionaRewardForm} />
                         <Route exact path={'/additional-reward/edit'} component={AdditionaRewardForm} />
                         <Route exact path={'/fortune-wheel/create'} component={FortuneWheelForm} />

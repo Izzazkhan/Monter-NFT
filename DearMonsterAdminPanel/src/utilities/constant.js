@@ -30,5 +30,6 @@ export const ProbilityList = url + '/api/probabiltyList'
 export const FightHistory = url + '/api/fightHistory'
 export const CrystalShard = url + '/api/crystalShard'
 export const FortuneWheel = url + '/api/fortuneWheel'
+export const SpinCost = url + '/api/spinCost'
 
 export const uploadsUrl = "http://localhost:4000/uploads/";
