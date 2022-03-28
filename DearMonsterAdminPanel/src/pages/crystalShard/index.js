@@ -50,9 +50,9 @@ function Bonus(props) {
                 <div className="content-wrapper">
                     <div className="content-box">
                         <h3>Elemental Crystal Shards</h3>
-                        {!data.length &&
+                        {/* {!data.length && */}
                             <button className="btn-default" onClick={() => props.history.push('/crystal-shard/create')}>ADD New</button>
-                        }
+                        {/* } */}
                         <table className="table">
                             <thead className="table__head">
                                 <tr>
