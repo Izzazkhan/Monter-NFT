@@ -7,6 +7,7 @@ import MonstersForm from '../pages/monsters/form'
 import Minions from '../pages/minions/index'
 import MinionsForm from '../pages/minions/form'
 import WithdrawRequest from '../pages/withdrawRequest/index'
+import BUSDRequest from '../pages/BUSDRequest/index'
 import AdditionaReward from '../pages/bonus/index'
 import SideSetting from '../pages/sideSetting/settingForm'
 import ProbabiltyForm from '../pages/sideSetting/probabilityForm'
@@ -66,7 +67,7 @@ const MainRoutes = (props) => {
                         <Route exact path={'/fortune-wheel/create'} component={FortuneWheelForm} />
                         <Route exact path={'/fortune-wheel/edit'} component={FortuneWheelForm} />
                         <Route exact path={'/fortune-wheel'} component={FortuneWheel} />
-
+                        <Route exact path={'/busd-request'} component={BUSDRequest} />
                         <Route path={'/forget-password'} component={ForgetPassword} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
                             <Route path="/login" component={LoginPage} /> */}

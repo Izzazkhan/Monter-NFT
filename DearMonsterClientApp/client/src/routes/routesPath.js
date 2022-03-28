@@ -11,7 +11,9 @@ export const SCHOLARSHIP_MANAGER = '/scholarship/manager';
 export const ON_SCHOLARSHIP_SCHOLAR = '/scholarship/on-scholar';
 export const GOT_SCHOLARSHIP_SCHOLAR = '/scholarship/got-scholar';
 export const MARKET = '/market';
-export const FORTUNE_WHEEL = '/fortune-wheel';
+export const FORTUNE_WHEEL_OWNED = '/fortune-wheel/owned';
+export const FORTUNE_WHEEL_SCHOLAR = '/fortune-wheel/scholar';
+
 
 
 

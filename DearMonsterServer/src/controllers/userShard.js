@@ -36,30 +36,17 @@ exports.store = async (req, res) => {
 };
 
 exports.show = async function (req, res) {
-    try {
-        
-        // const userShardAggregate = await UserShard.aggregate([
-        //     {
-        //         $lookup: {
-        //             from: 'userShard',
-        //             foreignField: '_id',
-        //             localField: 'shardId',
-        //             as: 'Shard'
-        //         }
-        //     },
-        //     {
-        //         $unwind: '$UserShard'
-        //     }
-        // ])
-        
-        const id = req.params.id;
-        const userShard = await UserShard.find({ userId: id })
-        if (!userShard) return res.status(401).json({message: 'userShard does not exist'});
-        
-        res.status(200).json({userShard});
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
+        try {
+            const userId = req.params.userId;
+    
+            const userShard = await UserShard.find({userId, type: req.params.type});
+    
+            // if (!userShard) return res.status(401).json({message: 'record against userShard does not exist'});
+            
+            res.status(200).json({userShard, message: 'user shards fetched successfully'});
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
 };
 
 exports.update = async function (req, res) {
@@ -76,6 +63,22 @@ exports.update = async function (req, res) {
     } catch (error) {
         res.status(500).json({message: error.message});
     }
+
+    // try {
+    //     const userId = req.params.userId;
+    //     const update = req.body;
+
+    //     let query = {userId, type: req.params.type}
+    //     let updateData = {$set: update}
+    //     let options = { new: true, upsert: true }
+        
+    //     const userShard = await UserShard.findOneAndUpdate(query, updateData, options);
+
+    //     if (!req.file) return res.status(200).json({userShard, message: 'userShard has been updated'});
+
+    // } catch (error) {
+    //     res.status(500).json({message: error.message});
+    // }
 };
 
 

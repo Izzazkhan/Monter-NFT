@@ -163,7 +163,7 @@ const Header = () => {
 		<section>
 			<section className='container d-flex py-4 justify-content-between  align-items-center'>
 				<Link to='/'>
-					<img src='/assets/imgs/header/logo.png' alt='' className='w-90px' />
+					<img src='/assets/imgs/header/logo.png' alt='' style={{height: '82px', marginLeft: '-82px', marginRight: '10px'}} />
 				</Link>
 				<button className='btn d-lg-none d-flex' onClick={() => setActive(true)}>
 					<img src='/assets/imgs/Hamburger.png' className='w-35px' alt='' />
@@ -203,7 +203,7 @@ const Header = () => {
 					</div>
 				</div>
 
-				<div className='d-lg-flex d-none justify-content-between align-items-center'>
+				<div className='d-lg-flex d-none justify-content-between align-items-center' style={{marginRight: '-45px'}}>
 					<img src='/assets/imgs/coin.png' className='w-50px' />
 					{userId && (
 						<div className='dms-block h-40px ms-4 center px-2'>

@@ -27,6 +27,12 @@ const NavigationMenu = (props) => {
                             className="icon fas fa-plus"></span>Withdraw Request</button>
                     </div>
                 </Link>
+                <Link to='/busd-request'>
+                    <div className="other-info">
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
+                            className="icon fas fa-plus"></span>BUSD Request</button>
+                    </div>
+                </Link>
                 <Link to='/additional-reward'>
                     <div className="other-info">
                         <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span

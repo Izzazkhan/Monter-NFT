@@ -15,10 +15,10 @@ router.get('/', UserShard.index);
 router.post('/', UserShard.store);
 
 //SHOW
-router.get('/:id', UserShard.show);
+router.get('/:userId/:type', UserShard.show);
 
 //UPDATE
-router.put('/:id', UserShard.update);
+router.put('/:userId/:type/:id', UserShard.update);
 
 // //DELETE
 // router.delete('/:id', authenticate, UserShard.destroy);

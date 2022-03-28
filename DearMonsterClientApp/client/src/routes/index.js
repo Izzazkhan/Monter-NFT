@@ -12,7 +12,8 @@ import {
 	GOT_SCHOLARSHIP_SCHOLAR,
 	MARKET,
 	INVENTORY_ITEMS,
-	FORTUNE_WHEEL
+	FORTUNE_WHEEL_OWNED,
+	FORTUNE_WHEEL_SCHOLAR
 } from './routesPath';
 
 export const NavbarRoutes = [
@@ -97,15 +98,23 @@ export const NavbarRoutes = [
 		pathForNavabr: MARKET,
 		title: 'Market',
 		exact: true,
-		hidden: true,
+		// hidden: true,
 		component: lazy(() => import('../views/pages/Market')),
 	},
 	{
-		path: FORTUNE_WHEEL,
-		pathForNavabr: FORTUNE_WHEEL,
+		path: FORTUNE_WHEEL_OWNED,
+		pathForNavabr: FORTUNE_WHEEL_OWNED,
 		title: 'Fortune Wheel',
 		exact: true,
 		component: lazy(() => import('../views/pages/FortuneWheel')),
+	},
+	{
+		path: FORTUNE_WHEEL_SCHOLAR,
+		pathForNavabr: FORTUNE_WHEEL_SCHOLAR,
+		title: 'Fortune Wheel',
+		exact: true,
+		hidden: true,
+		component: lazy(() => import('../views/pages/FortuneWheelScholar')),
 	},
 	// {
 	// 	path: INSTRUCTIONS,

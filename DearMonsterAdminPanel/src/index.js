@@ -15,6 +15,7 @@ import RewardByWalletReducer from './redux/rewardByWallet/reducer'
 import CrystalShardReducer from './redux/crystalShard/reducer'
 import FortuneWheelReducer from './redux/fortuneWheel/reducer'
 import SpinCostReducer from './redux/spinCost/reducer'
+import BUSDRequestReducer from './redux/BUSDRequest/reducer'
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   RewardByWalletReducer,
   CrystalShardReducer,
   FortuneWheelReducer,
-  SpinCostReducer
+  SpinCostReducer,
+  BUSDRequestReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

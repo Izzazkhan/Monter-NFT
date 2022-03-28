@@ -11,7 +11,10 @@ import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
-const Inventory = ({ match }) => {
+
+const match = {params : { slug: 'items' }}
+
+const Inventory = () => {
 	const [posts, setPosts] = React.useState([]);
 	const { userId } = useSelector((state) => state.auth);
 	const [account, setAccount] = useState();

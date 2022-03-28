@@ -14,9 +14,9 @@ const config = {
 		'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 	}
 }
-const match = {params : { slug: 'owned' }}
+const match = {params : { slug: 'scholar' }}
 
-const FortuneWheel = (props) => {
+const FortuneWheelScholar = (props) => {
 	const { userId } = useSelector(state => state.auth)
 	const dispatch = useDispatch();
     const [owner, setOwner] = useState(userId ? userId : null)
@@ -25,7 +25,7 @@ const FortuneWheel = (props) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [spinCost, setSpinCost] = useState(80)
-    const [buyAs, setBuyAs] = useState('owner')
+    const [buyAs, setBuyAs] = useState('scholar')
     const [updatedSpinData, setUpdatedSpinData] = useState([])
     const [spinRecord, setSpinRecord] = useState([])
 
@@ -196,7 +196,7 @@ const FortuneWheel = (props) => {
 
     const countUpdateCal = (filterValue) => {
         // console.log('filterValue', filterValue)
-        axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
+        axios.get(`${apiUrl}/api/userShard/${userId}/scholar`)
             .then((response) => {
             let params = new URLSearchParams()
             params.append('userId', userId)
@@ -206,7 +206,7 @@ const FortuneWheel = (props) => {
                 // console.log('shardId', shardId, filterValue._id)
                 if(response?.data?.userShard && shardId && shardId.shardId == filterValue._id) {
                     params.append('count', shardId.count + Number(filterValue.value))
-                    axios.put(`${apiUrl}/api/userShard/${userId}/owner/${shardId._id}`, params, config)
+                    axios.put(`${apiUrl}/api/userShard/${userId}/scholar/${shardId._id}`, params, config)
                     .then((res) => {
                         // console.log('put response:::::::::', res)
                         Swal.fire({
@@ -225,7 +225,7 @@ const FortuneWheel = (props) => {
                     })
                 } else {
                     params.append('count', Number(filterValue.value))
-                    params.append('type', 'owner')
+                    params.append('type', 'scholar')
                     axios.post(`${apiUrl}/api/userShard`, params, config)
                     .then((res) => {
                         // console.log('post response:::::::::', res)
@@ -252,16 +252,16 @@ const FortuneWheel = (props) => {
 
     const BUSDRequestCall = async (filterValue) => {
         try {
-			const getBUSDRequest = await axios.get(`${apiUrl}/api/BUSDRequest/${userId}/owner`)
+			const getBUSDRequest = await axios.get(`${apiUrl}/api/BUSDRequest/${userId}/scholar`)
 
 			if (getBUSDRequest?.data?.BUSDRequest_?.length > 0) {
-                const filteredRequest = getBUSDRequest.data.BUSDRequest_.find(item => item.type === 'owner')
+                const filteredRequest = getBUSDRequest.data.BUSDRequest_.find(item => item.type === 'scholar')
 
                 try {
                     if (filteredRequest) {
                         const params = new URLSearchParams()
                         params.append('amount', filteredRequest.amount + Number(filterValue.value))
-                        const postRequest = await axios.put(`${apiUrl}/api/BUSDRequest/${userId}/owner/${filteredRequest._id}`, params, config)
+                        const postRequest = await axios.put(`${apiUrl}/api/BUSDRequest/${userId}/scholar/${filteredRequest._id}`, params, config)
                         if (postRequest) {
                             Swal.fire({
                                 icon: 'success',
@@ -289,7 +289,7 @@ const FortuneWheel = (props) => {
 						const params = new URLSearchParams()
 						params.append('requesterAddress', userId)
 						params.append('amount', Number(filterValue.value))
-						const postRequest = await axios.post(`${apiUrl}/api/BUSDRequest/owner`, params, config)
+						const postRequest = await axios.post(`${apiUrl}/api/BUSDRequest/scholar`, params, config)
 						if (postRequest) {
 							Swal.fire({
 								icon: 'success',
@@ -384,8 +384,8 @@ const FortuneWheel = (props) => {
                 <div className='container center mt-8'>
                     <div className='center flex-column'>
                         <div className='border border-warning text-white p-2 rounded-2'>
-                            No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ? 
-                            updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0}`}
+                            No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'scholar') ? 
+                            updatedSpinData.find(item => item.type === 'scholar').no_of_spin : 0) : 0}`}
                         </div>
                         <section className='mt-5'>
                             <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
@@ -425,8 +425,8 @@ const FortuneWheel = (props) => {
                                                             className='form-select w-75 mt-1'
                                                             onChange={handleBuyAs}
                                                         >
-                                                            <option value={'owner'}>Owner</option>
                                                             <option value={'scholar'}>Scholar</option>
+                                                            <option value={'owner'}>Owner</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -526,4 +526,4 @@ const FortuneWheel = (props) => {
 	);
 };
 
-export default FortuneWheel;
+export default FortuneWheelScholar;

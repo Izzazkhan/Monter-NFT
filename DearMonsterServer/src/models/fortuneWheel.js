@@ -15,6 +15,14 @@ const FortuneWheelSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
+            actionType: {
+                type: String,
+                required: true
+            },
+            value: {
+                type: String,
+                required: true
+            },
             probability: {
                 type: Number,
                 required: true

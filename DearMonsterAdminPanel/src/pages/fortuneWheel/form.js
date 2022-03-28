@@ -12,7 +12,6 @@ function FortuneWheelForm(props) {
     useEffect(() => {
         if (props.location.state !== undefined) {
             const propsData = props.location.state.data
-            // const rewardEstimated = JSON.parse(propsData.values.Reward_Estimated)
 
             setState({
                 ...state,
@@ -28,7 +27,7 @@ function FortuneWheelForm(props) {
         const list = [...slots]
         if (e.target) {
             list[index][e.target.name] = e.target.name === 'probability' ? 
-            e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{1}).+/g, '$1') : e.target.value
+            e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{4}).+/g, '$1') : e.target.value
         }
         setSlots(list)
       }
@@ -38,10 +37,14 @@ function FortuneWheelForm(props) {
           ...slots,
           {
             option: "",
-            probability: ""
+            probability: "",
+            actionType: '',
+            value: ''
           }
         ])
     }
+
+    console.log('slots', slots)
 
     const removeSlot= (index) => {
         const list = [...slots];
@@ -58,8 +61,11 @@ function FortuneWheelForm(props) {
     }
 
     const onSubmit = () => {
-        if(slots.reduce((n, {probability}) => Number(n) + Number(probability), 0) != 100) {
-            alert('Sum of slots in not 100');
+        if(!slots.map(item => item.probability >= 0.0001).every(element => element === true)) {
+            alert('Minimum value of probability should be 0.0001')
+        }
+        else if(slots.reduce((n, {probability}) => Number(n) + Number(probability), 0) != 100) {
+            alert('Sum of slots in not 100')
         }
         else if (!state._id) {
             props.addFortuneWheel({...state, slots}, JSON.parse(localStorage.getItem('token')))
@@ -70,7 +76,6 @@ function FortuneWheelForm(props) {
         } else {
             alert('Enter Details.');
         }
-        // clearData()
     }
 
     return (
@@ -97,22 +102,43 @@ function FortuneWheelForm(props) {
                         {slots.map((singleSlot, i) => {
                             return (
                                 <div key={i}>
-                                    <div className="form-group col-md-4 mb-4">
+                                    <div className="row">
+                                    <div className="form-group col-md-2 mb-2">
                                         <label className="control-label">{'Option'}</label>
                                         <input type="text" required="required" className="form-control" onChange={(e) => onChangeSlot(e, i)}
                                             name={'option'} value={singleSlot.option}
                                             placeholder={`Enter Option`}
                                         />
                                     </div>
-                                    <div className="form-group col-md-4 mb-4">
+                                    <div className="form-group col-md-2 mb-2">
                                         <label className="control-label">{'Probability'}</label>
                                         <input type="text" required="required" className="form-control" onChange={(e) => onChangeSlot(e, i)}
                                             name={'probability'} value={singleSlot.probability}
                                             placeholder={`Enter Probability`}
                                         />
                                     </div>
+                                    
+                                    <div className="form-group col-md-3 mb-3">
+                                        <label className="control-label">{'Action Type'}</label>
+                                        <select name='actionType' className='form-control  w-100px' onChange={(e) => onChangeSlot(e, i)} value={singleSlot.actionType}>
+										<option value={'BUSD'}>BUSD</option>
+										<option value={'Free Spin'}>Free Spin</option>
+										<option value={'DMS'}>DMS</option>
+										<option value={'Elemental Shard'}>Elemental Shard</option>
+										<option value={'Dearmonster Fragment'}>Dearmonster Fragment</option>
+										<option value={'Dungeon Ticket'}>Dungeon Ticket</option>
+									    </select>
+                                    </div>
+                                    <div className="form-group col-md-2 mb-2">
+                                        <label className="control-label">{'Value'}</label>
+                                        <input type="text" required="required" className="form-control" onChange={(e) => onChangeSlot(e, i)}
+                                            name={'value'} value={singleSlot.value}
+                                            placeholder={`Enter Value`}
+                                        />
+                                    </div>
                                     <div className="form-group col-md-2 mb-2" style={{marginTop: 16}}>
                                         <div className="col-md-6"><button className="btn-default hvr-bounce-in" onClick={() => removeSlot(i)}>Remove Slot</button></div>
+                                    </div>
                                     </div>
                                 </div>
                             )
