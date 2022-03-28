@@ -532,7 +532,7 @@ const TrainingGround = () => {
 						<div className='container center mt-8'>
 							<div className='center flex-column'>
 								<div className='border border-warning text-white p-2 rounded-2'>
-									Total Rewards: {earnerData && Object.keys(earnerData).length > 0 ? parseInt(earnerData.totalAmount) : 0}
+									Total Rewards: {earnerData && Object.keys(earnerData).length > 0 ? Number(earnerData.totalAmount) : 0}
 									<img src='/assets/imgs/coin.png' className='img-fluid' alt='coin' />
 								</div>
 								<section className='mt-5'>

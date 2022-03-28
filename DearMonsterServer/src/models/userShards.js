@@ -13,11 +13,7 @@ const UserShardSchema = new mongoose.Schema({
     count: {
         type: Number,
         required: true
-    },
-    type: {
-        type: String,
-        required: true
-    },
+    }
 }, {timestamps: true});
 
 

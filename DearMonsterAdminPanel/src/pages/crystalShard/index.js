@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Spinner } from "react-bootstrap"
 import {uploadsUrl} from '../../utilities/constant'
 
-function Bonus(props) {
+function CrystalShard(props) {
 
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
@@ -23,8 +23,10 @@ function Bonus(props) {
     }, [props])
 
     useEffect(() => {
-        if(data.length) {
-            setLoading(false)
+        if(data) {
+            if(data.length) {
+                setLoading(false)
+            }
         }
     }, [data])
 
@@ -96,5 +98,5 @@ const mapStateToProps = state => ({
     crystalShard: state.CrystalShardReducer
 });
 
-export default connect(mapStateToProps, { getCrystalShard, addCrystalShard, editCrystalShard, deleteCrystalShard })(Bonus);
+export default connect(mapStateToProps, { getCrystalShard, addCrystalShard, editCrystalShard, deleteCrystalShard })(CrystalShard);
 

@@ -20,8 +20,10 @@ function Bonus(props) {
     }, [props])
 
     useEffect(() => {
-        if(data.length) {
-            setLoading(false)
+        if(data) {
+            if(data.length) {
+                setLoading(false)
+            }
         }
     }, [data])
 

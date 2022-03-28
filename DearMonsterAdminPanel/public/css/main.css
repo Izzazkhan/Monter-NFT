@@ -999,7 +999,11 @@ footer{
     margin-bottom: 20px;
 }
 .auth-box {
- margin-top: 50px;
+ margin-top: 200px;
+}
+.auth-box.login {
+ margin-top: 200px;
+ width: 750px;
 }
 .content-box h3 {
     margin-bottom: 20px;

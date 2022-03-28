@@ -5,6 +5,10 @@ export const getFortuneWheel = (limit, skip) => dispatch => {
     axios
         .get(`${FortuneWheel}`)
         .then((res) => {
+            
+            console.log("res.data.fortuneWheel =========")
+            console.log(res.data)
+
             return dispatch({
                 type: 'GET_FORTUNE_WHEEL',
                 payload: res.data.fortuneWheel

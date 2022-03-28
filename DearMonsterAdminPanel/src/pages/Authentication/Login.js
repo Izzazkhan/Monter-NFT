@@ -75,8 +75,8 @@ const LoginPage = (props) => {
         <>
             <Header />
             <div className="col-lg-12 col-md-12">
-                <div className="content-wrapper">
-                    <div className="content-box auth-box">
+                <div className="content-wrapper" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <div className="content-box auth-box login">
                         <h3>Login User</h3>
                         <div className="row">
                             {InputField}

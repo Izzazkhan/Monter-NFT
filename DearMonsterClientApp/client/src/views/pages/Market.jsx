@@ -105,42 +105,45 @@ const TradingPost = ({ }) => {
 								const ownerReward = res.data.rewardByWallet.find(item => item.type === 'owner')
 								const scholarReward = res.data.rewardByWallet.find(item => item.type === 'scholar')
 
+								let tempAmount = Number( Number(quantity) * ( Number(extraTokens) / 100 ) )
+								let extraBonus = Math.round(tempAmount / 0.5) * 0.5
+
 								if(type == 'owner') {
 									if(ownerReward != undefined) {
-										depositAmount = ownerReward.totalAmount + ( quantity * ( extraTokens / 100 ))
+										depositAmount = Number(ownerReward.totalAmount) + Number(quantity) + Number(extraBonus)
 									} else {
-										depositAmount = quantity * ( extraTokens / 100 )
+										depositAmount = Number(quantity) + Number(extraBonus)
 									}
 								} else {
 									if(scholarReward != undefined) {
-										depositAmount = scholarReward.totalAmount + ( quantity * ( extraTokens / 100 ))
+										depositAmount = Number(scholarReward.totalAmount) + Number(quantity) + Number(extraBonus)
 									} else {
-										depositAmount = quantity * ( extraTokens / 100 )
+										depositAmount = Number(quantity) + Number(extraBonus)
 									}
 								}
                                 
-                                    const updateParams = new URLSearchParams()
-                                    updateParams.append('earnerAddress', userId)
-                                    updateParams.append('totalAmount', depositAmount)
-									const config = {
-										headers: {
-											'Content-Type': 'application/x-www-form-urlencoded',
-											'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
-										}
+								const updateParams = new URLSearchParams()
+								updateParams.append('earnerAddress', userId)
+								updateParams.append('totalAmount', depositAmount)
+								const config = {
+									headers: {
+										'Content-Type': 'application/x-www-form-urlencoded',
+										'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 									}
-                                    axios.put(`${apiUrl}/api/userEarning/${userId}/${type}`, updateParams, config)
-                                        .then((response) => {
-                                            console.log(`response type ${response.data.userEarning.type}`, response)
-                                            dispatch(stopLoading(false))
-											Swal.fire({
-												icon: 'success',
-												title: 'Offline DMS ',
-												text:  `You got ${quantity * ( extraTokens / 100 )} new DMS`
-											})
-                                        })
-                                        .catch((error) => {
-                                            console.log(error)
-                                        })
+								}
+								axios.put(`${apiUrl}/api/userEarning/${userId}/${type}`, updateParams, config)
+									.then((response) => {
+										console.log(`response type ${response.data.userEarning.type}`, response)
+										dispatch(stopLoading(false))
+										Swal.fire({
+											icon: 'success',
+											title: 'Off-Chain DMS Purchased',
+											text:  `You have got ${ Number(quantity) + Number(extraBonus) } new off-chain DMS`
+										})
+									})
+									.catch((error) => {
+										console.log(error)
+									})
                             })
                             .catch((e) => {
                                 console.log("error: ", e);
@@ -169,9 +172,9 @@ const TradingPost = ({ }) => {
 			<CurrenPageTitle title='Market'></CurrenPageTitle>
 			<div className='container center mt-6'>
 				<div className={`${userId && 'discoveryCaveBg'} py-2 w-md-lg2 w-md2 mb-8`}>
-					<div className='center'>
+					{/* <div className='center'>
 						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
-					</div>
+					</div> */}
 					<div className='center fs-19 flex-column'>
 						{userId &&
 							<div className='center'>
@@ -215,12 +218,21 @@ const TradingPost = ({ }) => {
 									</div>
 								</div>
 							) : (
-								<div
-									className='header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor'
-									onClick={handleConnect}
-								>
-									Connect
-								</div>
+                                <div className='container'>
+                                    <div className='center'>
+                                        <div>
+                                            <p className='text-white mt-4 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+                                                Please connect to see Market
+                                            </p>
+                                            <div
+                                                onClick={handleConnect}
+                                                className={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
+                                            >
+                                                Connect
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 							)}
 						</footer>
 					</div>
