@@ -47,25 +47,21 @@ exports.show = async function (req, res) {
             const userShards = await UserShard.aggregate([
                 {
                     $match: {
-                        userId,
-                        type: req.params.type
+                        userId: userId
                     }
                 },
                 {
                     $lookup: {
-                        from: 'users',
+                        from: 'shardtypes',
                         foreignField: '_id',
-                        localField: 'userId',
-                        as: 'users'
+                        localField: 'shardId',
+                        as: 'userShards'
                     }
                 },
                 {
-                    $users: '$users'
+                    $unwind: "$userShards"
                 }
             ]);
-
-
-
 
     
             // if (!userShard) return res.status(401).json({message: 'record against userShard does not exist'});
