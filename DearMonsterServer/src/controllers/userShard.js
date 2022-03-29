@@ -72,6 +72,20 @@ exports.show = async function (req, res) {
         }
 };
 
+exports.byUserShard = async function (req, res) {
+    try {
+        
+        const userId = req.params.userId;
+        const userShard = await UserShard.find({userId});
+
+        if (!userShard) return res.status(401).json({message: 'record against userShard does not exist'});
+        
+        res.status(200).json({userShard, message: 'user shards fetched successfully'});
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+};
+
 exports.update = async function (req, res) {
     try {
         const id = req.params.id;

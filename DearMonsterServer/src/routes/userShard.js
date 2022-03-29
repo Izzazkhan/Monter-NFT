@@ -17,6 +17,9 @@ router.post('/', UserShard.store);
 //SHOW
 router.get('/:userId/:type', UserShard.show);
 
+//SHOW
+router.get('/byUserId/:userId', UserShard.byUserShard);
+
 //UPDATE
 router.put('/:userId/:type/:id', UserShard.update);
 

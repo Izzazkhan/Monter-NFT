@@ -28,6 +28,7 @@ const FortuneWheel = (props) => {
     const [buyAs, setBuyAs] = useState('owner')
     const [updatedSpinData, setUpdatedSpinData] = useState([])
     const [spinRecord, setSpinRecord] = useState([])
+    const [allShards, setAllShards] = useState([])
 
     useEffect(() => {
         if (userId) {
@@ -57,6 +58,15 @@ const FortuneWheel = (props) => {
                 .catch((e) => {
                     console.log("Error ----------------")
                     console.log(e)
+                })
+
+            axios
+                .get(`${apiUrl}/api/shards`)
+                .then((res) => {
+                    setAllShards(res.data.shards)
+                })
+                .catch((e) => {
+                    console.log("error: ", e);
                 })
         }
     }, [userId])
@@ -195,18 +205,22 @@ const FortuneWheel = (props) => {
     }
 
     const countUpdateCal = (filterValue) => {
-        // console.log('filterValue', filterValue)
-        axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
+        console.log('filterValue', filterValue, allShards)
+        axios.get(`${apiUrl}/api/byUserId/${userId}`)
             .then((response) => {
 
                 console.log('reponseeeeeeee', response)
 
+                const filterShard = allShards.find(item => item.shardTypeId === filterValue.shardType)
+                console.log('filterShard', filterShard)
+
                 let params = new URLSearchParams()
                 params.append('userId', userId)
-                params.append('shardId', filterValue.shardType)  // wrong
+                params.append('shardId', filterShard._id)  // wrong
 
 
                 // TODO
+                
 
                 // get all 
                 // find from shards using filterValue.shardType , 
@@ -215,11 +229,11 @@ const FortuneWheel = (props) => {
                 // increase the count
 
 
-
-                const shardId = response.data.userShard.find(item => item.shardId === filterValue.shardType) // wrong
+                
+                const shardId = response.data.userShard.find(item => item.shardId === filterShard._id) // wrong
                 // find userShard using the id from above found shard instead of filterValue.shardType
 
-                if (response?.data?.userShard && shardId && shardId.shardId == filterValue.shardType) {
+                if (response?.data?.userShard && shardId && shardId.shardId == filterShard._id) {
 
                     params.append('count', shardId.count + Number(filterValue.value))
 
