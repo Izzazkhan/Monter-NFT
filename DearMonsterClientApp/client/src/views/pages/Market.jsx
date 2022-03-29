@@ -103,7 +103,7 @@ const TradingPost = ({ }) => {
                             .then((res) => {
 								let depositAmount 
 								const ownerReward = res.data.rewardByWallet.find(item => item.type === 'owner')
-								const scholarReward = res.data.rewardByWallet.find(item => item.type === 'scholar')
+								// const scholarReward = res.data.rewardByWallet.find(item => item.type === 'scholar')
 
 								let tempAmount = Number( Number(quantity) * ( Number(extraTokens) / 100 ) )
 								let extraBonus = Math.round(tempAmount / 0.5) * 0.5
@@ -114,12 +114,12 @@ const TradingPost = ({ }) => {
 									} else {
 										depositAmount = Number(quantity) + Number(extraBonus)
 									}
-								} else {
-									if(scholarReward != undefined) {
-										depositAmount = Number(scholarReward.totalAmount) + Number(quantity) + Number(extraBonus)
-									} else {
-										depositAmount = Number(quantity) + Number(extraBonus)
-									}
+								// } else {
+								// 	if(scholarReward != undefined) {
+								// 		depositAmount = Number(scholarReward.totalAmount) + Number(quantity) + Number(extraBonus)
+								// 	} else {
+								// 		depositAmount = Number(quantity) + Number(extraBonus)
+								// 	}
 								}
                                 
 								const updateParams = new URLSearchParams()
@@ -133,7 +133,7 @@ const TradingPost = ({ }) => {
 								}
 								axios.put(`${apiUrl}/api/userEarning/${userId}/${type}`, updateParams, config)
 									.then((response) => {
-										console.log(`response type ${response.data.userEarning.type}`, response)
+										// console.log(`response type ${response.data.userEarning.type}`, response)
 										dispatch(stopLoading(false))
 										Swal.fire({
 											icon: 'success',
@@ -185,7 +185,7 @@ const TradingPost = ({ }) => {
 						}
 						{userId &&
 							<div className=' justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
-								<div className='d-flex justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
+								{/* <div className='d-flex justify-content-between mt-6 mb-6 w-80 align-items-center text-white'>
 									<p>Select Type</p>
 									<div className='d-flex align-items-center'>
 											<select id='select-type' className='form-control w-100px' onChange={onSelectType}>
@@ -193,7 +193,7 @@ const TradingPost = ({ }) => {
 												<option value={'scholar'}>Scholar</option>
 											</select>
 									</div>
-								</div>
+								</div> */}
 
 								<p>Enter amount of token you want to buy</p>
 								<div className='center mt-4'>

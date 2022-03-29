@@ -361,6 +361,29 @@ const FortuneWheel = (props) => {
             let index = slots.findIndex(item => item.option === filterVal.name)
             setPrizeNumber(index)
             setMustSpin(true)
+
+            const spinRecordParams = new URLSearchParams()
+            spinRecordParams.append('userId', userId)
+            spinRecordParams.append('type', buyAs)
+            if(updatedSpinData.length) {
+                const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs && item.no_of_spin)
+                if(noOfspin) {
+                    spinRecordParams.append('no_of_spin', noOfspin.no_of_spin - 1)
+                    axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
+                    .then((response) => {
+                        setSpinRecord(response.data.spinRecord)
+                        // Swal.fire({
+                        //     icon: 'success',
+                        //     title: 'Spin Record',
+                        //     text: `Spin record has been updated`
+                        // })
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                }   
+            }
+
         } else {
             Swal.fire({
                 icon: 'error',
@@ -434,7 +457,7 @@ const FortuneWheel = (props) => {
                                                     </div>
                                                 </div>
 
-                                                <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                {/* <div className='align-items-center d-flex justify-content-between mb-4' >
                                                     <div> <h4 style={{ color: "black", fontSize: "15px", marginLeft: '25px' }}>Select Buyer</h4> </div>
                                                     <div className='d-flex align-items-center w-60 text-black'>
                                                         <select
@@ -445,7 +468,7 @@ const FortuneWheel = (props) => {
                                                             <option value={'scholar'}>Scholar</option>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> */}
 
                                                 <div className='align-items-center d-flex justify-content-between mb-4' >
                                                     <div></div>
@@ -473,7 +496,7 @@ const FortuneWheel = (props) => {
                     </div>
                 </div>
 			}
-            {userId && <NavLinks match={match} />}
+            {/* {userId && <NavLinks match={match} />} */}
 			<div className='container center mt-6'>
 				<div className={`${userId} py-2 w-md-lg2 w-md2 mb-8`}>
 					{/* <div className='center'>
