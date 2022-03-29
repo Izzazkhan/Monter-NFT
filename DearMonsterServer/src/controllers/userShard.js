@@ -52,14 +52,25 @@ exports.show = async function (req, res) {
                 },
                 {
                     $lookup: {
-                        from: 'shardtypes',
+                        from: 'shards',
                         foreignField: '_id',
                         localField: 'shardId',
-                        as: 'userShards'
+                        as: 'shards'
                     }
                 },
                 {
-                    $unwind: "$userShards"
+                    $unwind: "$shards"
+                },
+                {
+                    $lookup: {
+                        from: 'shardtypes',
+                        foreignField: '_id',
+                        localField: 'shards.shardTypeId',
+                        as: 'shardTypes'
+                    }
+                },
+                {
+                    $unwind: "$shardTypes"
                 }
             ]);
 

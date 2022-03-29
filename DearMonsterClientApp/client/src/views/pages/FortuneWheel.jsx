@@ -206,7 +206,7 @@ const FortuneWheel = (props) => {
 
     const countUpdateCal = (filterValue) => {
         console.log('filterValue', filterValue, allShards)
-        axios.get(`${apiUrl}/api/byUserId/${userId}`)
+        axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
             .then((response) => {
 
                 console.log('reponseeeeeeee', response)
@@ -219,21 +219,10 @@ const FortuneWheel = (props) => {
                 params.append('shardId', filterShard._id)  // wrong
 
 
-                // TODO
-                
-
-                // get all 
-                // find from shards using filterValue.shardType , 
-                // aaaaaaaaaaa = found shard id
-                // set id of that shard in params.append('shardId', aaaaaaaaaaa)
-                // increase the count
-
-
-                
-                const shardId = response.data.userShard.find(item => item.shardId === filterShard._id) // wrong
+                const shardId = response.data.userShards.find(item => item.shardId === filterShard._id) // wrong
                 // find userShard using the id from above found shard instead of filterValue.shardType
 
-                if (response?.data?.userShard && shardId && shardId.shardId == filterShard._id) {
+                if (response?.data?.userShards && shardId && shardId.shardId == filterShard._id) {
 
                     params.append('count', shardId.count + Number(filterValue.value))
 
@@ -349,8 +338,8 @@ const FortuneWheel = (props) => {
         let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ?
             updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
 
-        if (true) {
-            // if(Number(tempSpinCount) > 0) {
+        // if (true) {
+        if(Number(tempSpinCount) > 0) {
             let trackerArray = []
             let indexArray = []
             slots.forEach((item, index) => {
