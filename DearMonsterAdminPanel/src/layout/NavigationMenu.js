@@ -51,10 +51,16 @@ const NavigationMenu = (props) => {
                             className="icon fas fa-plus"></span>Fight History</button>
                     </div>
                 </Link>
+                <Link to='/shard-type'>
+                    <div className="other-info">
+                        <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
+                            className="icon fas fa-plus"></span>Shard Types</button>
+                    </div>
+                </Link>
                 <Link to='/crystal-shard'>
                     <div className="other-info">
                         <button className="btn-default hvr-bounce-in nav-button" data-toggle="modal" data-target=".create-item"><span
-                            className="icon fas fa-plus"></span>Crystal Shard</button>
+                            className="icon fas fa-plus"></span>Shards</button>
                     </div>
                 </Link>
                 <Link to='/fortune-wheel'>

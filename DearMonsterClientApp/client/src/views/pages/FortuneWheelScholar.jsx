@@ -198,13 +198,14 @@ const FortuneWheelScholar = (props) => {
         // console.log('filterValue', filterValue)
         axios.get(`${apiUrl}/api/userShard/${userId}/scholar`)
             .then((response) => {
+                // console.log('reponseeeeeeee', response)
             let params = new URLSearchParams()
             params.append('userId', userId)
-            params.append('shardId', filterValue._id)
-                // console.log('user shards', response, filterValue._id)
-                const shardId = response.data.userShard.find(item => item.shardId === filterValue._id)
-                // console.log('shardId', shardId, filterValue._id)
-                if(response?.data?.userShard && shardId && shardId.shardId == filterValue._id) {
+            params.append('shardId', filterValue.shardType)
+                // console.log('user shards', response)
+                const shardId = response.data.userShard.find(item => item.shardId === filterValue.shardType)
+                // console.log('shardId', shardId, filterValue.shardType)
+                if(response?.data?.userShard && shardId && shardId.shardId == filterValue.shardType) {
                     params.append('count', shardId.count + Number(filterValue.value))
                     axios.put(`${apiUrl}/api/userShard/${userId}/scholar/${shardId._id}`, params, config)
                     .then((res) => {
@@ -315,7 +316,8 @@ const FortuneWheelScholar = (props) => {
         let trackerArray = []
         let indexArray = []
         slots.forEach((item, index) => {
-            trackerArray.push({name: item.option, number: index+1, value: item.value, actionType: item.actionType, prob: item.probability, _id: item._id})
+            trackerArray.push({name: item.option, number: index+1, value: item.value, 
+                shardType: item.shardType, actionType: item.actionType, prob: item.probability, _id: item._id})
             for(let i=1; i<= item.probability; i++) {
                 indexArray.push(index+1)
             }
@@ -339,7 +341,7 @@ const FortuneWheelScholar = (props) => {
             setTimeout(() => {
                 rewardUpdateCall(filterVal.value)
             }, 11000);
-        } else if(filterVal.actionType === 'Elemental Shard' || filterVal.actionType === 'Dearmonster Fragment' || filterVal.actionType === 'Dungeon Ticket') {
+        } else if(filterVal.shardType != null) {
             setTimeout(() => {
                 countUpdateCal(filterVal)
             }, 11000);
@@ -460,9 +462,9 @@ const FortuneWheelScholar = (props) => {
             {userId && <NavLinks match={match} />}
 			<div className='container center mt-6'>
 				<div className={`${userId} py-2 w-md-lg2 w-md2 mb-8`}>
-					<div className='center'>
+					{/* <div className='center'>
 						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
-					</div>
+					</div> */}
 					<div className='center flex-column'>
 						
 						<footer className='center flex align-items-center pb-4 mb-4'>
@@ -494,7 +496,7 @@ const FortuneWheelScholar = (props) => {
                                     <div className='center'>
                                         <div>
                                             <p className='text-white mt-4 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-                                                Please connect to see Fortune
+                                                Please connect for Fortune Wheel
                                             </p>
                                             <div
                                                 onClick={handleConnect}

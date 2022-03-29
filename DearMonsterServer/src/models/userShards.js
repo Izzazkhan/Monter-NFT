@@ -7,7 +7,7 @@ const UserShardSchema = new mongoose.Schema({
     },
     shardId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CrystalShard',
+        ref: 'Shard',
         required: true
     },
     count: {

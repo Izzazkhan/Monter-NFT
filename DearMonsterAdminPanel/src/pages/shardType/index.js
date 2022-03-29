@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from "react"
 import "../../App.css";
-import { getCrystalShard, addCrystalShard, editCrystalShard, deleteCrystalShard } from '../../redux/crystalShard/action';
+import { getShardType, deleteShardType } from '../../redux/shardType/action';
 import { connect } from 'react-redux';
 import { Modal, Button, Spinner } from "react-bootstrap"
 import {uploadsUrl} from '../../utilities/constant'
 
-function CrystalShard(props) {
+function ShardType(props) {
 
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
@@ -14,13 +14,13 @@ function CrystalShard(props) {
     const [skip, setSkip] = useState(0);
 
     useEffect(() => {
-        props.getCrystalShard(limit, skip)
+        props.getShardType(limit, skip)
     }, [limit, skip])
 
     useEffect(() => {
         setLoading(true)
-        if(props.shards.shards.length) {
-            setData(props.shards.shards)
+        if(props.shardType.shardType.length) {
+            setData(props.shardType.shardType)
         } else {
             setLoading(false)
         }
@@ -30,21 +30,18 @@ function CrystalShard(props) {
         if(data) {
             if(data.length) {
                 setLoading(false)
-            }
-        }
+            } 
+        } 
     }, [data])
 
-    // console.log('data', data)
-
-
     const editDetails = (data) => {
-        props.history.push('/crystal-shard/edit', { data })
+        props.history.push('/shard-type/edit', { data })
     }
 
-    const deleteCrystalShard = (id) => {
+    const deleteShardType = (id) => {
         // clearData();
         if (window.confirm("Are you sure?")) {
-            props.deleteCrystalShard(id, JSON.parse(localStorage.getItem('token')));
+            props.deleteShardType(id, JSON.parse(localStorage.getItem('token')));
 
         }
         // alert('can not delete')
@@ -55,16 +52,15 @@ function CrystalShard(props) {
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
-                        <h3>Shards</h3>
+                        <h3>Shard Type</h3>
                         {/* {!data.length && */}
-                            <button className="btn-default" onClick={() => props.history.push('/crystal-shard/create')}>ADD New</button>
+                            <button className="btn-default" onClick={() => props.history.push('/shard-type/create')}>ADD New</button>
                         {/* } */}
                         <table className="table">
                             <thead className="table__head">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    {/* <th>Image</th> */}
+                                    <th>Type Name</th>
+                                    <th>Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -74,15 +70,14 @@ function CrystalShard(props) {
                                 {loading ?  <Spinner animation="border" />
                                     : data.length ? data.map((data, index) => {
                                         return <tr key={(index + 1)}>
-                                            <td>{data.shardName}</td>
-                                            <td>{data.shardDescription}</td>
-                                            {/* <td>{data.crystalImage ? <img style={{
-                                    height: uploadsUrl + data.crystalImage.split('\\')[1] && '60px',
-                                    width: uploadsUrl + data.crystalImage.split('\\')[1] && '90px' 
-                                    }}  src={uploadsUrl + data.crystalImage.split('\\')[1]} 
-                                /> : 'No Image' }</td> */}
+                                            <td>{data.typeName}</td>
+                                            <td>{data.image ? <img style={{
+                                    height: uploadsUrl + data.image.split('\\')[1] && '60px',
+                                    width: uploadsUrl + data.image.split('\\')[1] && '90px' 
+                                    }}  src={uploadsUrl + data.image.split('\\')[1]} 
+                                /> : 'No Image' }</td>
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>
-                                                <button onClick={() => deleteCrystalShard(data._id)}>DELETE</button>
+                                                <button onClick={() => deleteShardType(data._id)}>DELETE</button>
                                             </td>
                                         </tr>
                                     }) : <div className='text-center'>
@@ -99,8 +94,8 @@ function CrystalShard(props) {
 }
 
 const mapStateToProps = state => ({
-    shards: state.CrystalShardReducer
+    shardType: state.ShardTypeReducer
 });
 
-export default connect(mapStateToProps, { getCrystalShard, addCrystalShard, editCrystalShard, deleteCrystalShard })(CrystalShard);
+export default connect(mapStateToProps, { getShardType, deleteShardType })(ShardType);
 

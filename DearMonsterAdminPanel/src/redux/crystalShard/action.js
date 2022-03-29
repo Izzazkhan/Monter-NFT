@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { Monster, CrystalShard } from '../../utilities/constant'
+import { Monster, CrystalShard, Shards } from '../../utilities/constant'
 
 export const getCrystalShard = (limit, skip) => dispatch => {
     axios
-        .get(`${CrystalShard}?limit=${limit}&skip=${skip}`)
+        // .get(`${Shards}?limit=${limit}&skip=${skip}`)
+        .get(`${Shards}`)
         .then((res) => {
             return dispatch({
                 type: 'GET_CRYSTALSHARD',
@@ -15,18 +16,11 @@ export const getCrystalShard = (limit, skip) => dispatch => {
         })
 };
 
-export const addCrystalShard = (data, imageUpload, token) => dispatch => {
-
-        let formData = new FormData();
-        if (imageUpload) {
-            formData.append("crystalImage", imageUpload, imageUpload.name);
-        }
-        const params = {
-            crystalImage: data.crystalImage,
-            name: data.name,
-            description: data.description
-        }
-        formData.append("data", JSON.stringify(params))
+export const addCrystalShard = (data, token) => dispatch => {
+        const params = new URLSearchParams()
+        params.append('shardTypeId', data.shardType)
+        params.append('shardName', data.shardName)
+        params.append('shardDescription', data.shardDescription)
         
         const config = {
             headers: {
@@ -36,7 +30,7 @@ export const addCrystalShard = (data, imageUpload, token) => dispatch => {
             }
         }
         axios
-            .post(CrystalShard, formData, config)
+            .post(Shards, params, config)
             .then((res) => {
                 return dispatch({
                 type: 'ADD_CRYSTALSHARD',
@@ -47,28 +41,22 @@ export const addCrystalShard = (data, imageUpload, token) => dispatch => {
             })
 };
 
-export const editCrystalShard = (data, imageUpload, token) => dispatch => {
+export const editCrystalShard = (data, token) => dispatch => {
 
-    let formData = new FormData();
-    if (imageUpload) {
-        formData.append("crystalImage", imageUpload, imageUpload.name);
-    }
-    const params = {
-        crystalImage: data.crystalImage,
-        name: data.name,
-        description: data.description
-    }
-    formData.append("data", JSON.stringify(params))
-    
-    const config = {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
-            "Token": `Bearer ${token.token}`
+    const params = new URLSearchParams()
+        params.append('shardTypeId', data.shardType)
+        params.append('shardName', data.shardName)
+        params.append('shardDescription', data.shardDescription)
+        
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`,
+                "Token": `Bearer ${token.token}`
+            }
         }
-    }
     axios
-        .put(`${CrystalShard}/${data._id}`, formData, config)
+        .put(`${Shards}/${data._id}`, params, config)
         .then((res) => {
             return dispatch({
                 type: 'EDIT_CRYSTALSHARD',
@@ -87,7 +75,7 @@ export const deleteCrystalShard = (id, token) => dispatch => {
             "Token": `Bearer ${token.token}`
         }
     }
-    axios.delete(`${CrystalShard}/${id}`, config)
+    axios.delete(`${Shards}/${id}`, config)
         .then((res) => {
             console.log('response delete', res)
             return dispatch({

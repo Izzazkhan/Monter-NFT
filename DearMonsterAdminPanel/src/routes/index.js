@@ -17,6 +17,8 @@ import RewardByWallet from '../pages/rewardByWallet/index'
 import FightHistory from '../pages/FightHistory/index'
 import CrystalShardForm from '../pages/crystalShard/form'
 import CrystalShard from '../pages/crystalShard/index'
+import ShardTypeForm from '../pages/shardType/form'
+import ShardType from '../pages/shardType/index'
 import FortuneWheelForm from '../pages/fortuneWheel/form'
 import FortuneWheel from '../pages/fortuneWheel/index'
 
@@ -57,6 +59,9 @@ const MainRoutes = (props) => {
                         <Route exact path={'/crystal-shard'} component={CrystalShard} />
                         <Route exact path={'/crystal-shard/create'} component={CrystalShardForm} />
                         <Route exact path={'/crystal-shard/edit'} component={CrystalShardForm} />
+                        <Route exact path={'/shard-type'} component={ShardType} />
+                        <Route exact path={'/shard-type/create'} component={ShardTypeForm} />
+                        <Route exact path={'/shard-type/edit'} component={ShardTypeForm} />
                         <Route exact path={'/side-setting'} component={SideSetting} />
                         <Route exact path={'/add-probabilty'} component={ProbabiltyForm} />
                         <Route exact path={'/edit-probabilty'} component={ProbabiltyForm} />

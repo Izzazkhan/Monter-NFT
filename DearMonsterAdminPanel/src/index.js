@@ -13,6 +13,7 @@ import ProbabilityReducer from './redux/probabilty/reducer'
 import FightHistoryReducer from './redux/fightHistory/reducer'
 import RewardByWalletReducer from './redux/rewardByWallet/reducer'
 import CrystalShardReducer from './redux/crystalShard/reducer'
+import ShardTypeReducer from './redux/shardType/reducer'
 import FortuneWheelReducer from './redux/fortuneWheel/reducer'
 import SpinCostReducer from './redux/spinCost/reducer'
 import BUSDRequestReducer from './redux/BUSDRequest/reducer'
@@ -32,7 +33,8 @@ const rootReducer = combineReducers({
   CrystalShardReducer,
   FortuneWheelReducer,
   SpinCostReducer,
-  BUSDRequestReducer
+  BUSDRequestReducer,
+  ShardTypeReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

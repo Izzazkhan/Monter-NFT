@@ -16,11 +16,15 @@ const withdrawRequest = require('./withdrawRequest');
 const scholarship = require('./scholarship');
 const activity = require('./activity');
 const crystalShard = require('./crystalShard');
+const shardType = require('./shardType');
+
 const userShard = require('./userShard');
 const fortuneWheel = require('./fortuneWheel');
 const spinCost = require('./spinCost');
 const spinRecord = require('./spinRecord');
 const BUSDRequest = require('./BUSDRequest');
+const Shards = require('./shards');
+
 
 const authenticate = require('../middlewares/authenticate');
 
@@ -51,10 +55,12 @@ router.use('/scholarship', scholarship);
 router.use('/activity', activity);
 router.use('/crystalShard', crystalShard);
 router.use('/userShard', userShard);
+router.use('/shardType', shardType);
 router.use('/fortuneWheel', fortuneWheel);
 router.use('/spinCost', spinCost);
 router.use('/spinRecord', spinRecord);
 router.use('/BUSDRequest', BUSDRequest);
+router.use('/Shards', Shards);
 
 
 module.exports = router

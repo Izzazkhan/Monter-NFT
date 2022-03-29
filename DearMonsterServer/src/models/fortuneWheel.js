@@ -19,7 +19,7 @@ const FortuneWheelSchema = new mongoose.Schema({
                 type: String,    // Shard, BUSD, DMS, Free Spins
                 required: true
             },
-            subActionType: {
+            shardType: {
                 type: String,   // not required, will be used if the actionType is Shard, id of shard type will be here
             },
             value: {

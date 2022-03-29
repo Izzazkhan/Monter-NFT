@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react"
 import "../../App.css"
 import { addFortuneWheel, editFortuneWheel } from '../../redux/fortuneWheel/action'
 import { connect } from 'react-redux'
+import { getShardType } from '../../redux/shardType/action';
 
 function FortuneWheelForm(props) {
 
@@ -23,14 +24,46 @@ function FortuneWheelForm(props) {
         }
     }, [])
 
+    const [shardTypeId, setShardTypeId] = useState('')
+    const [shardType, setShardType] = useState([])
+
+    const [limit, setLimit] = useState(30);
+    const [skip, setSkip] = useState(0);
+
+    useEffect(() => {
+        props.getShardType(limit, skip)
+    }, [limit, skip])
+
+
+    useEffect(() => {
+        if(props.shardType.shardType) {
+            setShardType(props.shardType.shardType)
+        }
+    }, [props, shardType])
+
     const onChangeSlot = (e, index) => {
         const list = [...slots]
         if (e.target) {
-            list[index][e.target.name] = e.target.name === 'probability' ? 
-            e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{4}).+/g, '$1') : e.target.value
+            list[index][e.target.name] = e.target.name === 'probability' 
+            ? 
+                e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{4}).+/g, '$1') 
+            : 
+            e.target.value
+        }
+        if(e.target) {
+            if(e.target.name === 'actionType' && e.target.value !== 'Shard') {
+                list[index]['shardType'] = null 
+            } else if(e.target.name === 'actionType' && e.target.value === 'Shard') {
+                list[index]['shardType'] = shardType[0]._id
+            }
+            else {
+                list[index][e.target.name] = e.target.value
+            }
         }
         setSlots(list)
       }
+
+      console.log('shardTypeIdshardTypeId', shardTypeId)
 
     const addSlot = () => {
         setSlots([
@@ -44,7 +77,7 @@ function FortuneWheelForm(props) {
         ])
     }
 
-    console.log('slots', slots)
+    // console.log('slots', slots)
 
     const removeSlot= (index) => {
         const list = [...slots];
@@ -117,18 +150,7 @@ function FortuneWheelForm(props) {
                                             placeholder={`Enter Probability`}
                                         />
                                     </div>
-                                    
-                                    <div className="form-group col-md-3 mb-3">
-                                        <label className="control-label">{'Action Type'}</label>
-                                        <select name='actionType' className='form-control  w-100px' onChange={(e) => onChangeSlot(e, i)} value={singleSlot.actionType}>
-										<option value={'BUSD'}>BUSD</option>
-										<option value={'Free Spin'}>Free Spin</option>
-										<option value={'DMS'}>DMS</option>
-										<option value={'Elemental Shard'}>Elemental Shard</option>
-										<option value={'Dearmonster Fragment'}>Dearmonster Fragment</option>
-										<option value={'Dungeon Ticket'}>Dungeon Ticket</option>
-									    </select>
-                                    </div>
+
                                     <div className="form-group col-md-2 mb-2">
                                         <label className="control-label">{'Value'}</label>
                                         <input type="text" required="required" className="form-control" onChange={(e) => onChangeSlot(e, i)}
@@ -136,6 +158,36 @@ function FortuneWheelForm(props) {
                                             placeholder={`Enter Value`}
                                         />
                                     </div>
+                                    
+                                    <div className="form-group col-md-2 mb-2">
+                                        <label className="control-label">{'Action Type'}</label>
+                                        <select name='actionType' className='form-control  w-100px' onChange={(e) => onChangeSlot(e, i)} value={singleSlot.actionType}>
+										<option value={'BUSD'}>BUSD</option>
+										<option value={'Free Spin'}>Free Spin</option>
+										<option value={'DMS'}>DMS</option>
+										<option value={'Shard'}>Shard</option>
+
+										{/* <option value={'Elemental Shard'}>Elemental Shard</option>
+										<option value={'Dearmonster Fragment'}>Dearmonster Fragment</option>
+										<option value={'Dungeon Ticket'}>Dungeon Ticket</option> */}
+									    </select>
+                                    </div>
+
+                                    {
+                                        singleSlot.actionType == 'Shard' && 
+                                        <div className="form-group col-md-2 mb-2">
+                                            <label className="control-label">{'Shard Type'}</label>
+                                            <select name='shardType' className='form-control  w-100px' 
+                                            onChange={(e) => onChangeSlot(e, i)} value={singleSlot.shardType}>
+                                            {shardType.map(item => {
+                                                return (
+                                                    <option value={item._id}>{item.typeName}</option>
+                                                )
+                                            })}
+                                            </select>
+                                        </div>
+                                    }
+                                    
                                     <div className="form-group col-md-2 mb-2" style={{marginTop: 16}}>
                                         <div className="col-md-6"><button className="btn-default hvr-bounce-in" onClick={() => removeSlot(i)}>Remove Slot</button></div>
                                     </div>
@@ -159,7 +211,8 @@ function FortuneWheelForm(props) {
 }
 
 const mapStateToProps = state => ({
-    fortuneWheel: state.FortuneWheelReducer
+    fortuneWheel: state.FortuneWheelReducer,
+    shardType: state.ShardTypeReducer
 })
 
-export default connect(mapStateToProps, { addFortuneWheel, editFortuneWheel })(FortuneWheelForm)
+export default connect(mapStateToProps, { addFortuneWheel, editFortuneWheel, getShardType })(FortuneWheelForm)
