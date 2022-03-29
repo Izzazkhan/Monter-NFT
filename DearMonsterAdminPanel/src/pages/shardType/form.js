@@ -21,7 +21,7 @@ function ShardTypeForm(props) {
                 typeName: propsData['typeName']
             })
             if(props.location.state.data.image) {
-                setImage(props.location.state.data.image.split('\\')[1])
+                setImage(props.location.state.data.image)
             }
         }
     }, [])

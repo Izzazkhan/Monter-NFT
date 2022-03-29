@@ -9,7 +9,6 @@ export const usePagination = (data, itemsPerPage) => {
 	const [pageData, setPageData] = React.useState([]);
 	const [totalPages, setTotalPages] = React.useState(0);
 
-	console.log('totalData::', totalData)
 
 	const paginate = (pageNumber) => {
 		console.log('pageNumberpageNumber', pageNumber)

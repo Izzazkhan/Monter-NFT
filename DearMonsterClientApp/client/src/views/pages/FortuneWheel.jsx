@@ -139,7 +139,7 @@ const FortuneWheel = (props) => {
                         .then((response) => {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Reward Deduction',
+                                title: 'Reward Earned',
                                 text: `${spinCost} Rewards added to the ${buyAs} rewards`
                             })
                         })
@@ -173,7 +173,7 @@ const FortuneWheel = (props) => {
                         .then((response) => {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Reward Deduction',
+                                title: 'Reward Earned',
                                 text: `${spinCost} Rewards added to the ${buyAs} rewards`
                             })
                         })
@@ -198,7 +198,7 @@ const FortuneWheel = (props) => {
         // console.log('filterValue', filterValue)
         axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
             .then((response) => {
-                // console.log('reponseeeeeeee', response)
+            console.log('reponseeeeeeee', response)
             let params = new URLSearchParams()
             params.append('userId', userId)
             params.append('shardId', filterValue.shardType)
@@ -212,8 +212,8 @@ const FortuneWheel = (props) => {
                         // console.log('put response:::::::::', res)
                         Swal.fire({
                         	icon: 'success',
-                        	title: 'User Shard',
-                        	text: `User shard has been created with count ${res.data.userShard.count}`
+                        	title: 'Congratulations',
+                        	text: `You have won ${shardId.count} shard.`
                         })
                     })
                     .catch((e) => {
@@ -313,47 +313,61 @@ const FortuneWheel = (props) => {
     }
 
     const handleSpinClick = () => {
-        let trackerArray = []
-        let indexArray = []
-        slots.forEach((item, index) => {
-            trackerArray.push({name: item.option, number: index+1, value: item.value, 
-                shardType: item.shardType, actionType: item.actionType, prob: item.probability, _id: item._id})
-            for(let i=1; i<= item.probability; i++) {
-                indexArray.push(index+1)
+
+
+        let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ? 
+        updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
+
+        if(true) {
+        // if(Number(tempSpinCount) > 0) {
+            let trackerArray = []
+            let indexArray = []
+            slots.forEach((item, index) => {
+                trackerArray.push({name: item.option, number: index+1, value: item.value, 
+                    shardType: item.shardType, actionType: item.actionType, prob: item.probability, _id: item._id})
+                for(let i=1; i<= item.probability; i++) {
+                    indexArray.push(index+1)
+                }
+            })
+
+            //generate random number from 1 to 1000
+            var random = Math.floor(Math.random() * 1000000)
+            // console.log('random', random)
+
+            let myValue =  indexArray[random - 1]
+            // console.log('myValue', myValue)
+            // console.log('trackerArray', trackerArray)
+            let filterVal = trackerArray.find(item => item.number == myValue)
+            // let filterVal = trackerArray[5]
+            // console.log('filterVal', filterVal)
+            if(filterVal.actionType === 'Free Spin') {
+                setTimeout(() => {
+                    spinUpdateCall(filterVal.value)
+                }, 11000);
+            } else if(filterVal.actionType === 'DMS') {
+                setTimeout(() => {
+                    rewardUpdateCall(filterVal.value)
+                }, 11000);
+            } else if(filterVal.shardType != null) {
+                setTimeout(() => {
+                    countUpdateCal(filterVal)
+                }, 11000);
+            } else if(filterVal.actionType === 'BUSD') {
+                setTimeout(() => {
+                    BUSDRequestCall(filterVal)
+                }, 11000);
             }
-        })
 
-        //generate random number from 1 to 1000
-        var random = Math.floor(Math.random() * 1000000)
-        // console.log('random', random)
-
-        let myValue =  indexArray[random - 1]
-        // console.log('myValue', myValue)
-        // console.log('trackerArray', trackerArray)
-        let filterVal = trackerArray.find(item => item.number == myValue)
-        // let filterVal = trackerArray[5]
-        // console.log('filterVal', filterVal)
-        if(filterVal.actionType === 'Free Spin') {
-            setTimeout(() => {
-                spinUpdateCall(filterVal.value)
-            }, 11000);
-        } else if(filterVal.actionType === 'DMS') {
-            setTimeout(() => {
-                rewardUpdateCall(filterVal.value)
-            }, 11000);
-        } else if(filterVal.shardType != null) {
-            setTimeout(() => {
-                countUpdateCal(filterVal)
-            }, 11000);
-        } else if(filterVal.actionType === 'BUSD') {
-            setTimeout(() => {
-                BUSDRequestCall(filterVal)
-            }, 11000);
+            let index = slots.findIndex(item => item.option === filterVal.name)
+            setPrizeNumber(index)
+            setMustSpin(true)
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Spin',
+                text: 'No spin in the inventory'
+            })
         }
-
-        let index = slots.findIndex(item => item.option === filterVal.name)
-        setPrizeNumber(index)
-        setMustSpin(true)
     }
 
 	const handleConnect = async () => {

@@ -37,13 +37,40 @@ exports.store = async (req, res) => {
 
 exports.show = async function (req, res) {
         try {
+            
             const userId = req.params.userId;
     
-            const userShard = await UserShard.find({userId, type: req.params.type});
+            // const userShard = await UserShard.find({userId, type: req.params.type});
+
+
+
+            const userShards = await UserShard.aggregate([
+                {
+                    $match: {
+                        userId,
+                        type: req.params.type
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        foreignField: '_id',
+                        localField: 'userId',
+                        as: 'users'
+                    }
+                },
+                {
+                    $users: '$users'
+                }
+            ]);
+
+
+
+
     
             // if (!userShard) return res.status(401).json({message: 'record against userShard does not exist'});
             
-            res.status(200).json({userShard, message: 'user shards fetched successfully'});
+            res.status(200).json({userShards, message: 'user shards fetched successfully'});
         } catch (error) {
             res.status(500).json({message: error.message})
         }

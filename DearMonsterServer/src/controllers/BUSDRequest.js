@@ -3,7 +3,6 @@ const UserEarning = require('../models/userEarning');
 
 
 exports.userWithdrawRequest = async function (req, res) {
-
     const wallet = req.params.wallet;
 
     const BUSDRequest_ = await BUSDRequest.find({ requesterAddress: wallet, type: req.params.type, isResolved: false });
