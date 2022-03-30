@@ -24,7 +24,7 @@ function CrystalShard(props) {
         } else {
             setLoading(false)
         }
-    }, [props])
+    }, [props, data])
 
     useEffect(() => {
         if(data) {
@@ -34,7 +34,7 @@ function CrystalShard(props) {
         }
     }, [data])
 
-    // console.log('data', data)
+    console.log('data', data)
 
 
     const editDetails = (data) => {
@@ -64,7 +64,6 @@ function CrystalShard(props) {
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    {/* <th>Image</th> */}
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -76,11 +75,6 @@ function CrystalShard(props) {
                                         return <tr key={(index + 1)}>
                                             <td>{data.shardName}</td>
                                             <td>{data.shardDescription}</td>
-                                            {/* <td>{data.crystalImage ? <img style={{
-                                    height: uploadsUrl + data.crystalImage.split('\\')[1] && '60px',
-                                    width: uploadsUrl + data.crystalImage.split('\\')[1] && '90px' 
-                                    }}  src={uploadsUrl + data.crystalImage.split('\\')[1]} 
-                                /> : 'No Image' }</td> */}
                                             <td><button onClick={() => editDetails(data)}>EDIT</button>
                                                 <button onClick={() => deleteCrystalShard(data._id)}>DELETE</button>
                                             </td>

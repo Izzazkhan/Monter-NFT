@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess, startLoading, stopLoading } from '../../store/actions/auth/login';
+import {uploadsUrl} from '../../utils/constant'
 
 
 const PostCard = ({ className, post, account }) => {
@@ -33,10 +34,11 @@ const PostCard = ({ className, post, account }) => {
 			</header>
 			<main className='center flex-column'>
 				<div>
-					<img src={post?.img} className='w-md2' />
+				{/* <img className='w-md2'  src={uploadsUrl + post.image} /> */}
+					{/* <img src={post?.img} className='w-md2' /> */}
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
-					<p className='text-center text-white mt-47px fs-18'>{`OwnerID: ${post?.ownerID}`}</p>
+					{/* <p className='text-center text-white mt-47px fs-18'>{`OwnerID: ${post?.ownerID}`}</p> */}
 					<div className='center mt-5'>
 						<div>
 							{/* {[...Array(post?.totalRating)].map((e, i) => {
@@ -51,16 +53,18 @@ const PostCard = ({ className, post, account }) => {
 							})} */}
 						</div>
 					</div>
-					{/* <div className='text-white center flex-column mt-5 fs-18'>
-						{Object.keys(post?.values).map((key, index) => {
-							return (
-								<div className='mb-4'>
-									<span className='me-2'>{key} :</span>
-									<span>{post?.values[key]}</span>
-								</div>
-							);
+					<div className='text-white center flex-column mt-5 fs-18'>
+						{Object.keys(post).map((key, index) => {
+							if(key != 'image') {
+								return (
+									<div className='mb-4'>
+										{key != 'shardName' && <span className='me-2'>{key} :</span> }
+										<span>{post[key]}</span>
+									</div>
+								);
+							}
 						})}
-					</div> */}
+					</div>
 					<div className='center center mt-5 mb-4  fs-19 text-white'>
 						{/* <p className='fs-30'>{post?.price}</p> */}
 					</div>

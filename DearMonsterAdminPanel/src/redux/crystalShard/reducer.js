@@ -3,7 +3,6 @@ const initialstate = {
 };
 
 const CrystalShardReducer = (state = initialstate, action) => {
-    // console.log('action.payload', action.payload)
     switch (action.type) {
         case 'GET_CRYSTALSHARD':
             return {

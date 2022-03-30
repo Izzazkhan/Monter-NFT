@@ -71,7 +71,7 @@ function FortuneWheelForm(props) {
           {
             option: "",
             probability: "",
-            actionType: '',
+            actionType: 'BUSD',
             value: ''
           }
         ])

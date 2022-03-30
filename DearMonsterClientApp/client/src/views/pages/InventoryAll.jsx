@@ -79,6 +79,9 @@ const Inventory = () => {
 		getCave();
 	}, [userId])
 
+	console.log('pageData', pageData)
+
+
 	const getCave = async () => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)

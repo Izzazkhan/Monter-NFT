@@ -5,21 +5,26 @@ import NavLinks from '../../components/Inventory/NavLinks';
 import PostCard from '../../components/Inventory/PostCardItem';
 import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectUserSuccess } from '../../store/actions/auth/login';
+import { connectUserSuccess } from './../../store/actions/auth/login';
 import Web3 from 'web3';
 import DearMonster from '../../contracts/DearMonster.json';
 import data from "../../data/Post.json";
 import axios from 'axios'
-import { apiUrl } from '../../utils/constant';
+import { apiUrl } from '../../utils/constant'
 
 const match = {params : { slug: 'items' }}
 
-const Inventory = () => {
-	const [posts, setPosts] = React.useState([]);
-	const { userId } = useSelector((state) => state.auth);
-	const [account, setAccount] = useState();
+const InventoryItem = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+
+	const { userId } = useSelector((state) => state.auth);
+
+	const [posts, setPosts] = useState([]);
+	const [account, setAccount] = useState();
+	const [paths, setPaths] = useState([]);
+	const [attributes, setAttributes] = useState([]);
+
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
 		usePagination(posts, 30, history.location.pathname);
 
@@ -47,44 +52,13 @@ const Inventory = () => {
 		setAccount(accounts[0]);
 		dispatch(connectUserSuccess(accounts[0]))
 
-        // let params = new URLSearchParams()
-        // params.append('userId', accounts[0])
-        // params.append('shardId', '62304c9123c9a0878cda622e')
-        // params.append('count', 2)
-
-        // const config = {
-        //     headers: {
-        //         'Content-Type': 'application/x-www-form-urlencoded',
-        //         'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
-        //     }
-        // }
-        // axios.post(`${apiUrl}/api/userShard`, params, config)
-        //     .then((res) => {
-        //         console.log('response:::::::::', res)
-        //         // getData(userId)
-        //         // dispatch(stopLoading(false))
-        //         // Swal.fire({
-        //         // 	icon: 'success',
-        //         // 	title: 'Item Added To Sell',
-        //         // 	text: 'Please check Inventory Trading for items on trade!'
-        //         // })
-        //     })
-        //     .catch((e) => {
-        //         console.log(e)
-        //         // dispatch(stopLoading(false))
-        //         // Swal.fire({
-        //         // 	icon: 'error',
-        //         // 	title: 'Error',
-        //         // 	text: 'Oops, Something went wrong'
-        //         // })
-        //     })
 	};
 
 	useEffect(() => {
-		setAccountFun();
+		getConnection();
 	}, [window.web3])
 
-	const setAccountFun = async () => {
+	const getConnection = async () => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -102,9 +76,10 @@ const Inventory = () => {
 	};
 
 	useEffect(() => {
-		getCave();
+		if(userId) {
+			getCave();
+		}
 	}, [userId])
-
 
 	const getCave = async () => {
 		if (window.ethereum) {
@@ -122,30 +97,31 @@ const Inventory = () => {
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
 		getData(accounts[0]);
-
 	};
 
 	function getData(owner) {
 		let _posts = []
-		axios.get(`${apiUrl}/api/userShard/` + userId)
+		axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
 			.then((res) => {
-
-				console.log('res.data ================')
-				console.log(res.data)
-
-				if (res.data.userShard && res.data.userShard.length > 0) {
-					res.data.userShard.forEach(item => {
-						let post = {}
-						// post['price'] = item.price
-						post['ownerID'] = `${item.userId.substring(0, 4)}...${item.userId.slice(-4)}`
-						_posts.push(post);
+				// console.log('res.data ================')
+					console.log(res.data)
+				if (res.data.userShards && res.data.userShards.length > 0) {
+					
+					res.data.userShards.forEach(item => {
+							let post = {}
+							// post.values['Level'] = item.values.Level
+							// post['image'] = item.shardTypes.image ? item.shardTypes.image : ''
+							post['shardName'] = item.shards.shardName
+							post['count'] = item.count
+							post['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`
+							_posts.push(post)
 					})
 				}
 				setPosts(_posts)
 				doPagination(_posts);
 			})
 			.catch((e) => {
-				console.log("Error ----------------")
+				// console.log("Error ----------------")
 				console.log(e)
 			})
 	}
@@ -154,42 +130,44 @@ const Inventory = () => {
 		<div>
 			<CurrenPageTitle title='Inventory'></CurrenPageTitle>
 			<NavLinks match={match} />
-			{
-				userId ?
+			{userId ?
+				<div className='container'>
+					<div className='center'>
+						{
+							posts.length < 1 ? (
+								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+									You Don't have any Items
+								</p>
+							)
+								:
+								''
+
+						}
+					</div>
+				</div>
+				:
+				(
 					<div className='container'>
 						<div className='center'>
-							{
-								pageData.length < 1 ? (
-									<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-										You Don't have any item in trading
-									</p>
-								) :
-									''
-							}
-
-						</div>
-					</div>
-					:
-					(
-						<div className='container'>
-							<div className='center'>
-								<div>
-									<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-										Please connect to see Inventory
-									</p>
-									<div
-										onClick={handleConnect}
-										className={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
-									>
-										Connect
-									</div>
+							<div>
+								<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+									Please connect to see Items
+								</p>
+								<div
+									onClick={handleConnect}
+									className={` header-Connect-btn h-40px w-sm mx-auto  mt-5 center bold cursor`}
+								>
+									Connect
 								</div>
 							</div>
 						</div>
-					)
+					</div>
+				)
 			}
+
 			{
 				userId ?
+
 					<div className='container mt-10 px-md-auto px-8'>
 						<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
 							{pageData.map((post) => {
@@ -221,4 +199,4 @@ const Inventory = () => {
 	);
 };
 
-export default Inventory;
+export default InventoryItem;
