@@ -36,4 +36,4 @@ export const SpinCost = url + '/api/spinCost'
 export const BUSDRequest = url + '/api/BUSDRequest'
 
 
-export const uploadsUrl = `${url}/uploads/`
+export const uploadsUrl = `${url}/`
