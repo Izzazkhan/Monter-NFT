@@ -35,11 +35,17 @@ const FortuneWheel = (props) => {
         if (userId) {
             axios.get(`${apiUrl}/api/spinRecord`)
                 .then((res) => {
-                    setUpdatedSpinData(res.data.spinRecord)
+                    if(res.data.spinRecord) {
+                        setUpdatedSpinData(res.data.spinRecord)
+                    }
                 })
                 .catch((e) => {
-                    console.log("Error ----------------")
                     console.log(e)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
                 })
         }
     }, [userId, spinRecord])
@@ -48,41 +54,49 @@ const FortuneWheel = (props) => {
         if (userId) {
             axios.get(`${apiUrl}/api/fortuneWheel`)
                 .then((res) => {
-                    const slotsMapped = res.data.fortuneWheel[0].slots.map(item => {
-                        return {
-                            ...item,
-                            probability: item.probability * 10000
-                        }
-                    }).sort((a, b) => b.probability - a.probability)
-                    setSlots(slotsMapped)
+                    if(res.data.fortuneWheel.length) {
+                        const slotsMapped = res.data.fortuneWheel[0].slots.map(item => {
+                            return {
+                                ...item,
+                                probability: item.probability * 10000
+                            }
+                        }).sort((a, b) => b.probability - a.probability)
+                        setSlots(slotsMapped)
+                    }
                 })
                 .catch((e) => {
-                    console.log("Error ----------------")
                     console.log(e)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
                 })
-
             axios
                 .get(`${apiUrl}/api/shards`)
                 .then((res) => {
-                    setAllShards(res.data.shards)
+                    if(res.data.shards.length) {
+                        setAllShards(res.data.shards)
+                    }
                 })
                 .catch((e) => {
-                    console.log("error: ", e);
+                    console.log(e)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
                 })
         }
     }, [userId])
 
-    console.log('slots', slots)
-
     const spinUpdateCall = (filterValue) => {
-        // console.log('filterValue', filterValue)
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
         if (updatedSpinData.length) {
             const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs && item.no_of_spin)
             if (noOfspin) {
-                // console.log('noOfspin', noOfspin)
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
                 } else {
@@ -99,6 +113,11 @@ const FortuneWheel = (props) => {
                     })
                     .catch((error) => {
                         console.log(error)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Oops, Something went wrong'
+                        })
                     })
             } else {
                 if (filterValue != undefined) {
@@ -108,7 +127,6 @@ const FortuneWheel = (props) => {
                 }
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
-                        // console.log('spin record', response)
                         setSpinRecord(response.data.spinRecord)
                         Swal.fire({
                             icon: 'success',
@@ -118,6 +136,11 @@ const FortuneWheel = (props) => {
                     })
                     .catch((error) => {
                         console.log(error)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Oops, Something went wrong'
+                        })
                     })
             }
 
@@ -129,11 +152,15 @@ const FortuneWheel = (props) => {
             }
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                 .then((response) => {
-                    // console.log('spin record', response)
                     setSpinRecord(response.data.spinRecord)
                 })
                 .catch((error) => {
                     console.log(error)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
                 })
         }
     }
@@ -156,6 +183,11 @@ const FortuneWheel = (props) => {
                             })
                             .catch((error) => {
                                 console.log(error)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Oops, Something went wrong'
+                                })
                             })
                     } else if (response.data.earnerData.totalAmount - Number(spinCost) > 0) {
                         updateParams.append('totalAmount', response.data.earnerData.totalAmount - Number(spinCost))
@@ -169,6 +201,11 @@ const FortuneWheel = (props) => {
                             })
                             .catch((error) => {
                                 console.log(error)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Oops, Something went wrong'
+                                })
                             })
                     } else {
                         Swal.fire({
@@ -190,6 +227,11 @@ const FortuneWheel = (props) => {
                             })
                             .catch((error) => {
                                 console.log(error)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Oops, Something went wrong'
+                                })
                             })
                     } else {
                         Swal.fire({
@@ -202,15 +244,18 @@ const FortuneWheel = (props) => {
             })
             .catch((error) => {
                 console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Oops, Something went wrong'
+                })
             })
     }
 
     const countUpdateCal = (filterValue) => {
-        console.log('filterValue', filterValue, allShards)
         axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
             .then((response) => {
                 const filterShard = allShards.find(item => item.shardTypeId === filterValue.shardType)
-                // console.log('filterShard', filterShard)
                 let params = new URLSearchParams()
                 params.append('userId', userId)
                 params.append('shardId', filterShard._id) 
@@ -220,7 +265,6 @@ const FortuneWheel = (props) => {
                     params.append('count', shardId.count + Number(filterValue.value))
                     axios.put(`${apiUrl}/api/userShard/${userId}/owner/${shardId._id}`, params, config)
                         .then((res) => {
-                            // console.log('put response:::::::::', res)
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Congratulations',
@@ -240,7 +284,6 @@ const FortuneWheel = (props) => {
                     params.append('type', 'owner')
                     axios.post(`${apiUrl}/api/userShard`, params, config)
                         .then((res) => {
-                            // console.log('post response:::::::::', res)
                             Swal.fire({
                                 icon: 'success',
                                 title: 'User Shard',
@@ -259,6 +302,11 @@ const FortuneWheel = (props) => {
             })
             .catch((error) => {
                 console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Oops, Something went wrong'
+                })
             })
     }
 
@@ -318,6 +366,11 @@ const FortuneWheel = (props) => {
             }
         } catch (error) {
             console.log(error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Oops, Something went wrong'
+            })
         }
     }
 
@@ -391,6 +444,11 @@ const FortuneWheel = (props) => {
                             })
                             .catch((error) => {
                                 console.log(error)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Oops, Something went wrong'
+                                })
                             })
                     }
                 }
@@ -426,9 +484,7 @@ const FortuneWheel = (props) => {
 
         axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
             .then((response) => {
-                console.log('response', response)
                 if(response?.data?.earnerData) {
-                    console.log(spinCost)
                     if(response.data.earnerData.totalAmount > Number(spinCost)) {
                         rewardUpdateCall()
                         spinUpdateCall()
@@ -439,10 +495,21 @@ const FortuneWheel = (props) => {
                             text: 'User earning is not enough to buy spin'
                         })
                     }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Buy Spin',
+                        text: 'User earning is not enough to buy spin'
+                    }) 
                 }
             })
             .catch((error) => {
                 console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Oops, Something went wrong'
+                })
             })
         
     }
