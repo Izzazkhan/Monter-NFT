@@ -36,7 +36,7 @@ const FortuneWheel = (props) => {
         if (userId) {
             axios.get(`${apiUrl}/api/spinRecord`)
                 .then((res) => {
-                    if(res.data.spinRecord) {
+                    if (res.data.spinRecord) {
                         setUpdatedSpinData(res.data.spinRecord)
                     }
                 })
@@ -55,7 +55,7 @@ const FortuneWheel = (props) => {
         if (userId) {
             axios.get(`${apiUrl}/api/fortuneWheel`)
                 .then((res) => {
-                    if(res.data.fortuneWheel.length) {
+                    if (res.data.fortuneWheel.length) {
                         const slotsMapped = res.data.fortuneWheel[0].slots.map(item => {
                             return {
                                 ...item,
@@ -76,7 +76,7 @@ const FortuneWheel = (props) => {
             axios
                 .get(`${apiUrl}/api/shards`)
                 .then((res) => {
-                    if(res.data.shards.length) {
+                    if (res.data.shards.length) {
                         setAllShards(res.data.shards)
                     }
                 })
@@ -92,25 +92,27 @@ const FortuneWheel = (props) => {
     }, [userId])
 
     const wheelLogCall = (data, shardType) => {
-        const updateParams = new URLSearchParams()
-        updateParams.append('actionType', data.actionType)
-        updateParams.append('value', data.value)
-        updateParams.append('probability', data.prob)
-        updateParams.append('requesterAddress', userId)
-        if(shardType != undefined) {
-            updateParams.append('shardType', shardType)
+        if (data && Object.keys(data).length > 0) {
+            const updateParams = new URLSearchParams()
+            updateParams.append('actionType', data.actionType)
+            updateParams.append('value', data.value)
+            updateParams.append('probability', data.prob)
+            updateParams.append('requesterAddress', userId)
+            if (shardType != undefined) {
+                updateParams.append('shardType', shardType)
+            }
+            axios.post(`${apiUrl}/api/wheelHistory`, updateParams, config)
+                .then((response) => {
+                    console.log('wheel log', response)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         }
-        axios.post(`${apiUrl}/api/wheelHistory`, updateParams, config)
-            .then((response) => {
-                console.log('wheel log', response)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
     }
 
     const spinUpdateCall = (newValue) => {
-        const filterValue = Number(newValue.value) - 1
+        const filterValue = newValue ? Number(newValue.value) - 1 : undefined
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
@@ -130,7 +132,9 @@ const FortuneWheel = (props) => {
                             title: 'Spin Record',
                             text: `Spin record has been updated`
                         })
-                        wheelLogCall(newValue)
+                        if (filterValue) {
+                            wheelLogCall(newValue)
+                        }
                     })
                     .catch((error) => {
                         console.log(error)
@@ -154,7 +158,9 @@ const FortuneWheel = (props) => {
                             title: 'Spin Record',
                             text: `Spin record has been updated`
                         })
-                        wheelLogCall(newValue)
+                        if (filterValue) {
+                            wheelLogCall(newValue)
+                        }
                     })
                     .catch((error) => {
                         console.log(error)
@@ -194,7 +200,7 @@ const FortuneWheel = (props) => {
                 const updateParams = new URLSearchParams()
                 updateParams.append('earnerAddress', userId)
                 if (response?.data?.earnerData) {
-                    if (DMSSlot.value != undefined) {
+                    if (DMSSlot && DMSSlot.value != undefined) {
                         updateParams.append('totalAmount', response.data.earnerData.totalAmount + Number(DMSSlot.value))
                         axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                             .then((response) => {
@@ -203,7 +209,9 @@ const FortuneWheel = (props) => {
                                     title: 'Reward Earned',
                                     text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
                                 })
-                                wheelLogCall(DMSSlot)
+                                if (DMSSlot) {
+                                    wheelLogCall(DMSSlot)
+                                }
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -222,7 +230,9 @@ const FortuneWheel = (props) => {
                                     title: 'Reward Deduction',
                                     text: `${spinCost} DMS deducted from the ${buyAs} wallet`
                                 })
-                                wheelLogCall(DMSSlot)
+                                if (DMSSlot) {
+                                    wheelLogCall(DMSSlot)
+                                }
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -240,7 +250,7 @@ const FortuneWheel = (props) => {
                         })
                     }
                 } else {
-                    if (DMSSlot.value != undefined) {
+                    if (DMSSlot && DMSSlot.value != undefined) {
                         updateParams.append('totalAmount', Number(DMSSlot.value))
                         axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                             .then((response) => {
@@ -249,6 +259,8 @@ const FortuneWheel = (props) => {
                                     title: 'Reward Earned',
                                     text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
                                 })
+
+
                                 wheelLogCall(DMSSlot)
                             })
                             .catch((error) => {
@@ -284,7 +296,7 @@ const FortuneWheel = (props) => {
                 const filterShard = allShards.find(item => item.shardTypeId === filterValue.shardType)
                 let params = new URLSearchParams()
                 params.append('userId', userId)
-                params.append('shardId', filterShard._id) 
+                params.append('shardId', filterShard._id)
                 const shardId = response.data.userShards.find(item => item.shardId === filterShard._id)
 
                 if (response?.data?.userShards && shardId && shardId.shardId == filterShard._id) {
@@ -415,7 +427,7 @@ const FortuneWheel = (props) => {
             updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
 
         // if (true) {
-        if(Number(tempSpinCount) > 0) {
+        if (Number(tempSpinCount) > 0) {
             let trackerArray = []
             let indexArray = []
             slots.forEach((item, index) => {
@@ -428,9 +440,7 @@ const FortuneWheel = (props) => {
                 }
             })
             // console.log('indexArray', indexArray)
-            //generate random number from 1 to 1000
-            var random = Math.floor(Math.random() * 1000000)   // 0 to 999999
-            // console.log('random', random)
+            var random = Math.floor(Math.random() * 100000000)   // 0 to 99999999
 
             let myValue = indexArray[random]   // 0 to 99999
             // console.log('myValue', myValue)
@@ -518,8 +528,9 @@ const FortuneWheel = (props) => {
 
         axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
             .then((response) => {
-                if(response?.data?.earnerData) {
-                    if(response.data.earnerData.totalAmount > Number(spinCost)) {
+
+                if (response?.data?.earnerData) {
+                    if (response.data.earnerData.totalAmount > Number(spinCost)) {
                         rewardUpdateCall()
                         spinUpdateCall()
                     } else {
@@ -534,7 +545,7 @@ const FortuneWheel = (props) => {
                         icon: 'error',
                         title: 'Buy Spin',
                         text: 'User earning is not enough to buy spin'
-                    }) 
+                    })
                 }
             })
             .catch((error) => {
@@ -545,7 +556,7 @@ const FortuneWheel = (props) => {
                     text: 'Oops, Something went wrong'
                 })
             })
-        
+
     }
 
     return (
@@ -634,37 +645,37 @@ const FortuneWheel = (props) => {
                     <div className='center flex-column'>
                         <footer className='center flex align-items-center pb-4 mb-4'>
                             {userId ? (
-                                <div> 
+                                <div>
                                     {slots.length ?
                                         <div className={`wheel-wrapper  ${mustSpin ? 'rotate' : ''} `}>
-                                        <Wheel
-                                            mustStartSpinning={mustSpin}
-                                            onStopSpinning={() => setMustSpin(!mustSpin)}
-                                            prizeNumber={prizeNumber}
-                                            data={slots}
-                                            outerBorderColor='#E0E1DE'
-                                            outerBorderWidth='15'
-                                            innerBorderColor='#051746'
-                                            innerBorderWidth='40'
-                                            radiusLineColor='#b1b1b1'
-                                            radiusLineWidth='2'
-                                            backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
-                                            textColors={['#ffffff']}
-                                            fontSize='13'
-                                        />
-                                        <span className="inner-first">SPIN</span>
-                                        <span className="inner-second"></span>
+                                            <Wheel
+                                                mustStartSpinning={mustSpin}
+                                                onStopSpinning={() => setMustSpin(!mustSpin)}
+                                                prizeNumber={prizeNumber}
+                                                data={slots}
+                                                outerBorderColor='#E0E1DE'
+                                                outerBorderWidth='15'
+                                                innerBorderColor='#051746'
+                                                innerBorderWidth='40'
+                                                radiusLineColor='#b1b1b1'
+                                                radiusLineWidth='2'
+                                                backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
+                                                textColors={['#ffffff']}
+                                                fontSize='13'
+                                            />
+                                            <span className="inner-first">SPIN</span>
+                                            <span className="inner-second"></span>
 
-                                    </div> : 
-                                    <div className='container'>
-                                    <div className='center'>
-                                        <div>
-                                            <p className='text-white mt-4 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
-                                                Coming Soon
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>}
+                                        </div> :
+                                        <div className='container'>
+                                            <div className='center'>
+                                                <div>
+                                                    <p className='text-white mt-4 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
+                                                        Coming Soon
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>}
 
                                 </div>
                             ) : (
@@ -691,7 +702,7 @@ const FortuneWheel = (props) => {
                         <footer className='center mt-2 flex align-items-center pb-4 mb-4'>
                             {userId && slots.length ? (
                                 <div>
-                                    {spinEnable ? 
+                                    {spinEnable ?
                                         <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
                                             Spin
                                         </div> :
