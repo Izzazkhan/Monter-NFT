@@ -34,6 +34,7 @@ export const Shards = url + '/api/shards'
 export const FortuneWheel = url + '/api/fortuneWheel'
 export const SpinCost = url + '/api/spinCost'
 export const BUSDRequest = url + '/api/BUSDRequest'
+export const WheelHistory = url + '/api/wheelHistory'
 
 
-export const uploadsUrl = `${url}/uploads/`
+export const uploadsUrl = `${url}/`

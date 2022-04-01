@@ -17,6 +17,8 @@ import ShardTypeReducer from './redux/shardType/reducer'
 import FortuneWheelReducer from './redux/fortuneWheel/reducer'
 import SpinCostReducer from './redux/spinCost/reducer'
 import BUSDRequestReducer from './redux/BUSDRequest/reducer'
+import WheelHistoryReducer from './redux/wheelHistory/reducer'
+
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
@@ -34,7 +36,8 @@ const rootReducer = combineReducers({
   FortuneWheelReducer,
   SpinCostReducer,
   BUSDRequestReducer,
-  ShardTypeReducer
+  ShardTypeReducer,
+  WheelHistoryReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

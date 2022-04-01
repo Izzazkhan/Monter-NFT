@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios'
 import { Wheel } from 'react-custom-roulette'
 import NavLinks from '../../components/fortuneWheel/NavLinks';
+import Loading from '../../components/common/Loading';
 
 const config = {
     headers: {
@@ -90,7 +91,26 @@ const FortuneWheel = (props) => {
         }
     }, [userId])
 
-    const spinUpdateCall = (filterValue) => {
+    const wheelLogCall = (data, shardType) => {
+        const updateParams = new URLSearchParams()
+        updateParams.append('actionType', data.actionType)
+        updateParams.append('value', data.value)
+        updateParams.append('probability', data.prob)
+        updateParams.append('requesterAddress', userId)
+        if(shardType != undefined) {
+            updateParams.append('shardType', shardType)
+        }
+        axios.post(`${apiUrl}/api/wheelHistory`, updateParams, config)
+            .then((response) => {
+                console.log('wheel log', response)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    const spinUpdateCall = (newValue) => {
+        const filterValue = Number(newValue.value) - 1
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
@@ -110,6 +130,7 @@ const FortuneWheel = (props) => {
                             title: 'Spin Record',
                             text: `Spin record has been updated`
                         })
+                        wheelLogCall(newValue)
                     })
                     .catch((error) => {
                         console.log(error)
@@ -133,6 +154,7 @@ const FortuneWheel = (props) => {
                             title: 'Spin Record',
                             text: `Spin record has been updated`
                         })
+                        wheelLogCall(newValue)
                     })
                     .catch((error) => {
                         console.log(error)
@@ -153,6 +175,7 @@ const FortuneWheel = (props) => {
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                 .then((response) => {
                     setSpinRecord(response.data.spinRecord)
+                    wheelLogCall(newValue)
                 })
                 .catch((error) => {
                     console.log(error)
@@ -165,21 +188,22 @@ const FortuneWheel = (props) => {
         }
     }
 
-    const rewardUpdateCall = (DMSValue) => {
+    const rewardUpdateCall = (DMSSlot) => {
         axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
             .then((response) => {
                 const updateParams = new URLSearchParams()
                 updateParams.append('earnerAddress', userId)
                 if (response?.data?.earnerData) {
-                    if (DMSValue != undefined) {
-                        updateParams.append('totalAmount', response.data.earnerData.totalAmount + Number(DMSValue))
+                    if (DMSSlot.value != undefined) {
+                        updateParams.append('totalAmount', response.data.earnerData.totalAmount + Number(DMSSlot.value))
                         axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                             .then((response) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Reward Earned',
-                                    text: `${DMSValue} Rewards added to the ${buyAs} rewards`
+                                    text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
                                 })
+                                wheelLogCall(DMSSlot)
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -196,8 +220,9 @@ const FortuneWheel = (props) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Reward Deduction',
-                                    text: `${spinCost} Rewards deducted from the ${buyAs} rewards`
+                                    text: `${spinCost} DMS deducted from the ${buyAs} wallet`
                                 })
+                                wheelLogCall(DMSSlot)
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -215,15 +240,16 @@ const FortuneWheel = (props) => {
                         })
                     }
                 } else {
-                    if (DMSValue != undefined) {
-                        updateParams.append('totalAmount', Number(DMSValue))
+                    if (DMSSlot.value != undefined) {
+                        updateParams.append('totalAmount', Number(DMSSlot.value))
                         axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                             .then((response) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Reward Earned',
-                                    text: `${DMSValue} Rewards added to the ${buyAs} rewards`
+                                    text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
                                 })
+                                wheelLogCall(DMSSlot)
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -237,7 +263,7 @@ const FortuneWheel = (props) => {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: `Rewards cannot be deducted from the ${buyAs} rewards`
+                            text: `Rewards cannot be deducted from the ${buyAs} wallet`
                         })
                     }
                 }
@@ -270,6 +296,7 @@ const FortuneWheel = (props) => {
                                 title: 'Congratulations',
                                 text: `You have won ${Number(filterValue.value)} new shards.`
                             })
+                            wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
                             console.log(e)
@@ -289,6 +316,7 @@ const FortuneWheel = (props) => {
                                 title: 'User Shard',
                                 text: `User shard has been updated with count ${res.data.userShard.count}`
                             })
+                            wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
                             console.log(e)
@@ -326,6 +354,7 @@ const FortuneWheel = (props) => {
                                 title: 'BUSD Requested',
                                 text: `BUSD request has been updated with amount ${filterValue.value}`
                             })
+                            wheelLogCall(filterValue)
                         }
                     } else {
                         Swal.fire({
@@ -354,6 +383,7 @@ const FortuneWheel = (props) => {
                                 title: 'BUSD Requested',
                                 text: `BUSD request has been created with amount ${filterValue.value}`
                             })
+                            wheelLogCall(filterValue)
                         }
                     }
                 } catch (error) {
@@ -375,7 +405,6 @@ const FortuneWheel = (props) => {
     }
 
     const handleSpinClick = () => {
-
         setsSpinEnable(false)
         let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ?
             updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
@@ -393,7 +422,7 @@ const FortuneWheel = (props) => {
                     indexArray.push(index + 1)
                 }
             })
-
+            // console.log('indexArray', indexArray)
             //generate random number from 1 to 1000
             var random = Math.floor(Math.random() * 1000000)
             // console.log('random', random)
@@ -406,12 +435,12 @@ const FortuneWheel = (props) => {
             // console.log('filterVal', filterVal)
             if (filterVal.actionType === 'Free Spin') {
                 setTimeout(() => {
-                    spinUpdateCall(Number(filterVal.value) - 1)
+                    spinUpdateCall(filterVal)
                     setsSpinEnable(true)
                 }, 11000);
             } else if (filterVal.actionType === 'DMS') {
                 setTimeout(() => {
-                    rewardUpdateCall(filterVal.value)
+                    rewardUpdateCall(filterVal)
                     setsSpinEnable(true)
                 }, 11000);
             } else if (filterVal.shardType != null) {
@@ -597,11 +626,7 @@ const FortuneWheel = (props) => {
             {/* {userId && <NavLinks match={match} />} */}
             <div className='container center mt-6'>
                 <div className={`${userId} py-2 w-md-lg2 w-md2 mb-8`}>
-                    {/* <div className='center'>
-						<img src='/assets/gif/Cave Animated.gif' alt='' className='w-75 mt-7' />
-					</div> */}
                     <div className='center flex-column'>
-
                         <footer className='center flex align-items-center pb-4 mb-4'>
                             {userId ? (
                                 <div> 
@@ -659,13 +684,18 @@ const FortuneWheel = (props) => {
 
                     <div className='center fs-19 flex-column'>
                         <footer className='center mt-2 flex align-items-center pb-4 mb-4'>
-                            {userId && slots.length && (
+                            {userId && slots.length ? (
                                 <div>
-                                    <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold ${spinEnable && 'cursor'}`} onClick={spinEnable && handleSpinClick}>
-                                        Spin
-                                    </div>
+                                    {spinEnable ? 
+                                        <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={handleSpinClick}>
+                                            Spin
+                                        </div> :
+                                        <div className='center mt-6'>
+                                            <Loading />
+                                        </div>
+                                    }
                                 </div>
-                            )}
+                            ) : ''}
                         </footer>
                     </div>
                 </div>

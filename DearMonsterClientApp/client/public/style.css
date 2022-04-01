@@ -248,3 +248,24 @@
     pointer-events: none;
     opacity: 0.7;
   } */
+
+  .header-logo {
+    height: 90px;
+    margin-left: -82px;
+    margin-right: 10px
+  }
+  .header-logo-connect {
+    height: 78px;
+    margin-left: -100px;
+    margin-right: 10px;
+  }
+  .header-tab-connect {
+    margin-right: -20px;
+    margin-left: -2px;
+  }
+  .header-wallet-connect {
+    margin-right: -45px;
+  }
+  .header-wallet {
+    margin-right: -80px;
+  }

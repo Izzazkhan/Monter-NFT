@@ -24,6 +24,7 @@ const spinCost = require('./spinCost');
 const spinRecord = require('./spinRecord');
 const BUSDRequest = require('./BUSDRequest');
 const Shards = require('./shards');
+const wheelHistory = require('./wheelHistory');
 
 
 const authenticate = require('../middlewares/authenticate');
@@ -61,6 +62,8 @@ router.use('/spinCost', spinCost);
 router.use('/spinRecord', spinRecord);
 router.use('/BUSDRequest', BUSDRequest);
 router.use('/Shards', Shards);
+router.use('/wheelHistory', wheelHistory);
+
 
 
 module.exports = router

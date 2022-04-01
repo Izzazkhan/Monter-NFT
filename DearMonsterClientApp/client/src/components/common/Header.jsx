@@ -163,7 +163,7 @@ const Header = () => {
 		<section>
 			<section className='container d-flex py-4 justify-content-between  align-items-center'>
 				<Link to='/'>
-					<img src='/assets/imgs/header/logo.png' alt='' style={{height: '82px', marginLeft: '-82px', marginRight: '10px'}} />
+					<img src='/assets/imgs/header/logo.png' alt='' className={userId ? 'header-logo-connect' : 'header-logo'} />
 				</Link>
 				<button className='btn d-lg-none d-flex' onClick={() => setActive(true)}>
 					<img src='/assets/imgs/Hamburger.png' className='w-35px' alt='' />
@@ -182,8 +182,8 @@ const Header = () => {
 						<img src='/assets/imgs/cancel.png' className='w-35px' alt='' />
 					</button>
 					<div
-						className={`${active && 'show-navbar flex-lg-column mt-lg-8'
-							} w-lg-auto d-lg-flex d-none flex-lg-row flex-column w-100 mt-8 mt-lg-5 justify-content-between align-items-center`}
+						className={`${active && 'show-navbar flex-lg-column mt-lg-8'} ${userId && 'header-tab-connect'}
+						 w-lg-auto d-lg-flex d-none flex-lg-row flex-column w-100 mt-8 mt-lg-5 justify-content-between align-items-center`}
 					>
 						{NavbarRoutes.map((route, index) => {
 							return (
@@ -203,8 +203,8 @@ const Header = () => {
 					</div>
 				</div>
 
-				<div className='d-lg-flex d-none justify-content-between align-items-center' style={{marginRight: '-45px'}}>
-					<img src='/assets/imgs/coin.png' className='w-50px' />
+				<div className={`d-lg-flex d-none justify-content-between align-items-center ${userId ? 'header-wallet' : 'header-wallet-connect'}`} >
+					{!userId && <img src='/assets/imgs/coin.png' className='w-50px' />}
 					{userId && (
 						<div className='dms-block h-40px ms-4 center px-2'>
 							<div className='dms-btn w-100 me-2 center balance-div'>{Math.round(blance / 0.5) * 0.5}</div>
@@ -266,6 +266,7 @@ const Header = () => {
 								</ul>
 							</div>
 							<div className='mt-2'>
+								{/* <img src='/assets/imgs/coin.png' className='btn border position-absolute  center w-100px px-1 fs-12   mx-4  text-white cursor' style={{marginLeft: '-80px'}} /> */}
 								<a
 									target='_blank'
 									href='https://pancakeswap.finance/swap?outputCurrency=0x9bfd1348cf574e3eb2b114cc18374b09ad012c69&inputCurrency=BNB'
@@ -273,6 +274,7 @@ const Header = () => {
 								>
 									BUY DMS
 								</a>
+
 							</div>
 						</div>
 					)}

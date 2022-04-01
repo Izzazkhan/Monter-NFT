@@ -21,6 +21,7 @@ import ShardTypeForm from '../pages/shardType/form'
 import ShardType from '../pages/shardType/index'
 import FortuneWheelForm from '../pages/fortuneWheel/form'
 import FortuneWheel from '../pages/fortuneWheel/index'
+import WheelHistory from '../pages/WheelHistory/index'
 
 import NotFound from '../components/NotFound'
 import RegistrationPage from '../pages/Authentication/Registeration'
@@ -73,6 +74,7 @@ const MainRoutes = (props) => {
                         <Route exact path={'/fortune-wheel/edit'} component={FortuneWheelForm} />
                         <Route exact path={'/fortune-wheel'} component={FortuneWheel} />
                         <Route exact path={'/busd-request'} component={BUSDRequest} />
+                        <Route exact path={'/wheel-history'} component={WheelHistory} />
                         <Route path={'/forget-password'} component={ForgetPassword} />
                         {/* <Route path={'/register'} component={RegistrationPage} />
                             <Route path="/login" component={LoginPage} /> */}
