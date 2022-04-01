@@ -59,7 +59,7 @@ const FortuneWheel = (props) => {
                         const slotsMapped = res.data.fortuneWheel[0].slots.map(item => {
                             return {
                                 ...item,
-                                probability: item.probability * 10000
+                                probability: item.probability * 1000000
                             }
                         }).sort((a, b) => b.probability - a.probability)
                         setSlots(slotsMapped)
@@ -406,6 +406,11 @@ const FortuneWheel = (props) => {
 
     const handleSpinClick = () => {
         setsSpinEnable(false)
+        setTimeout(() => {
+            handleSpinClick1()
+        }, 1);
+    }
+    const handleSpinClick1 = () => {
         let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ?
             updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
 
@@ -424,10 +429,10 @@ const FortuneWheel = (props) => {
             })
             // console.log('indexArray', indexArray)
             //generate random number from 1 to 1000
-            var random = Math.floor(Math.random() * 1000000)
+            var random = Math.floor(Math.random() * 1000000)   // 0 to 999999
             // console.log('random', random)
 
-            let myValue = indexArray[random - 1]
+            let myValue = indexArray[random]   // 0 to 99999
             // console.log('myValue', myValue)
             // console.log('trackerArray', trackerArray)
             let filterVal = trackerArray.find(item => item.number == myValue)
@@ -687,7 +692,7 @@ const FortuneWheel = (props) => {
                             {userId && slots.length ? (
                                 <div>
                                     {spinEnable ? 
-                                        <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={handleSpinClick}>
+                                        <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
                                             Spin
                                         </div> :
                                         <div className='center mt-6'>

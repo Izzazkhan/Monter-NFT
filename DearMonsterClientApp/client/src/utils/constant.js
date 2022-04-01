@@ -1,6 +1,11 @@
 // export const appEnv = 'test'
 export const appEnv = 'live'
 
+export const apiUrl = 'https://www.dearmonsters.io'
+// export const apiUrl = 'http://localhost:4000'
+
+export const uploadsUrl = `${apiUrl}/`
+
 export const addressList = {
     tokenAddress: '0x9bfd1348cf574e3eb2b114cc18374b09ad012c69',
     tokenAddressTest: '0x4a709e2e07edffc8770f268c373fb9f17e316b9f',
@@ -14,12 +19,3 @@ export const addressList = {
     DMSExchange: '0xC2518Fa5f776F09f012186a2E7a1541182f8AEDf',
     DMSExchangeTest: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf'
 }
-
-export const xapiUrl = 'http://aedd-119-155-21-243.ngrok.io'
-// export const lapiUrl = 'http://localhost:4000'
-export const apiUrl = 'https://www.dearmonsters.io'
-// export const apiUrl = 'http://0700-202-166-170-107.ngrok.io'
-// export const apiUrl = 'http://localhost:4000'
-
-export const uploadsUrl = `${apiUrl}/`
-

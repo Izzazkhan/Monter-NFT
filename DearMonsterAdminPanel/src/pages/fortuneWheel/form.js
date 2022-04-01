@@ -46,7 +46,7 @@ function FortuneWheelForm(props) {
         if (e.target) {
             list[index][e.target.name] = e.target.name === 'probability' 
             ? 
-                e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{4}).+/g, '$1') 
+                e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/(\.\d{6}).+/g, '$1') 
             : 
             e.target.value
         }
@@ -56,9 +56,9 @@ function FortuneWheelForm(props) {
             } else if(e.target.name === 'actionType' && e.target.value === 'Shard') {
                 list[index]['shardType'] = shardType[0]._id
             }
-            else {
-                list[index][e.target.name] = e.target.value
-            }
+            // else {
+            //     list[index][e.target.name] = e.target.value
+            // }
         }
         setSlots(list)
       }
@@ -94,8 +94,8 @@ function FortuneWheelForm(props) {
     }
 
     const onSubmit = () => {
-        if(!slots.map(item => item.probability >= 0.0001).every(element => element === true)) {
-            alert('Minimum value of probability should be 0.0001')
+        if(!slots.map(item => item.probability >= 0.000001).every(element => element === true)) {
+            alert('Minimum value of probability should be 0.000001')
         }
         else if(slots.reduce((n, {probability}) => Number(n) + Number(probability), 0) != 100) {
             alert('Sum of slots in not 100')

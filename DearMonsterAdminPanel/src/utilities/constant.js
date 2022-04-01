@@ -1,7 +1,6 @@
-
-let xurl = "http://34.234.236.236"
 let url = "https://www.dearmonsters.io"
 // let url = "http://localhost:4000"
+
 // export const appEnv = 'test'
 export const appEnv = 'live'
 
