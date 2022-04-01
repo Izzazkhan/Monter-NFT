@@ -9,6 +9,8 @@ DearMonsterAdminPanel/build/
 
 DearMonsterServer/client/build/
 DearMonsterServer/admin/build/
+DearMonsterServer/uploads/
+
 
 DearMonsterServer/.env
 DearMonsterAdminPanel/.env
