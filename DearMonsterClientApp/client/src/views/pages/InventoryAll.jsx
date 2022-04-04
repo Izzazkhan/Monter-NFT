@@ -79,8 +79,6 @@ const Inventory = () => {
 		getCave();
 	}, [userId])
 
-	console.log('pageData', pageData)
-
 
 	const getCave = async () => {
 		if (window.ethereum) {

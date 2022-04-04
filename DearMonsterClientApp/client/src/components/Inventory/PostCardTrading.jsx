@@ -24,7 +24,6 @@ const config = {
 }
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
-	console.log('post ====', post)
 
 	const [owner, setOwner] = useState(null);
 	const { userId } = useSelector(state => state.auth)

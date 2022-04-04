@@ -100,9 +100,6 @@ const Inventory = () => {
 		axios.get(`${apiUrl}/api/tradeItem/inTradeItems/` + owner)
 			.then((res) => {
 
-				console.log('res.data ================')
-				console.log(res.data.tradeItems)
-
 				if (res.data.tradeItems && res.data.tradeItems.length > 0) {
 					res.data.tradeItems.forEach(item => {
 						let post = {}

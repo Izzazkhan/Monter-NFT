@@ -178,7 +178,7 @@ const PostCard = ({ className, getData, post, stepImg, account }) => {
 					'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
 				}
 			}).then((res) => {
-				console.log('response delete', res)
+				// console.log('response delete', res)
 				Swal.fire({
 					icon: 'success',
 					title: 'Item Removed From Trading',

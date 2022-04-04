@@ -103,14 +103,10 @@ const InventoryItem = () => {
 		let _posts = []
 		axios.get(`${apiUrl}/api/userShard/${userId}/owner`)
 			.then((res) => {
-				// console.log('res.data ================')
-					console.log(res.data)
 				if (res.data.userShards && res.data.userShards.length > 0) {
-					
 					res.data.userShards.forEach(item => {
 							let post = {}
-							// post.values['Level'] = item.values.Level
-							// post['image'] = item.shardTypes.image ? item.shardTypes.image : ''
+							post['image'] = item.shardTypes.image ? item.shardTypes.image : ''
 							post['shardName'] = item.shards.shardName
 							post['count'] = item.count
 							post['OwnerID'] = `${owner.substring(0, 4)}...${owner.slice(-4)}`

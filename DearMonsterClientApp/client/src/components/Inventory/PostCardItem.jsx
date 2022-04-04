@@ -5,7 +5,6 @@ import {uploadsUrl} from '../../utils/constant'
 
 
 const PostCard = ({ className, post, account }) => {
-	console.log('post ====', post)
 
 	const [owner, setOwner] = useState(null);
 	const { userId } = useSelector(state => state.auth)
@@ -34,8 +33,7 @@ const PostCard = ({ className, post, account }) => {
 			</header>
 			<main className='center flex-column'>
 				<div>
-				{/* <img className='w-md2'  src={uploadsUrl + post.image} /> */}
-					{/* <img src={post?.img} className='w-md2' /> */}
+				<img className='w-md2'  src={uploadsUrl + post.image} />
 				</div>
 				<div className='findDearMonster w-100   h-100 py-4 ' style={{ marginTop: '-55px' }}>
 					{/* <p className='text-center text-white mt-47px fs-18'>{`OwnerID: ${post?.ownerID}`}</p> */}
