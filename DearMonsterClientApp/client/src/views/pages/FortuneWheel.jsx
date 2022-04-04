@@ -35,7 +35,7 @@ const FortuneWheel = (props) => {
 
     useEffect(() => {
         if (userId) {
-            axios.get(`${apiUrl}/api/spinRecord`)
+            axios.get(`${apiUrl}/api/spinRecord/${userId}`)
                 .then((res) => {
                     if (res.data.spinRecord) {
                         setUpdatedSpinData(res.data.spinRecord)
@@ -133,14 +133,17 @@ const FortuneWheel = (props) => {
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
+        console.log('updatedSpinData', updatedSpinData)
         if (updatedSpinData.length) {
             const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs && item.no_of_spin)
+            console.log('noOfspin:::', noOfspin)
             if (noOfspin) {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
                 } else {
                     spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? noOfspin.no_of_spin + 1 : noOfspin.no_of_spin + 5)
                 }
+                console.log('spinCost::', spinCost)
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
@@ -167,6 +170,7 @@ const FortuneWheel = (props) => {
                 } else {
                     spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
                 }
+                console.log('spinCost::', spinCost)
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
@@ -224,7 +228,7 @@ const FortuneWheel = (props) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Reward Earned',
-                                    text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
+                                    text: `Congratutions! You have won ${DMSSlot.value} DMS!`
                                 })
                                 if (DMSSlot) {
                                     wheelLogCall(DMSSlot)
@@ -274,7 +278,7 @@ const FortuneWheel = (props) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Reward Earned',
-                                    text: `${DMSSlot.value} DMS added to the ${buyAs} wallet`
+                                    text: `Congratutions! You have won ${DMSSlot.value} DMS!`
                                 })
 
 
@@ -440,8 +444,8 @@ const FortuneWheel = (props) => {
         }, 1);
     }
     const handleSpinClick1 = () => {
-        let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ?
-            updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0
+        let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' && item.userId == userId) ?
+            updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0
 
         // if (true) {
         if (Number(tempSpinCount) > 0) {
@@ -583,8 +587,9 @@ const FortuneWheel = (props) => {
                 <div className='container center mt-8'>
                     <div className='center flex-column'>
                         <div className='border border-warning text-white p-2 rounded-2'>
-                            No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner') ?
-                                updatedSpinData.find(item => item.type === 'owner').no_of_spin : 0) : 0}`}
+                            No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' 
+                            && item.userId == userId) ?
+                                updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
                         </div>
                         <section className='mt-5'>
                             <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'

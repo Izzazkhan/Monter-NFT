@@ -34,9 +34,9 @@ exports.store = async (req, res) => {
 
 exports.show = async function (req, res) {
     try {
-        const id = req.params.id;
+        const userId = req.params.userId;
 
-        const spinRecord = await SpinRecord.findById(id);
+        const spinRecord = await SpinRecord.find({userId: userId});
         if (!spinRecord) return res.status(401).json({message: 'Spin record does not exist'});
         
         res.status(200).json({spinRecord});

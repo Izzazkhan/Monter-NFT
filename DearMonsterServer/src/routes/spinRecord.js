@@ -13,7 +13,7 @@ router.get('/', SpinRecord.index);
 router.post('/', SpinRecord.store);
 
 //SHOW
-router.get('/:id', SpinRecord.show);
+router.get('/:userId', SpinRecord.show);
 
 //UPDATE
 router.put('/:userId/:type', SpinRecord.update);
