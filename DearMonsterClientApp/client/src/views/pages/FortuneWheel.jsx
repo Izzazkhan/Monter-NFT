@@ -25,12 +25,13 @@ const FortuneWheel = (props) => {
 
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
-    const [spinCost, setSpinCost] = useState(80)
+    const [spinCost, setSpinCost] = useState(0)
     const [buyAs, setBuyAs] = useState('owner')
     const [updatedSpinData, setUpdatedSpinData] = useState([])
     const [spinRecord, setSpinRecord] = useState([])
     const [allShards, setAllShards] = useState([])
     const [spinEnable, setsSpinEnable] = useState(true)
+    const [spinCostData, setSpinCostData] = useState([])
 
     useEffect(() => {
         if (userId) {
@@ -88,6 +89,22 @@ const FortuneWheel = (props) => {
                         text: 'Oops, Something went wrong'
                     })
                 })
+            axios
+            .get(`${apiUrl}/api/spinCost`)
+            .then((res) => {
+                if (res.data.spinCost.length) {
+                    setSpinCostData(res.data.spinCost)
+                    setSpinCost(res.data.spinCost[0].spin_1_cost)
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Oops, Something went wrong'
+                })
+            })
         }
     }, [userId])
 
@@ -122,7 +139,7 @@ const FortuneWheel = (props) => {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
                 } else {
-                    spinRecordParams.append('no_of_spin', spinCost == 80 ? noOfspin.no_of_spin + 1 : noOfspin.no_of_spin + 5)
+                    spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? noOfspin.no_of_spin + 1 : noOfspin.no_of_spin + 5)
                 }
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
@@ -148,7 +165,7 @@ const FortuneWheel = (props) => {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', Number(filterValue))
                 } else {
-                    spinRecordParams.append('no_of_spin', spinCost == 80 ? 1 : 5)
+                    spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
                 }
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
@@ -176,7 +193,7 @@ const FortuneWheel = (props) => {
             if (filterValue != undefined) {
                 spinRecordParams.append('no_of_spin', filterValue)
             } else {
-                spinRecordParams.append('no_of_spin', spinCost == 80 ? 1 : 5)
+                spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
             }
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                 .then((response) => {
@@ -594,8 +611,12 @@ const FortuneWheel = (props) => {
                                                             setSpinCost(e.target.value);
                                                         }}
                                                     >
-                                                        <option value={80}>1 Spin Cost (80 DMS)</option>
-                                                        <option value={380}>5 Spin Cost (380 DMS)</option>
+                                                        {spinCostData.length && 
+                                                            <>
+                                                                <option value={spinCostData[0].spin_1_cost}>{`1 Spin Cost (${spinCostData[0].spin_1_cost} DMS)`}</option>
+                                                                <option value={spinCostData[0].spin_5_cost}>{`5 Spin Cost (${spinCostData[0].spin_5_cost} DMS)`}</option>
+                                                            </>
+                                                        }
                                                     </select>
                                                 </div>
                                             </div>

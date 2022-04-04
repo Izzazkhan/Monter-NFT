@@ -32,7 +32,7 @@ export const addCrystalShard = (data, token) => dispatch => {
         axios
             .post(Shards, params, config)
             .then((res) => {
-                console.log('res.data', res.data)
+                // console.log('res.data', res.data)
                 return dispatch({
                 type: 'ADD_CRYSTALSHARD',
                 payload: res.data

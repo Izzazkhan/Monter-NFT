@@ -12,7 +12,7 @@ const CrystalShardReducer = (state = initialstate, action) => {
         case 'ADD_CRYSTALSHARD':
             return {
                 ...state,
-                shards: state.shards.concat(action.payload)
+                shards: state.shards.concat(action.payload.shards)
             };
         case 'EDIT_CRYSTALSHARD':
             return {
