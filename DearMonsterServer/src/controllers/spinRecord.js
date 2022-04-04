@@ -53,7 +53,7 @@ exports.update = async function (req, res) {
         console.log("update =======")
         console.log(update)
         console.log("type =======")
-        console.log(type)
+        console.log(req.params.type)
 
 
         let query = { userId, type: req.params.type }
