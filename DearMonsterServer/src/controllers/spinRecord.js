@@ -49,15 +49,8 @@ exports.update = async function (req, res) {
     try {
         const userId = req.params.userId;
         const update = req.body;
-
-        console.log("update =======")
-        console.log(update)
-        console.log("type =======")
-        console.log(req.params.type)
-
-
         let query = { userId, type: req.params.type }
-        let updateData = { $set: { no_of_spin: req.body.no_of_spin } }
+        let updateData = { $set: update }
         let options = { new: true, upsert: true }
 
         const spinRecord = await SpinRecord.findOneAndUpdate(query, updateData, options);
