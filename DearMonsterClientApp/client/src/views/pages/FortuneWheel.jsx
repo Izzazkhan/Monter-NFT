@@ -135,7 +135,7 @@ const FortuneWheel = (props) => {
         spinRecordParams.append('type', buyAs)
         console.log('updatedSpinData', updatedSpinData)
         if (updatedSpinData.length) {
-            const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs && item.no_of_spin)
+            const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs)
             console.log('noOfspin:::', noOfspin)
 
             if (noOfspin) {
@@ -201,7 +201,7 @@ const FortuneWheel = (props) => {
             } else {
                 spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
             }
-            axios.put(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
+            axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                 .then((response) => {
                     setSpinRecord(response.data.spinRecord)
                     wheelLogCall(newValue)
@@ -502,7 +502,7 @@ const FortuneWheel = (props) => {
                 spinRecordParams.append('userId', userId)
                 spinRecordParams.append('type', buyAs)
                 if (updatedSpinData.length) {
-                    const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs && item.no_of_spin)
+                    const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs)
                     if (noOfspin) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin - 1)
                         axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
