@@ -372,6 +372,8 @@ function SideSetting(props) {
                                 <tr>
                                     <th>1 Spin Cost</th>
                                     <th>5 Spin Cost</th>
+                                    <th>25 Spin Cost</th>
+                                    <th>100 Spin Cost</th>
                                 </tr>
                             </thead>
 
@@ -381,6 +383,8 @@ function SideSetting(props) {
                                         return <tr key={(index + 1)}>
                                             <td>{data.spin_1_cost}</td>
                                             <td>{data.spin_5_cost}</td>
+                                            <td>{data.spin_25_cost}</td>
+                                            <td>{data.spin_100_cost}</td>
                                             <td><button onClick={() => editSpinCost(data)}>EDIT</button>
                                                 <button onClick={() => deleteSpinCost(data._id)}>DELETE</button>
                                             </td>

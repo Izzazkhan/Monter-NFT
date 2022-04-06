@@ -13,6 +13,7 @@ function WheelHistory(props) {
     const [filteredData, setFilteredData] = useState(null)
 	const [filterObject, setFilterObject] = useState({})
     const [state, setState] = useState({monsterType: '', rating: 1})
+    const [spinCount, setSpinCount] = useState()
 
 	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30)
 
@@ -132,6 +133,28 @@ function WheelHistory(props) {
                 <div className="content-wrapper">
                     <div className="content-box">
                         <h3>Fortune Wheel History</h3>
+                        <div className="row">
+                            {/* <div className={`col-md-6`}>
+                            <label className="control-label">{`Monster Type`}</label>
+                            <input type="text" required="required" className="form-control" onChange={onChangeValue}
+                            name={'monsterType'} value={state.monsterType}
+                            placeholder={`Enter Monster Type`}
+                            />
+                            </div> */}
+                            <div className={`col-md-3`}>
+                            <label className="control-label">{`Total spin count per category`}</label>
+                            <select name='spinCount' className='form-control  w-100px' onChange={(e) => setSpinCount(e.target.value)}>
+                                        <option value='Please select a category'>Select Category</option>
+										<option value={data.filter(item => item.actionType === 'DMS').length}>DMS</option>
+										<option value={data.filter(item => item.actionType === 'BUSD').length}>BUSD</option>
+										<option value={data.filter(item => item.actionType === 'Free Spin').length}>Free Spin</option>
+										<option value={data.filter(item => item.actionType === 'Shard').length}>Shard</option>
+									</select>
+                            </div>
+                            <div className='col-md-3' style={{marginTop: '30px'}}>
+                                <span>{spinCount}</span>
+                            </div>
+                        </div>
                         {/* <div className="row">
                             <div className={`col-md-6`}>
                             <label className="control-label">{`Monster Type`}</label>

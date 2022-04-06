@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 function SpinCostForm(props) {
     const [spinCost, setSpinCost] = useState({
         spin_1_cost: 0,
-        spin_5_cost: 0
+        spin_5_cost: 0,
+        spin_25_cost: 0,
+        spin_100_cost: 0
     })
 
     useEffect(() => {
@@ -17,12 +19,13 @@ function SpinCostForm(props) {
     useEffect(() => {
         if (props.location.state !== undefined) {
             const propsData = props.location.state.data
-
             setSpinCost({
                 ...spinCost,
                 _id: propsData._id,
                 spin_1_cost: propsData['spin_1_cost'],
-                spin_5_cost: propsData['spin_5_cost']
+                spin_5_cost: propsData['spin_5_cost'],
+                spin_25_cost: propsData['spin_25_cost'],
+                spin_100_cost: propsData['spin_100_cost']
             })
         }
     }, [])
@@ -52,7 +55,7 @@ function SpinCostForm(props) {
                         <h3>Spin Cost List</h3>
                         <div className="content-box">
                             <div className="row">
-                                <div className={`col-md-3`}>
+                                <div className={`col-md-2`}>
                                     <label className="control-label">{`1 Spin Cost`}</label>
                                     <input type="text" required="required" className="form-control" onChange={handleSpinCost}
                                         name={'spin_1_cost'} value={spinCost.spin_1_cost}
@@ -60,11 +63,27 @@ function SpinCostForm(props) {
                                         type='number'
                                     />
                                 </div>
-                                <div className={`col-md-3`}>
+                                <div className={`col-md-2`}>
                                     <label className="control-label">{`5 Spin Cost`}</label>
                                     <input type="text" required="required" className="form-control" onChange={handleSpinCost}
                                         name={'spin_5_cost'} value={spinCost.spin_5_cost}
                                         placeholder={`Enter 5 Spin Cost`}
+                                        type='number'
+                                    />
+                                </div>
+                                <div className={`col-md-2`}>
+                                    <label className="control-label">{`25 Spin Cost`}</label>
+                                    <input type="text" required="required" className="form-control" onChange={handleSpinCost}
+                                        name={'spin_25_cost'} value={spinCost.spin_25_cost}
+                                        placeholder={`Enter 25 Spin Cost`}
+                                        type='number'
+                                    />
+                                </div>
+                                <div className={`col-md-2`}>
+                                    <label className="control-label">{`100 Spin Cost`}</label>
+                                    <input type="text" required="required" className="form-control" onChange={handleSpinCost}
+                                        name={'spin_100_cost'} value={spinCost.spin_100_cost}
+                                        placeholder={`Enter 100 Spin Cost`}
                                         type='number'
                                     />
                                 </div>

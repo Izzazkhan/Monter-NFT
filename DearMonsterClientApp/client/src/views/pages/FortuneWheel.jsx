@@ -32,6 +32,11 @@ const FortuneWheel = (props) => {
     const [allShards, setAllShards] = useState([])
     const [spinEnable, setsSpinEnable] = useState(true)
     const [spinCostData, setSpinCostData] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [displayModal, setDisplayModal] = useState('none')
+    const [modalState, setModalState] = useState({title: '', text: ''})
+    const [autoSpin, setAutoSpin] = useState({state: false, text: 'Auto Spin'})
+	const [earnerData, setEarnerData] = useState({})
 
     useEffect(() => {
         if (userId) {
@@ -39,6 +44,9 @@ const FortuneWheel = (props) => {
                 .then((res) => {
                     if (res.data.spinRecord) {
                         setUpdatedSpinData(res.data.spinRecord)
+                        if(res.data.spinRecord.length && res.data.spinRecord[0].no_of_spin < 1) {
+                            setAutoSpin({state: false, text: 'Auto Spin' })
+                        }
                     }
                 })
                 .catch((e) => {
@@ -51,6 +59,21 @@ const FortuneWheel = (props) => {
                 })
         }
     }, [userId, spinRecord])
+
+    useEffect(() => {
+        if(updatedSpinData.length) {
+            if(userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
+                setMustSpin(true)
+                let timeInterval
+                timeInterval = setInterval(handleSpinClick1, 10900)
+                return () => {
+                    clearInterval(timeInterval)
+                }
+            } else {
+                setMustSpin(false)
+            }
+        }
+    }, [userId, autoSpin, updatedSpinData])
 
     useEffect(() => {
         if (userId) {
@@ -105,6 +128,18 @@ const FortuneWheel = (props) => {
                     text: 'Oops, Something went wrong'
                 })
             })
+            axios.get(`${apiUrl}/api/userEarning/${userId}/owner`)
+                .then((response) => {
+                    if (response?.data?.earnerData) {
+                        setEarnerData(response.data.earnerData)
+                    }
+                    else {
+                        setEarnerData({})
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         }
     }, [userId])
 
@@ -133,23 +168,32 @@ const FortuneWheel = (props) => {
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
-        console.log('updatedSpinData', updatedSpinData)
         if (updatedSpinData.length) {
             const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs)
             if (noOfspin) {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
                 } else {
-                    spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? noOfspin.no_of_spin + 1 : noOfspin.no_of_spin + 5)
+                    if( spinCost == spinCostData[0].spin_1_cost) {
+                        spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 1)
+                    } else if( spinCost == spinCostData[0].spin_5_cost) {
+                        spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 5)
+                    } else if( spinCost == spinCostData[0].spin_25_cost) {
+                        spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 25)
+                    } else if( spinCost == spinCostData[0].spin_100_cost) {
+                        spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 100)
+                    }
                 }
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Spin Record',
-                            text: `Spin record has been updated`
-                        })
+                        // Swal.fire({
+                        //     icon: 'success',
+                        //     title: 'Spin Record',
+                        //     text: `Spin record has been updated`
+                        // })
+                        setDisplayModal('block')
+                        setModalState({...modalState, title: 'Spin Record', text: 'Spin record has been updated'})
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -166,7 +210,15 @@ const FortuneWheel = (props) => {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', Number(filterValue))
                 } else {
-                    spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
+                    if(spinCost == spinCostData[0].spin_1_cost) {
+                        spinRecordParams.append('no_of_spin', 1)
+                    } else if(spinCost == spinCostData[0].spin_5_cost) {
+                        spinRecordParams.append('no_of_spin', 5)
+                    } else if(spinCost == spinCostData[0].spin_25_cost) {
+                        spinRecordParams.append('no_of_spin', 25)
+                    } else if(spinCost == spinCostData[0].spin_100_cost) {
+                        spinRecordParams.append('no_of_spin', 100)
+                    }
                 }
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
@@ -176,6 +228,8 @@ const FortuneWheel = (props) => {
                             title: 'Spin Record',
                             text: `Spin record has been updated`
                         })
+                        // setDisplayModal('block')
+                        // setModalState({...modalState, title: 'Spin Record', text: 'Spin record has been updated'})
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -194,109 +248,20 @@ const FortuneWheel = (props) => {
             if (filterValue != undefined) {
                 spinRecordParams.append('no_of_spin', filterValue)
             } else {
-                spinRecordParams.append('no_of_spin', spinCost == spinCostData[0].spin_1_cost ? 1 : 5)
+                if(spinCost == spinCostData[0].spin_1_cost) {
+                    spinRecordParams.append('no_of_spin', 1)
+                } else if(spinCost == spinCostData[0].spin_5_cost) {
+                    spinRecordParams.append('no_of_spin', 5)
+                } else if(spinCost == spinCostData[0].spin_25_cost) {
+                    spinRecordParams.append('no_of_spin', 25)
+                } else if(spinCost == spinCostData[0].spin_100_cost) {
+                    spinRecordParams.append('no_of_spin', 100)
+                }
             }
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
-                .then((response) => {
-                    setSpinRecord(response.data.spinRecord)
-                    wheelLogCall(newValue)
-                })
-                .catch((error) => {
-                    console.log(error)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Oops, Something went wrong'
-                    })
-                })
-        }
-    }
-
-    const rewardUpdateCall = (DMSSlot) => {
-        axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
             .then((response) => {
-                const updateParams = new URLSearchParams()
-                updateParams.append('earnerAddress', userId)
-                if (response?.data?.earnerData) {
-                    if (DMSSlot && DMSSlot.value != undefined) {
-                        updateParams.append('totalAmount', response.data.earnerData.totalAmount + Number(DMSSlot.value))
-                        axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
-                            .then((response) => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Reward Earned',
-                                    text: `Congratutions! You have won ${DMSSlot.value} DMS!`
-                                })
-                                if (DMSSlot) {
-                                    wheelLogCall(DMSSlot)
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Oops, Something went wrong'
-                                })
-                            })
-                    } else if (response.data.earnerData.totalAmount - Number(spinCost) > 0) {
-                        updateParams.append('totalAmount', response.data.earnerData.totalAmount - Number(spinCost))
-                        axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
-                            .then((response) => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Reward Deduction',
-                                    text: `${spinCost} DMS deducted from the ${buyAs} wallet`
-                                })
-                                if (DMSSlot) {
-                                    wheelLogCall(DMSSlot)
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Oops, Something went wrong'
-                                })
-                            })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: `Rewards cannot be deducted from the ${buyAs} wallet`
-                        })
-                    }
-                } else {
-                    if (DMSSlot && DMSSlot.value != undefined) {
-                        updateParams.append('totalAmount', Number(DMSSlot.value))
-                        axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
-                            .then((response) => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Reward Earned',
-                                    text: `Congratutions! You have won ${DMSSlot.value} DMS!`
-                                })
-
-
-                                wheelLogCall(DMSSlot)
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Oops, Something went wrong'
-                                })
-                            })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: `Rewards cannot be deducted from the ${buyAs} wallet`
-                        })
-                    }
-                }
+                setSpinRecord(response.data.spinRecord)
+                wheelLogCall(newValue)
             })
             .catch((error) => {
                 console.log(error)
@@ -306,6 +271,105 @@ const FortuneWheel = (props) => {
                     text: 'Oops, Something went wrong'
                 })
             })
+        }
+    }
+
+    const rewardUpdateCall = (DMSSlot) => {
+        const updateParams = new URLSearchParams()
+        updateParams.append('earnerAddress', userId)
+        if (earnerData) {
+            if (DMSSlot && DMSSlot.value != undefined) {
+                updateParams.append('totalAmount', earnerData.totalAmount + Number(DMSSlot.value))
+                axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
+                    .then((response) => {
+                        setEarnerData(response.data.userEarning)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reward Earned',
+                            text: `Congratutions! You have won ${DMSSlot.value} DMS!`,
+                            timer: autoSpin.state === true && 2000,
+                            buttons: false,
+                        })
+                        if (DMSSlot) {
+                            wheelLogCall(DMSSlot)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Oops, Something went wrong'
+                        })
+                    })
+            } else if (earnerData.totalAmount - Number(spinCost) > 0) {
+                updateParams.append('totalAmount', earnerData.totalAmount - Number(spinCost))
+                axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
+                    .then((response) => {
+                        setEarnerData(response.data.userEarning)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reward Deduction',
+                            text: `${spinCost} DMS deducted from the ${buyAs} wallet`,
+                            timer: autoSpin.state === true && 2000,
+                            buttons: false,
+                        })
+                        if (DMSSlot) {
+                            wheelLogCall(DMSSlot)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Oops, Something went wrong'
+                        })
+                    })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `Rewards cannot be deducted from the ${buyAs} wallet`,
+                    timer: autoSpin.state === true && 2000,
+                    buttons: false,
+                })
+            }
+        } else {
+            if (DMSSlot && DMSSlot.value != undefined) {
+                updateParams.append('totalAmount', Number(DMSSlot.value))
+                axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
+                    .then((response) => {
+                        setEarnerData(response.data.userEarning)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reward Earned',
+                            text: `Congratutions! You have won ${DMSSlot.value} DMS!`,
+                            timer: autoSpin.state === true && 2000,
+                            buttons: false,
+                        })
+
+
+                        wheelLogCall(DMSSlot)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Oops, Something went wrong'
+                        })
+                    })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `Rewards cannot be deducted from the ${buyAs} wallet`,
+                    timer: autoSpin.state === true && 2000,
+                    buttons: false,
+                })
+            }
+        }
     }
 
     const countUpdateCal = (filterValue) => {
@@ -324,7 +388,9 @@ const FortuneWheel = (props) => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Congratulations',
-                                text: `You have won ${Number(filterValue.value)} new shards.`
+                                text: `You have won ${Number(filterValue.value)} new shards.`,
+                                timer: autoSpin.state === true && 2000,
+                                buttons: false,
                             })
                             wheelLogCall(filterValue, filterShard._id)
                         })
@@ -344,7 +410,9 @@ const FortuneWheel = (props) => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'User Shard',
-                                text: `User shard has been updated with count ${res.data.userShard.count}`
+                                text: `User shard has been updated with count ${res.data.userShard.count}`,
+                                timer: autoSpin.state === true && 2000,
+                                buttons: false,
                             })
                             wheelLogCall(filterValue, filterShard._id)
                         })
@@ -382,7 +450,9 @@ const FortuneWheel = (props) => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'BUSD Requested',
-                                text: `BUSD request has been updated with amount ${filterValue.value}`
+                                text: `BUSD request has been updated with amount ${filterValue.value}`,
+                                timer: autoSpin.state === true && 2000,
+                                buttons: false,
                             })
                             wheelLogCall(filterValue)
                         }
@@ -411,7 +481,9 @@ const FortuneWheel = (props) => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'BUSD Requested',
-                                text: `BUSD request has been created with amount ${filterValue.value}`
+                                text: `BUSD request has been created with amount ${filterValue.value}`,
+                                timer: autoSpin.state === true && 2000,
+                                buttons: false,
                             })
                             wheelLogCall(filterValue)
                         }
@@ -440,12 +512,26 @@ const FortuneWheel = (props) => {
             handleSpinClick1()
         }, 1);
     }
+
+    const handleAutoSpin = () => {
+        if(updatedSpinData.length && updatedSpinData[0].no_of_spin >= 1) {
+            setAutoSpin({...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin'})
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Spin',
+                text: 'No spin in the inventory'
+            })
+        }
+    }
+
     const handleSpinClick1 = () => {
         let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' && item.userId == userId) ?
             updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0
 
         // if (true) {
         if (Number(tempSpinCount) > 0) {
+            setMustSpin(true)
             let trackerArray = []
             let indexArray = []
             slots.forEach((item, index) => {
@@ -467,30 +553,51 @@ const FortuneWheel = (props) => {
             // let filterVal = trackerArray[5]
             // console.log('filterVal', filterVal)
             if (filterVal.actionType === 'Free Spin') {
-                setTimeout(() => {
+                if(autoSpin.state === false) {
+                    setTimeout(() => {
+                        spinUpdateCall(filterVal)
+                        setsSpinEnable(true)
+                    }, 11000);
+                } else {
                     spinUpdateCall(filterVal)
                     setsSpinEnable(true)
-                }, 11000);
+                }
+                
             } else if (filterVal.actionType === 'DMS') {
-                setTimeout(() => {
+                if(autoSpin.state === false) {
+                    setTimeout(() => {
+                        rewardUpdateCall(filterVal)
+                        setsSpinEnable(true)
+                    }, 11000);
+                } else {
                     rewardUpdateCall(filterVal)
                     setsSpinEnable(true)
-                }, 11000);
+                }
+                
             } else if (filterVal.shardType != null) {
-                setTimeout(() => {
+                if(autoSpin.state === false) {
+                    setTimeout(() => {
+                        countUpdateCal(filterVal)
+                        setsSpinEnable(true)
+                    }, 11000);
+                } else {
                     countUpdateCal(filterVal)
                     setsSpinEnable(true)
-                }, 11000);
+                } 
             } else if (filterVal.actionType === 'BUSD') {
-                setTimeout(() => {
+                if(autoSpin.state === false) {
+                    setTimeout(() => {
+                        BUSDRequestCall(filterVal)
+                        setsSpinEnable(true)
+                    }, 11000);
+                } else {
                     BUSDRequestCall(filterVal)
                     setsSpinEnable(true)
-                }, 11000);
+                }  
             }
 
             let index = slots.findIndex(item => item.option === filterVal.name)
             setPrizeNumber(index)
-            setMustSpin(true)
 
             if (filterVal.actionType !== 'Free Spin') {
                 const spinRecordParams = new URLSearchParams()
@@ -516,6 +623,7 @@ const FortuneWheel = (props) => {
                 }
             }
         } else {
+            setsSpinEnable(true)
             Swal.fire({
                 icon: 'error',
                 title: 'No Spin',
@@ -543,51 +651,45 @@ const FortuneWheel = (props) => {
     // }
 
     const buySpinsHandler = () => {
-
-        axios.get(`${apiUrl}/api/userEarning/${userId}/${buyAs}`)
-            .then((response) => {
-
-                if (response?.data?.earnerData) {
-                    if (response.data.earnerData.totalAmount > Number(spinCost)) {
-                        rewardUpdateCall()
-                        spinUpdateCall()
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Buy Spin',
-                            text: 'User earning is not enough to buy spin'
-                        })
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Buy Spin',
-                        text: 'User earning is not enough to buy spin'
-                    })
-                }
-            })
-            .catch((error) => {
-                console.log(error)
+        if (earnerData) {
+            if (earnerData.totalAmount > Number(spinCost)) {
+                rewardUpdateCall()
+                spinUpdateCall()
+            } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: 'Oops, Something went wrong'
+                    title: 'Buy Spin',
+                    text: 'User earning is not enough to buy spin'
                 })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Buy Spin',
+                text: 'User earning is not enough to buy spin'
             })
-
+        }
     }
 
     return (
         <div>
             <CurrenPageTitle title='Fortune Wheel'></CurrenPageTitle>
             {userId &&
+            <>
                 <div className='container center mt-8'>
                     <div className='center flex-column'>
-                        <div className='border border-warning text-white p-2 rounded-2'>
+                    <section className='mt-5 d-flex align-items-center '>
+                        <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 mx-4'>
                             No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' 
                             && item.userId == userId) ?
                                 updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
                         </div>
+                        <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 '>
+                            User Earnings: {earnerData && Object.keys(earnerData).length > 0 ? Number(earnerData.totalAmount) : 0}
+                        </div>
+                        </section>
+                        
+
                         <section className='mt-5'>
                             <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
                                 data-bs-toggle='modal'
@@ -617,6 +719,8 @@ const FortuneWheel = (props) => {
                                                             <>
                                                                 <option value={spinCostData[0].spin_1_cost}>{`1 Spin Cost (${spinCostData[0].spin_1_cost} DMS)`}</option>
                                                                 <option value={spinCostData[0].spin_5_cost}>{`5 Spin Cost (${spinCostData[0].spin_5_cost} DMS)`}</option>
+                                                                <option value={spinCostData[0].spin_25_cost}>{`25 Spin Cost (${spinCostData[0].spin_25_cost} DMS)`}</option>
+                                                                <option value={spinCostData[0].spin_100_cost}>{`100 Spin Cost (${spinCostData[0].spin_100_cost} DMS)`}</option>
                                                             </>
                                                         }
                                                     </select>
@@ -660,8 +764,31 @@ const FortuneWheel = (props) => {
                             </div>
                         </section>
                     </div>
-                </div>
+                </div>  
+                {/* <div
+                    className={`modal fade false ${displayModal == 'block' && 'show'}`}
+                    id={'exampleModalL'}
+                    tabIndex='-1'
+                    aria-labelledby='exampleModalLabel'
+                    aria-hidden='true'
+                    style={{display: displayModal == 'block' && displayModal}}
+                >
+                    <div className='modal-dialog instructionsBoard'>
+                        <div className='modal-content bg-dark bg-opacity-75 border-0 py-7 text-white'>
+                            <div className='modal-body center fs-25'>{loading ? <Loading /> :
+                                <div>
+                                    <span>{modalState.title}</span> <br />
+                                    <span>{modalState.text}</span>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
+            </>
             }
+
+
             {/* {userId && <NavLinks match={match} />} */}
             <div className='container center mt-6'>
                 <div className={`${userId} py-2 w-md-lg2 w-md2 mb-8`}>
@@ -685,6 +812,7 @@ const FortuneWheel = (props) => {
                                                 backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
                                                 textColors={['#ffffff']}
                                                 fontSize='13'
+                                                spinDuration='10'
                                             />
                                             <span className="inner-first">SPIN</span>
                                             <span className="inner-second"></span>
@@ -724,16 +852,31 @@ const FortuneWheel = (props) => {
                     <div className='center fs-19 flex-column'>
                         <footer className='center mt-2 flex align-items-center pb-4 mb-4'>
                             {userId && slots.length ? (
+                                <>
                                 <div>
-                                    {spinEnable ?
-                                        <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
-                                            Spin
-                                        </div> :
-                                        <div className='center mt-6'>
-                                            <Loading />
-                                        </div>
+                                    {!autoSpin.state ?
+                                        <>
+                                            {spinEnable ?
+                                                <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
+                                                    Spin
+                                                </div> :
+                                                <div className='center mt-6'>
+                                                    <Loading />
+                                                </div>
+                                            }
+                                        </> 
+                                        : ''
                                     }
                                 </div>
+                                <div className='mx-4'>
+                                    {spinEnable ?
+                                        <div className={`header-Connect-btn h-40px center px-4 fs-16 bold cursor`} onClick={() => handleAutoSpin()}>
+                                            {autoSpin.text}
+                                        </div> 
+                                    : '' 
+                                    }
+                                </div>
+                                </>
                             ) : ''}
                         </footer>
                     </div>

@@ -19,7 +19,8 @@ const SpinCostReducer = (state = initialstate, action) => {
                 ...state,
                 spinCost: state.spinCost.map(
                     (content, i) => content._id === action.payload._id ? {
-                            ...content, spin_1_cost: action.payload.spin_1_cost, spin_5_cost: action.payload.spin_5_cost
+                            ...content, spin_1_cost: action.payload.spin_1_cost, spin_5_cost: action.payload.spin_5_cost,
+                            spin_25_cost: action.payload.spin_25_cost, spin_100_cost: action.payload.spin_100_cost
                         }
                         : content)
             };

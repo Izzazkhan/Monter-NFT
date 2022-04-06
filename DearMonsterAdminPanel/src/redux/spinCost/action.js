@@ -21,6 +21,8 @@ export const addSpinCost = (numberList, token) => dispatch => {
     const params = new URLSearchParams()
         params.append('spin_1_cost', Number(numberList.spin_1_cost))
         params.append('spin_5_cost', Number(numberList.spin_5_cost))
+        params.append('spin_25_cost', Number(numberList.spin_25_cost))
+        params.append('spin_100_cost', Number(numberList.spin_100_cost))
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -45,6 +47,8 @@ export const editSpinCost = (numberList, token) => dispatch => {
     const params = new URLSearchParams()
     params.append('spin_1_cost', Number(numberList.spin_1_cost))
     params.append('spin_5_cost', Number(numberList.spin_5_cost))
+    params.append('spin_25_cost', Number(numberList.spin_25_cost))
+    params.append('spin_100_cost', Number(numberList.spin_100_cost))
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

@@ -6,6 +6,12 @@ const SpinCostSchema = new mongoose.Schema({
     },
     spin_5_cost: {
         type: Number
+    },
+    spin_25_cost: {
+        type: Number
+    },
+    spin_100_cost: {
+        type: Number
     }
 }, {timestamps: true});
 
