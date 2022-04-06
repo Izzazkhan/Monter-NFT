@@ -37,6 +37,8 @@ const FortuneWheel = (props) => {
     const [modalState, setModalState] = useState({title: '', text: ''})
     const [autoSpin, setAutoSpin] = useState({state: false, text: 'Auto Spin'})
 	const [earnerData, setEarnerData] = useState({})
+	const [sweetAlert, setSweetAlert] = useState({icon: '', title: '', text: '', timer: ''})
+	const [alertFlag, setAlertFlag] = useState(false)
 
     useEffect(() => {
         if (userId) {
@@ -64,16 +66,12 @@ const FortuneWheel = (props) => {
         if(updatedSpinData.length) {
             if(userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
                 setMustSpin(true)
-                let timeInterval
-                timeInterval = setInterval(handleSpinClick1, 10900)
-                return () => {
-                    clearInterval(timeInterval)
-                }
+                handleSpinClick1()
             } else {
                 setMustSpin(false)
             }
         }
-    }, [userId, autoSpin, updatedSpinData])
+    }, [userId, autoSpin])
 
     useEffect(() => {
         if (userId) {
@@ -143,6 +141,29 @@ const FortuneWheel = (props) => {
         }
     }, [userId])
 
+    useEffect(() => {
+        if(alertFlag) {
+            Swal.fire({
+                icon: sweetAlert.icon,
+                title: sweetAlert.title,
+                text: sweetAlert.text,
+                timer: autoSpin.timer
+            })
+            if(updatedSpinData.length) {
+                if(userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
+                    handleSpinClick1()
+                } else {
+                    setMustSpin(false)
+                }
+            }
+        }
+    }, [alertFlag])
+
+    const spinStoping = () => {
+        setMustSpin(!mustSpin)
+        setAlertFlag(true)
+    }
+
     const wheelLogCall = (data, shardType) => {
         if (data && Object.keys(data).length > 0) {
             const updateParams = new URLSearchParams()
@@ -187,13 +208,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
-                        // Swal.fire({
-                        //     icon: 'success',
-                        //     title: 'Spin Record',
-                        //     text: `Spin record has been updated`
-                        // })
-                        setDisplayModal('block')
-                        setModalState({...modalState, title: 'Spin Record', text: 'Spin record has been updated'})
+                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated',  timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -223,13 +238,7 @@ const FortuneWheel = (props) => {
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Spin Record',
-                            text: `Spin record has been updated`
-                        })
-                        // setDisplayModal('block')
-                        // setModalState({...modalState, title: 'Spin Record', text: 'Spin record has been updated'})
+                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -283,13 +292,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Reward Earned',
-                            text: `Congratutions! You have won ${DMSSlot.value} DMS!`,
-                            timer: autoSpin.state === true && 2000,
-                            buttons: false,
-                        })
+                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000 })
                         if (DMSSlot) {
                             wheelLogCall(DMSSlot)
                         }
@@ -307,13 +310,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Reward Deduction',
-                            text: `${spinCost} DMS deducted from the ${buyAs} wallet`,
-                            timer: autoSpin.state === true && 2000,
-                            buttons: false,
-                        })
+                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Deduction', text: `${spinCost} DMS deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000 })
                         if (DMSSlot) {
                             wheelLogCall(DMSSlot)
                         }
@@ -341,14 +338,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Reward Earned',
-                            text: `Congratutions! You have won ${DMSSlot.value} DMS!`,
-                            timer: autoSpin.state === true && 2000,
-                            buttons: false,
-                        })
-
+                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000 })
 
                         wheelLogCall(DMSSlot)
                     })
@@ -361,13 +351,7 @@ const FortuneWheel = (props) => {
                         })
                     })
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: `Rewards cannot be deducted from the ${buyAs} wallet`,
-                    timer: autoSpin.state === true && 2000,
-                    buttons: false,
-                })
+                setSweetAlert({...sweetAlert, icon: 'error', title: 'Error', text: `Rewards cannot be deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000 })
             }
         }
     }
@@ -385,13 +369,7 @@ const FortuneWheel = (props) => {
                     params.append('count', shardId.count + Number(filterValue.value))
                     axios.put(`${apiUrl}/api/userShard/${userId}/owner/${shardId._id}`, params, config)
                         .then((res) => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Congratulations',
-                                text: `You have won ${Number(filterValue.value)} new shards.`,
-                                timer: autoSpin.state === true && 2000,
-                                buttons: false,
-                            })
+                            setSweetAlert({...sweetAlert, icon: 'success', title: 'Congratulations', text: `You have won ${Number(filterValue.value)} new shards.`, timer: autoSpin.state === true && 2000 })
                             wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
@@ -407,13 +385,7 @@ const FortuneWheel = (props) => {
                     params.append('type', 'owner')
                     axios.post(`${apiUrl}/api/userShard`, params, config)
                         .then((res) => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'User Shard',
-                                text: `User shard has been updated with count ${res.data.userShard.count}`,
-                                timer: autoSpin.state === true && 2000,
-                                buttons: false,
-                            })
+                            setSweetAlert({...sweetAlert, icon: 'success', title: 'User Shard', text: `User shard has been updated with count ${res.data.userShard.count}`, timer: autoSpin.state === true && 2000 })
                             wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
@@ -447,13 +419,8 @@ const FortuneWheel = (props) => {
                         params.append('amount', filteredRequest.amount + Number(filterValue.value))
                         const postRequest = await axios.put(`${apiUrl}/api/BUSDRequest/${userId}/owner/${filteredRequest._id}`, params, config)
                         if (postRequest) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'BUSD Requested',
-                                text: `BUSD request has been updated with amount ${filterValue.value}`,
-                                timer: autoSpin.state === true && 2000,
-                                buttons: false,
-                            })
+                            setSweetAlert({...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been updated with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000 })
+                            
                             wheelLogCall(filterValue)
                         }
                     } else {
@@ -478,13 +445,8 @@ const FortuneWheel = (props) => {
                         params.append('amount', Number(filterValue.value))
                         const postRequest = await axios.post(`${apiUrl}/api/BUSDRequest/owner`, params, config)
                         if (postRequest) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'BUSD Requested',
-                                text: `BUSD request has been created with amount ${filterValue.value}`,
-                                timer: autoSpin.state === true && 2000,
-                                buttons: false,
-                            })
+                            setSweetAlert({...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been created with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000 })
+                            
                             wheelLogCall(filterValue)
                         }
                     }
@@ -516,6 +478,7 @@ const FortuneWheel = (props) => {
     const handleAutoSpin = () => {
         if(updatedSpinData.length && updatedSpinData[0].no_of_spin >= 1) {
             setAutoSpin({...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin'})
+            setMustSpin(autoSpin.state ? false : true)
         } else {
             Swal.fire({
                 icon: 'error',
@@ -526,12 +489,12 @@ const FortuneWheel = (props) => {
     }
 
     const handleSpinClick1 = () => {
+        setAlertFlag(false)
         let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' && item.userId == userId) ?
             updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0
 
         // if (true) {
         if (Number(tempSpinCount) > 0) {
-            setMustSpin(true)
             let trackerArray = []
             let indexArray = []
             slots.forEach((item, index) => {
@@ -550,55 +513,24 @@ const FortuneWheel = (props) => {
             // console.log('myValue', myValue)
             // console.log('trackerArray', trackerArray)
             let filterVal = trackerArray.find(item => item.number == myValue)
-            // let filterVal = trackerArray[5]
             // console.log('filterVal', filterVal)
             if (filterVal.actionType === 'Free Spin') {
-                if(autoSpin.state === false) {
-                    setTimeout(() => {
-                        spinUpdateCall(filterVal)
-                        setsSpinEnable(true)
-                    }, 11000);
-                } else {
-                    spinUpdateCall(filterVal)
-                    setsSpinEnable(true)
-                }
-                
+                spinUpdateCall(filterVal)
+                setsSpinEnable(true)
             } else if (filterVal.actionType === 'DMS') {
-                if(autoSpin.state === false) {
-                    setTimeout(() => {
-                        rewardUpdateCall(filterVal)
-                        setsSpinEnable(true)
-                    }, 11000);
-                } else {
-                    rewardUpdateCall(filterVal)
-                    setsSpinEnable(true)
-                }
-                
+                rewardUpdateCall(filterVal)
+                setsSpinEnable(true)
             } else if (filterVal.shardType != null) {
-                if(autoSpin.state === false) {
-                    setTimeout(() => {
-                        countUpdateCal(filterVal)
-                        setsSpinEnable(true)
-                    }, 11000);
-                } else {
-                    countUpdateCal(filterVal)
-                    setsSpinEnable(true)
-                } 
+                countUpdateCal(filterVal)
+                setsSpinEnable(true)
             } else if (filterVal.actionType === 'BUSD') {
-                if(autoSpin.state === false) {
-                    setTimeout(() => {
-                        BUSDRequestCall(filterVal)
-                        setsSpinEnable(true)
-                    }, 11000);
-                } else {
-                    BUSDRequestCall(filterVal)
-                    setsSpinEnable(true)
-                }  
+                BUSDRequestCall(filterVal)
+                setsSpinEnable(true) 
             }
 
             let index = slots.findIndex(item => item.option === filterVal.name)
             setPrizeNumber(index)
-
+            setMustSpin(true)
             if (filterVal.actionType !== 'Free Spin') {
                 const spinRecordParams = new URLSearchParams()
                 spinRecordParams.append('userId', userId)
@@ -800,7 +732,7 @@ const FortuneWheel = (props) => {
                                         <div className={`wheel-wrapper  ${mustSpin ? 'rotate' : ''} `}>
                                             <Wheel
                                                 mustStartSpinning={mustSpin}
-                                                onStopSpinning={() => setMustSpin(!mustSpin)}
+                                                onStopSpinning={() => spinStoping()}
                                                 prizeNumber={prizeNumber}
                                                 data={slots}
                                                 outerBorderColor='#E0E1DE'
