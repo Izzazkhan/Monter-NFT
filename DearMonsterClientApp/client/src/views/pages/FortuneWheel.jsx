@@ -812,7 +812,7 @@ const FortuneWheel = (props) => {
                                                 backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
                                                 textColors={['#ffffff']}
                                                 fontSize='13'
-                                                spinDuration='10'
+                                                // spinDuration={100}
                                             />
                                             <span className="inner-first">SPIN</span>
                                             <span className="inner-second"></span>
