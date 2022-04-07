@@ -34,11 +34,12 @@ const FortuneWheel = (props) => {
     const [spinCostData, setSpinCostData] = useState([])
     const [loading, setLoading] = useState(false)
     const [displayModal, setDisplayModal] = useState('none')
-    const [modalState, setModalState] = useState({title: '', text: ''})
-    const [autoSpin, setAutoSpin] = useState({state: false, text: 'Auto Spin'})
-	const [earnerData, setEarnerData] = useState({})
-	const [sweetAlert, setSweetAlert] = useState({icon: '', title: '', text: '', timer: '', button: ''})
-	const [alertFlag, setAlertFlag] = useState(false)
+    const [modalState, setModalState] = useState({ title: '', text: '' })
+    const [autoSpin, setAutoSpin] = useState({ state: false, text: 'Auto Spin' })
+    const [earnerData, setEarnerData] = useState({})
+    const [showUserEarning, setShowUserEarning] = useState({})
+    const [sweetAlert, setSweetAlert] = useState({ icon: '', title: '', text: '', timer: '' })
+    const [alertFlag, setAlertFlag] = useState(false)
 
     useEffect(() => {
         if (userId) {
@@ -46,8 +47,8 @@ const FortuneWheel = (props) => {
                 .then((res) => {
                     if (res.data.spinRecord) {
                         setUpdatedSpinData(res.data.spinRecord)
-                        if(res.data.spinRecord.length && res.data.spinRecord[0].no_of_spin < 1) {
-                            setAutoSpin({state: false, text: 'Auto Spin' })
+                        if (res.data.spinRecord.length && res.data.spinRecord[0].no_of_spin < 1) {
+                            setAutoSpin({ state: false, text: 'Auto Spin' })
                         }
                     }
                 })
@@ -100,25 +101,26 @@ const FortuneWheel = (props) => {
                     })
                 })
             axios
-            .get(`${apiUrl}/api/spinCost`)
-            .then((res) => {
-                if (res.data.spinCost.length) {
-                    setSpinCostData(res.data.spinCost)
-                    setSpinCost(res.data.spinCost[0].spin_1_cost)
-                }
-            })
-            .catch((e) => {
-                console.log(e)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Oops, Something went wrong'
+                .get(`${apiUrl}/api/spinCost`)
+                .then((res) => {
+                    if (res.data.spinCost.length) {
+                        setSpinCostData(res.data.spinCost)
+                        setSpinCost(res.data.spinCost[0].spin_1_cost)
+                    }
                 })
-            })
+                .catch((e) => {
+                    console.log(e)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
+                })
             axios.get(`${apiUrl}/api/userEarning/${userId}/owner`)
                 .then((response) => {
                     if (response?.data?.earnerData) {
                         setEarnerData(response.data.earnerData)
+                        setShowUserEarning(response.data.earnerData)
                     }
                     else {
                         setEarnerData({})
@@ -131,16 +133,16 @@ const FortuneWheel = (props) => {
     }, [userId])
 
     useEffect(() => {
-        if(alertFlag) {
+        if (alertFlag) {
             Swal.fire({
                 icon: sweetAlert.icon,
                 title: sweetAlert.title,
                 text: sweetAlert.text,
-                timer: autoSpin.timer,
-                button: sweetAlert.button
+                timer: autoSpin.timer
             })
-            if(updatedSpinData.length) {
-                if(userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
+            setShowUserEarning(earnerData)
+            if (updatedSpinData.length) {
+                if (userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
                     handleSpinClick1()
                     // setTimeout(() => {
                     //     handleSpinClick1()
@@ -188,20 +190,20 @@ const FortuneWheel = (props) => {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
                 } else {
-                    if( spinCost == spinCostData[0].spin_1_cost) {
+                    if (spinCost == spinCostData[0].spin_1_cost) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 1)
-                    } else if( spinCost == spinCostData[0].spin_5_cost) {
+                    } else if (spinCost == spinCostData[0].spin_5_cost) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 5)
-                    } else if( spinCost == spinCostData[0].spin_25_cost) {
+                    } else if (spinCost == spinCostData[0].spin_25_cost) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 25)
-                    } else if( spinCost == spinCostData[0].spin_100_cost) {
+                    } else if (spinCost == spinCostData[0].spin_100_cost) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + 100)
                     }
                 }
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
-                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated',  timer: autoSpin.state === true && 2000, button: false })
+                        setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -218,20 +220,20 @@ const FortuneWheel = (props) => {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', Number(filterValue))
                 } else {
-                    if(spinCost == spinCostData[0].spin_1_cost) {
+                    if (spinCost == spinCostData[0].spin_1_cost) {
                         spinRecordParams.append('no_of_spin', 1)
-                    } else if(spinCost == spinCostData[0].spin_5_cost) {
+                    } else if (spinCost == spinCostData[0].spin_5_cost) {
                         spinRecordParams.append('no_of_spin', 5)
-                    } else if(spinCost == spinCostData[0].spin_25_cost) {
+                    } else if (spinCost == spinCostData[0].spin_25_cost) {
                         spinRecordParams.append('no_of_spin', 25)
-                    } else if(spinCost == spinCostData[0].spin_100_cost) {
+                    } else if (spinCost == spinCostData[0].spin_100_cost) {
                         spinRecordParams.append('no_of_spin', 100)
                     }
                 }
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
                         setSpinRecord(response.data.spinRecord)
-                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000, button: false })
+                        setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
                         }
@@ -250,29 +252,29 @@ const FortuneWheel = (props) => {
             if (filterValue != undefined) {
                 spinRecordParams.append('no_of_spin', filterValue)
             } else {
-                if(spinCost == spinCostData[0].spin_1_cost) {
+                if (spinCost == spinCostData[0].spin_1_cost) {
                     spinRecordParams.append('no_of_spin', 1)
-                } else if(spinCost == spinCostData[0].spin_5_cost) {
+                } else if (spinCost == spinCostData[0].spin_5_cost) {
                     spinRecordParams.append('no_of_spin', 5)
-                } else if(spinCost == spinCostData[0].spin_25_cost) {
+                } else if (spinCost == spinCostData[0].spin_25_cost) {
                     spinRecordParams.append('no_of_spin', 25)
-                } else if(spinCost == spinCostData[0].spin_100_cost) {
+                } else if (spinCost == spinCostData[0].spin_100_cost) {
                     spinRecordParams.append('no_of_spin', 100)
                 }
             }
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
-            .then((response) => {
-                setSpinRecord(response.data.spinRecord)
-                wheelLogCall(newValue)
-            })
-            .catch((error) => {
-                console.log(error)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Oops, Something went wrong'
+                .then((response) => {
+                    setSpinRecord(response.data.spinRecord)
+                    wheelLogCall(newValue)
                 })
-            })
+                .catch((error) => {
+                    console.log(error)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Oops, Something went wrong'
+                    })
+                })
         }
     }
 
@@ -285,7 +287,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000, button: false })
+                        setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000 })
                         if (DMSSlot) {
                             wheelLogCall(DMSSlot)
                         }
@@ -303,7 +305,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Deduction', text: `${spinCost} DMS deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000, button: false })
+                        setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Reward Deduction', text: `${spinCost} DMS deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000 })
                         if (DMSSlot) {
                             wheelLogCall(DMSSlot)
                         }
@@ -321,7 +323,7 @@ const FortuneWheel = (props) => {
                     icon: 'error',
                     title: 'Error',
                     text: `Rewards cannot be deducted from the ${buyAs} wallet`,
-                    timer: autoSpin.state === true && 2000, button: false,
+                    timer: autoSpin.state === true && 2000,
                     buttons: false,
                 })
             }
@@ -331,7 +333,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
-                        setSweetAlert({...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000, button: false })
+                        setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000 })
 
                         wheelLogCall(DMSSlot)
                     })
@@ -344,7 +346,7 @@ const FortuneWheel = (props) => {
                         })
                     })
             } else {
-                setSweetAlert({...sweetAlert, icon: 'error', title: 'Error', text: `Rewards cannot be deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000, button: false })
+                setSweetAlert({ ...sweetAlert, icon: 'error', title: 'Error', text: `Rewards cannot be deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000 })
             }
         }
     }
@@ -362,7 +364,7 @@ const FortuneWheel = (props) => {
                     params.append('count', shardId.count + Number(filterValue.value))
                     axios.put(`${apiUrl}/api/userShard/${userId}/owner/${shardId._id}`, params, config)
                         .then((res) => {
-                            setSweetAlert({...sweetAlert, icon: 'success', title: 'Congratulations', text: `You have won ${Number(filterValue.value)} new shards.`, timer: autoSpin.state === true && 2000, button: false })
+                            setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Congratulations', text: `You have won ${Number(filterValue.value)} new shards.`, timer: autoSpin.state === true && 2000 })
                             wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
@@ -378,7 +380,7 @@ const FortuneWheel = (props) => {
                     params.append('type', 'owner')
                     axios.post(`${apiUrl}/api/userShard`, params, config)
                         .then((res) => {
-                            setSweetAlert({...sweetAlert, icon: 'success', title: 'User Shard', text: `User shard has been updated with count ${res.data.userShard.count}`, timer: autoSpin.state === true && 2000, button: false })
+                            setSweetAlert({ ...sweetAlert, icon: 'success', title: 'User Shard', text: `User shard has been updated with count ${res.data.userShard.count}`, timer: autoSpin.state === true && 2000 })
                             wheelLogCall(filterValue, filterShard._id)
                         })
                         .catch((e) => {
@@ -412,8 +414,8 @@ const FortuneWheel = (props) => {
                         params.append('amount', filteredRequest.amount + Number(filterValue.value))
                         const postRequest = await axios.put(`${apiUrl}/api/BUSDRequest/${userId}/owner/${filteredRequest._id}`, params, config)
                         if (postRequest) {
-                            setSweetAlert({...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been updated with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000, button: false })
-                            
+                            setSweetAlert({ ...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been updated with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000 })
+
                             wheelLogCall(filterValue)
                         }
                     } else {
@@ -438,8 +440,8 @@ const FortuneWheel = (props) => {
                         params.append('amount', Number(filterValue.value))
                         const postRequest = await axios.post(`${apiUrl}/api/BUSDRequest/owner`, params, config)
                         if (postRequest) {
-                            setSweetAlert({...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been created with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000, button: false })
-                            
+                            setSweetAlert({ ...sweetAlert, icon: 'success', title: 'BUSD Requested', text: `BUSD request has been created with amount ${filterValue.value}`, timer: autoSpin.state === true && 2000 })
+
                             wheelLogCall(filterValue)
                         }
                     }
@@ -469,14 +471,19 @@ const FortuneWheel = (props) => {
     }
 
     const handleAutoSpin = () => {
-        if(updatedSpinData.length && updatedSpinData[0].no_of_spin >= 1) {
-            setTimeout(() => {
-                handleSpinClick1()
-                // setAutoSpin({...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin'})
-                // setMustSpin(autoSpin.state ? false : true)
-            }, 1);
-            setAutoSpin({...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin'})
-            setMustSpin(autoSpin.state ? false : true)
+        if (updatedSpinData.length && updatedSpinData[0].no_of_spin >= 1) {
+            if (autoSpin.state) {
+                setAutoSpin({ ...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin' })
+                setMustSpin(autoSpin.state ? false : true)
+            } else {
+                setsSpinEnable(false)
+                setTimeout(() => {
+                    setsSpinEnable(true)
+                    handleSpinClick1()
+                    setAutoSpin({ ...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin' })
+                    setMustSpin(autoSpin.state ? false : true)
+                }, 1);
+            }
         } else {
             Swal.fire({
                 icon: 'error',
@@ -523,7 +530,7 @@ const FortuneWheel = (props) => {
                 setsSpinEnable(true)
             } else if (filterVal.actionType === 'BUSD') {
                 BUSDRequestCall(filterVal)
-                setsSpinEnable(true) 
+                setsSpinEnable(true)
             }
 
             let index = slots.findIndex(item => item.option === filterVal.name)
@@ -605,59 +612,59 @@ const FortuneWheel = (props) => {
         <div>
             <CurrenPageTitle title='Fortune Wheel'></CurrenPageTitle>
             {userId &&
-            <>
-                <div className='container center mt-8'>
-                    <div className='center flex-column'>
-                    <section className='mt-5 d-flex align-items-center '>
-                        <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 mx-4'>
-                            No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' 
-                            && item.userId == userId) ?
-                                updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
-                        </div>
-                        <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 '>
-                            User Earnings: {earnerData && Object.keys(earnerData).length > 0 ? Number(earnerData.totalAmount) : 0}
-                        </div>
-                        </section>
-                        
+                <>
+                    <div className='container center mt-8'>
+                        <div className='center flex-column'>
+                            <section className='mt-5 d-flex align-items-center '>
+                                <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 mx-4'>
+                                    No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner'
+                                        && item.userId == userId) ?
+                                        updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
+                                </div>
+                                <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 '>
+                                    User Earnings: {showUserEarning && Object.keys(showUserEarning).length > 0 ? Number(showUserEarning.totalAmount) : 0}
+                                </div>
+                            </section>
 
-                        <section className='mt-5'>
-                            <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
-                                data-bs-toggle='modal'
-                                data-bs-target='#BuySpin'>
-                                Buy Spin
-                            </div>
-                            <div className='modal fade' id={`BuySpin`} tabIndex='-1' aria-labelledby='BuySpinLabel' aria-hidden='true' >
-                                <div className='modal-dialog modal-lg'>
-                                    <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
-                                        <div className='modal-header center p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}>Spin Cost</h3>
-                                        </div>
-                                        <div className='modal-body p-4'>
-                                            <p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
+                            <section className='mt-5'>
+                                <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#BuySpin'>
+                                    Buy Spin
+                                </div>
+                                <div className='modal fade' id={`BuySpin`} tabIndex='-1' aria-labelledby='BuySpinLabel' aria-hidden='true' >
+                                    <div className='modal-dialog modal-lg'>
+                                        <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark text-white shadow-lg'>
 
-                                            </p>
-                                            <div className='align-items-center d-flex justify-content-between mb-4' >
-                                                <div> <h4 style={{ color: "black", fontSize: "15px", marginLeft: '25px' }}>Select Spin Cost</h4> </div>
-                                                <div className='d-flex align-items-center w-60 text-black'>
-                                                    <select
-                                                        className='form-select w-75 mt-1'
-                                                        onChange={(e) => {
-                                                            setSpinCost(e.target.value);
-                                                        }}
-                                                    >
-                                                        {spinCostData.length && 
-                                                            <>
-                                                                <option value={spinCostData[0].spin_1_cost}>{`1 Spin Cost (${spinCostData[0].spin_1_cost} DMS)`}</option>
-                                                                <option value={spinCostData[0].spin_5_cost}>{`5 Spin Cost (${spinCostData[0].spin_5_cost} DMS)`}</option>
-                                                                <option value={spinCostData[0].spin_25_cost}>{`25 Spin Cost (${spinCostData[0].spin_25_cost} DMS)`}</option>
-                                                                <option value={spinCostData[0].spin_100_cost}>{`100 Spin Cost (${spinCostData[0].spin_100_cost} DMS)`}</option>
-                                                            </>
-                                                        }
-                                                    </select>
-                                                </div>
+                                            <div className='modal-header center p-4 border-bottom-0' style={{ border: "none" }}> <h3 style={{ color: "black" }}>Spin Cost</h3>
                                             </div>
+                                            <div className='modal-body p-4'>
+                                                <p className='mb-4' style={{ fontSize: "17px", fontWeight: "400", color: "black" }}>
 
-                                            {/* <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                </p>
+                                                <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                    <div> <h4 style={{ color: "black", fontSize: "15px", marginLeft: '25px' }}>Select Spin Cost</h4> </div>
+                                                    <div className='d-flex align-items-center w-60 text-black'>
+                                                        <select
+                                                            className='form-select w-75 mt-1'
+                                                            onChange={(e) => {
+                                                                setSpinCost(e.target.value);
+                                                            }}
+                                                        >
+                                                            {spinCostData.length &&
+                                                                <>
+                                                                    <option value={spinCostData[0].spin_1_cost}>{`1 Spin Cost (${spinCostData[0].spin_1_cost} DMS)`}</option>
+                                                                    <option value={spinCostData[0].spin_5_cost}>{`5 Spin Cost (${spinCostData[0].spin_5_cost} DMS)`}</option>
+                                                                    <option value={spinCostData[0].spin_25_cost}>{`25 Spin Cost (${spinCostData[0].spin_25_cost} DMS)`}</option>
+                                                                    <option value={spinCostData[0].spin_100_cost}>{`100 Spin Cost (${spinCostData[0].spin_100_cost} DMS)`}</option>
+                                                                </>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                {/* <div className='align-items-center d-flex justify-content-between mb-4' >
                                                     <div> <h4 style={{ color: "black", fontSize: "15px", marginLeft: '25px' }}>Select Buyer</h4> </div>
                                                     <div className='d-flex align-items-center w-60 text-black'>
                                                         <select
@@ -670,32 +677,32 @@ const FortuneWheel = (props) => {
                                                     </div>
                                                 </div> */}
 
-                                            <div className='align-items-center d-flex justify-content-between mb-4' >
-                                                <div></div>
-                                                <div className='d-flex align-items-center w-60 text-black'>
-                                                    <h4 style={{ color: "black", fontSize: "15px" }}>{`${spinCost} DMS will be deducted from ${buyAs} Wallet`}</h4>
+                                                <div className='align-items-center d-flex justify-content-between mb-4' >
+                                                    <div></div>
+                                                    <div className='d-flex align-items-center w-60 text-black'>
+                                                        <h4 style={{ color: "black", fontSize: "15px" }}>{`${spinCost} DMS will be deducted from ${buyAs} Wallet`}</h4>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                        </div>
-                                        <div className='modal-footer border-top-0 mb-5'>
-                                            <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
-                                                onClick={buySpinsHandler}
-                                                data-bs-dismiss='modal'
-                                            >
-                                                Buy Spins
                                             </div>
-                                            <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
-                                                Cancel
-                                            </button>
+                                            <div className='modal-footer border-top-0 mb-5'>
+                                                <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
+                                                    onClick={buySpinsHandler}
+                                                    data-bs-dismiss='modal'
+                                                >
+                                                    Buy Spins
+                                                </div>
+                                                <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+                                                    Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section>
+                        </div>
                     </div>
-                </div>  
-                {/* <div
+                    {/* <div
                     className={`modal fade false ${displayModal == 'block' && 'show'}`}
                     id={'exampleModalL'}
                     tabIndex='-1'
@@ -715,7 +722,7 @@ const FortuneWheel = (props) => {
                         </div>
                     </div>
                 </div> */}
-            </>
+                </>
             }
 
 
@@ -742,7 +749,7 @@ const FortuneWheel = (props) => {
                                                 backgroundColors={['#123796', '#36AC03', '#C3430C', '#EECE0A', '#912862']}
                                                 textColors={['#ffffff']}
                                                 fontSize='13'
-                                                // spinDuration={100}
+                                            // spinDuration={100}
                                             />
                                             <span className="inner-first">SPIN</span>
                                             <span className="inner-second"></span>
@@ -783,29 +790,36 @@ const FortuneWheel = (props) => {
                         <footer className='center mt-2 flex align-items-center pb-4 mb-4'>
                             {userId && slots.length ? (
                                 <>
-                                <div>
-                                    {!autoSpin.state ?
+                                    {!spinEnable ? <div className='center mt-6'>
+                                            <Loading />
+                                        </div> :
                                         <>
-                                            {spinEnable ?
-                                                <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
-                                                    Spin
-                                                </div> :
-                                                <div className='center mt-6'>
-                                                    <Loading />
-                                                </div>
-                                            }
-                                        </> 
-                                        : ''
-                                    }
-                                </div>
-                                <div className='mx-4'>
-                                    {spinEnable ?
-                                        <div className={`header-Connect-btn h-40px center px-4 fs-16 bold cursor`} onClick={() => handleAutoSpin()}>
-                                            {autoSpin.text}
-                                        </div> 
-                                    : '' 
-                                    }
-                                </div>
+                                            <div>
+                                                {!autoSpin.state ?
+                                                    <>
+                                                        {spinEnable ?
+                                                            <div className={`header-Connect-btn h-40px center w-100px px-4 fs-16 bold cursor`} onClick={() => handleSpinClick()}>
+                                                                Spin
+                                                            </div> :
+                                                            <div className='center mt-6'>
+                                                                <Loading />
+                                                            </div>
+                                                        }
+                                                    </>
+                                                    : ''
+                                                }
+                                            </div>
+                                            <div className='mx-4'>
+                                                {spinEnable ?
+                                                    <div className={`header-Connect-btn h-40px center px-4 fs-16 bold cursor`} onClick={() => handleAutoSpin()}>
+                                                        {autoSpin.text}
+                                                    </div>
+                                                    : <div className='center mt-6'>
+                                                        <Loading />
+                                                    </div>
+                                                }
+                                            </div>
+                                        </>}
                                 </>
                             ) : ''}
                         </footer>
