@@ -616,13 +616,15 @@ const FortuneWheel = (props) => {
                     <div className='container center mt-8'>
                         <div className='center flex-column'>
                             <section className='mt-5 d-flex align-items-center '>
-                                <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 mx-4'>
+                                <div className='border border-warning text-white p-3 rounded-2 mx-4'>
                                     No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner'
                                         && item.userId == userId) ?
                                         updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
                                 </div>
-                                <div className='border border-warning text-white px-4 py-3 p-2 rounded-2 '>
-                                    User Earnings: {showUserEarning && Object.keys(showUserEarning).length > 0 ? Number(showUserEarning.totalAmount) : 0}
+                                <div className='border border-warning text-white px-3 py-2 rounded-2 '>
+                                    Owner Wallet Balance: {showUserEarning && Object.keys(showUserEarning).length > 0 ? Number(showUserEarning.totalAmount) : 0}
+                                    <img src='/assets/imgs/coin.png' width="28" className='ms-3' alt='coin' />
+
                                 </div>
                             </section>
 
