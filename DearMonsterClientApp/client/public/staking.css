@@ -1,0 +1,179 @@
+body{
+    font-family: 'Comic Sans MS';
+    background: url('../assets/imgs/background.png');
+    background-repeat: repeat;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* width: 100vw; */
+    overflow-x: hidden;
+}
+.filterCheckBtn {
+    background: #151515fa;
+    background-repeat: repeat;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+  }
+.form-control:focus{
+    box-shadow: none;
+}
+.staking .form-control{
+    height: 80px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px dashed #fff;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    color: #fff;
+    background-color: #151515b3;
+    padding-right: 70px;
+    font-size: 30px;
+    line-height: 34px;
+}
+.staking .stake-Form{
+    width: 50%;
+}
+.staking .form-control:focus{
+    color: #fff;
+    background-color: #353535;
+    box-shadow: none;
+    border: none;
+}
+.translate-right-middle {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+  }
+.staking input,
+input::-webkit-input-placeholder {
+    font-size: 22px;
+    line-height: 25px;
+    font-weight: 800;
+    color: #fff;
+}
+.stake-table{
+    /* background: rgba(54, 54, 54, 0.43); */
+    background-color: #0000006e;
+    color: #fff;
+    border-radius: 10px;
+    border-bottom: none;
+    overflow-x: scroll;
+}
+.stake-table .table{
+    color: #fff;
+    overflow: scroll;
+    margin-bottom: 0px;
+}
+.stake-table .table th{
+    text-transform: capitalize;
+    border-bottom-color: #80777787 !important;
+    color: #FFBD1C;
+}
+.table-theme{
+    color: #FFBD1C;
+}
+.stake-table .table th:not(:first-child):not(:last-child){
+    border-left: 1px solid #80777787;
+    border-right: 1px solid #80777787;
+}
+.stake-table .table td, .stake-table .table tr{
+    height: 80px;
+    transition: all ease-in-out .3s;
+}
+.stake-table .table tbody tr td{
+    border: transparent;
+}
+.stake-table .table tbody tr:not(:last-child){
+    border-bottom: 1px solid #80777787;
+}
+.stake-table .table tbody tr:hover{
+    background-color: #151515b3;
+    color: #fff;
+}
+.shadow-scroll-x{
+    overflow-x: auto;
+    background-position: left center, right center, left center, right center;
+    background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
+    background-attachment: local, local, scroll, scroll;
+    -webkit-overflow-scrolling: touch;
+}
+.stake-table .table tbody tr {
+    vertical-align: middle;
+}
+.stake-table .nested-th{
+    border-top: 1px solid #80777787;
+}
+.stake-table .nested-th > div:not(:first-child):not(:last-child){
+    border-left: 1px solid #80777787;
+    border-right: 1px solid #80777787;
+    padding: 0 10px;
+}
+.stake-table .nested-th > div span{
+    padding: 5px;
+    display: block; 
+}
+.custom-select{
+    background-color: transparent;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+.qstn-icon{
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #ff961d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 5px;
+    margin-top: 2px;
+}
+@media (max-width: 1399px) {
+    
+    .stake-table .table td, .stake-table .table tr{
+        height: 50px;
+    }
+    .staking input, input::-webkit-input-placeholder {
+        font-size: 18px;
+    }
+    .qstn-icon{
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
+    }
+   
+}
+@media (max-width: 767px) {
+    .staking .stake-Form{
+        width: auto
+    }
+    .staking .form-control{
+        height: 70px;
+    }
+    .staking input, input::-webkit-input-placeholder {
+        font-size: 16px;
+        line-height: 20px;
+    }
+    .staking .form-control{
+        font-size: 18px;
+        line-height: 22px;
+    }
+}
+
+.opacity {
+    opacity: 1;
+    padding: 5px;
+    background-color: #353535;
+}

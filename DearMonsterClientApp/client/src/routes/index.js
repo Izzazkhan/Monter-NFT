@@ -11,6 +11,7 @@ import {
 	ON_SCHOLARSHIP_SCHOLAR,
 	GOT_SCHOLARSHIP_SCHOLAR,
 	MARKET,
+	STACKING,
 	INVENTORY_ITEMS,
 	FORTUNE_WHEEL_OWNED,
 	FORTUNE_WHEEL_SCHOLAR
@@ -100,6 +101,14 @@ export const NavbarRoutes = [
 		exact: true,
 		// hidden: true,
 		component: lazy(() => import('../views/pages/Market')),
+	},
+	{
+		path: STACKING,
+		pathForNavabr: STACKING,
+		title: 'Staking',
+		exact: true,
+		// hidden: true,
+		component: lazy(() => import('../views/pages/Staking')),
 	},
 	{
 		path: FORTUNE_WHEEL_OWNED,
