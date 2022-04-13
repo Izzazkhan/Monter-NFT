@@ -27,8 +27,8 @@ const FortuneWheel = (props) => {
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [spinCost, setSpinCost] = useState(0)
     const [buyAs, setBuyAs] = useState('owner')
-    const [updatedSpinData, setUpdatedSpinData] = useState([])
     const [spinRecord, setSpinRecord] = useState([])
+    const [showSpinRecord, setShowSpinRecord] = useState([])
     const [allShards, setAllShards] = useState([])
     const [spinEnable, setsSpinEnable] = useState(true)
     const [spinCostData, setSpinCostData] = useState([])
@@ -46,7 +46,8 @@ const FortuneWheel = (props) => {
             axios.get(`${apiUrl}/api/spinRecord/${userId}`)
                 .then((res) => {
                     if (res.data.spinRecord) {
-                        setUpdatedSpinData(res.data.spinRecord)
+                        setSpinRecord(res.data.spinRecord)
+                        setShowSpinRecord(res.data.spinRecord)
                         if (res.data.spinRecord.length && res.data.spinRecord[0].no_of_spin < 1) {
                             setAutoSpin({ state: false, text: 'Auto Spin' })
                         }
@@ -61,7 +62,7 @@ const FortuneWheel = (props) => {
                     })
                 })
         }
-    }, [userId, spinRecord])
+    }, [userId])
 
     useEffect(() => {
         if (userId) {
@@ -141,8 +142,9 @@ const FortuneWheel = (props) => {
                 timer: autoSpin.timer
             })
             setShowUserEarning(earnerData)
-            if (updatedSpinData.length) {
-                if (userId && autoSpin.state && updatedSpinData[0].no_of_spin >= 1) {
+            setShowSpinRecord(spinRecord)
+            if (spinRecord.length) {
+                if (userId && autoSpin.state && spinRecord[0].no_of_spin >= 1) {
                     handleSpinClick1()
                     // setTimeout(() => {
                     //     handleSpinClick1()
@@ -166,6 +168,7 @@ const FortuneWheel = (props) => {
             updateParams.append('value', data.value)
             updateParams.append('probability', data.prob)
             updateParams.append('requesterAddress', userId)
+            updateParams.append('name', data.name)
             if (shardType != undefined) {
                 updateParams.append('shardType', shardType)
             }
@@ -184,8 +187,8 @@ const FortuneWheel = (props) => {
         const spinRecordParams = new URLSearchParams()
         spinRecordParams.append('userId', userId)
         spinRecordParams.append('type', buyAs)
-        if (updatedSpinData.length) {
-            const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs)
+        if (spinRecord.length) {
+            const noOfspin = spinRecord.find(item => item.userId == userId && item.type == buyAs)
             if (noOfspin) {
                 if (filterValue != undefined) {
                     spinRecordParams.append('no_of_spin', noOfspin.no_of_spin + Number(filterValue))
@@ -202,7 +205,11 @@ const FortuneWheel = (props) => {
                 }
                 axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                     .then((response) => {
-                        setSpinRecord(response.data.spinRecord)
+                        setSpinRecord([response.data.spinRecord])
+                        if(filterValue == undefined) {
+                            setShowSpinRecord([response.data.spinRecord])
+                            console.log('hello')
+                        }
                         setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
@@ -232,7 +239,11 @@ const FortuneWheel = (props) => {
                 }
                 axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                     .then((response) => {
-                        setSpinRecord(response.data.spinRecord)
+                        setSpinRecord([response.data.spinRecord])
+                        if(filterValue == undefined) {
+                            setShowSpinRecord([response.data.spinRecord])
+                            console.log('hello')
+                        }
                         setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Spin Record', text: 'Spin record has been updated', timer: autoSpin.state === true && 2000 })
                         if (filterValue) {
                             wheelLogCall(newValue)
@@ -264,7 +275,11 @@ const FortuneWheel = (props) => {
             }
             axios.post(`${apiUrl}/api/spinRecord`, spinRecordParams, config)
                 .then((response) => {
-                    setSpinRecord(response.data.spinRecord)
+                    setSpinRecord([response.data.spinRecord])
+                    if(filterValue == undefined) {
+                        setShowSpinRecord([response.data.spinRecord])
+                        console.log('hello')
+                    }
                     wheelLogCall(newValue)
                 })
                 .catch((error) => {
@@ -305,6 +320,7 @@ const FortuneWheel = (props) => {
                 axios.put(`${apiUrl}/api/userEarning/${userId}/${buyAs}`, updateParams, config)
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
+                        setShowUserEarning(response.data.userEarning)
                         setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Reward Deduction', text: `${spinCost} DMS deducted from the ${buyAs} wallet`, timer: autoSpin.state === true && 2000 })
                         if (DMSSlot) {
                             wheelLogCall(DMSSlot)
@@ -334,7 +350,6 @@ const FortuneWheel = (props) => {
                     .then((response) => {
                         setEarnerData(response.data.userEarning)
                         setSweetAlert({ ...sweetAlert, icon: 'success', title: 'Reward Earned', text: `Congratutions! You have won ${DMSSlot.value} DMS!`, timer: autoSpin.state === true && 2000 })
-
                         wheelLogCall(DMSSlot)
                     })
                     .catch((error) => {
@@ -471,7 +486,7 @@ const FortuneWheel = (props) => {
     }
 
     const handleAutoSpin = () => {
-        if (updatedSpinData.length && updatedSpinData[0].no_of_spin >= 1) {
+        if (spinRecord.length && spinRecord[0].no_of_spin >= 1) {
             if (autoSpin.state) {
                 setAutoSpin({ ...autoSpin, state: !autoSpin.state, text: !autoSpin.state ? 'Off Auto Spin' : 'Auto Spin' })
                 setMustSpin(autoSpin.state ? false : true)
@@ -495,8 +510,8 @@ const FortuneWheel = (props) => {
 
     const handleSpinClick1 = () => {
         setAlertFlag(false)
-        let tempSpinCount = updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner' && item.userId == userId) ?
-            updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0
+        let tempSpinCount = spinRecord.length ? (spinRecord.find(item => item.type === 'owner' && item.userId == userId) ?
+            spinRecord.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0
 
         // if (true) {
         if (Number(tempSpinCount) > 0) {
@@ -540,13 +555,13 @@ const FortuneWheel = (props) => {
                 const spinRecordParams = new URLSearchParams()
                 spinRecordParams.append('userId', userId)
                 spinRecordParams.append('type', buyAs)
-                if (updatedSpinData.length) {
-                    const noOfspin = updatedSpinData.find(item => item.userId == userId && item.type == buyAs)
+                if (spinRecord.length) {
+                    const noOfspin = spinRecord.find(item => item.userId == userId && item.type == buyAs)
                     if (noOfspin) {
                         spinRecordParams.append('no_of_spin', noOfspin.no_of_spin - 1)
                         axios.put(`${apiUrl}/api/spinRecord/${userId}/${buyAs}`, spinRecordParams, config)
                             .then((response) => {
-                                setSpinRecord(response.data.spinRecord)
+                                setSpinRecord([response.data.spinRecord])
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -617,9 +632,9 @@ const FortuneWheel = (props) => {
                         <div className='center flex-column'>
                             <section className='mt-5 d-flex align-items-center '>
                                 <div className='border border-warning text-white p-3 rounded-2 mx-4'>
-                                    No of spins: {`${updatedSpinData.length ? (updatedSpinData.find(item => item.type === 'owner'
+                                    No of spins: {`${showSpinRecord.length ? (showSpinRecord.find(item => item.type === 'owner'
                                         && item.userId == userId) ?
-                                        updatedSpinData.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
+                                        showSpinRecord.find(item => item.type === 'owner' && item.userId == userId).no_of_spin : 0) : 0}`}
                                 </div>
                                 <div className='border border-warning text-white px-3 py-2 rounded-2 '>
                                     Owner Wallet Balance: {showUserEarning && Object.keys(showUserEarning).length > 0 ? Number(showUserEarning.totalAmount) : 0}

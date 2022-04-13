@@ -19,8 +19,8 @@ const FortuneWheelReducer = (state = initialstate, action) => {
                 ...state,
                 fortuneWheel: state.fortuneWheel.map(
                     (content, i) => content._id === action.payload._id ? {
-                            ...content, wheelName: action.payload.wheelName, isActive: action.payload.isActive, slots: (action.payload.option == undefined &&
-                                action.payload.probability == undefined) ? [...content.slots] : [
+                            ...content, wheelName: action.payload.wheelName, isActive: action.payload.isActive, slots: action.payload.option == undefined &&
+                                action.payload.probability == undefined ? [...content.slots] : [
                                 ...content.slots, { option: action.payload.option, probability: action.payload.probability, 
                                     actionType: action.payload.actionType, value: action.payload.value }
                             ]

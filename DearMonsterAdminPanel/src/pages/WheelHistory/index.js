@@ -145,10 +145,12 @@ function WheelHistory(props) {
                             <label className="control-label">{`Total spin count per category`}</label>
                             <select name='spinCount' className='form-control  w-100px' onChange={(e) => setSpinCount(e.target.value)}>
                                         <option value='Please select a category'>Select Category</option>
-										<option value={data.filter(item => item.actionType === 'DMS').length}>DMS</option>
-										<option value={data.filter(item => item.actionType === 'BUSD').length}>BUSD</option>
-										<option value={data.filter(item => item.actionType === 'Free Spin').length}>Free Spin</option>
-										<option value={data.filter(item => item.actionType === 'Shard').length}>Shard</option>
+                                        {props.wheelHistory.wheelHistory.filter((a, i) => 
+                                            props.wheelHistory.wheelHistory.findIndex((s) => a.name === s.name) === i).map(category => {
+                                                return (
+                                                    <option value={data.filter(item => item.name === category.name).length}>{category.name}</option>
+                                                )
+                                        })}
 									</select>
                             </div>
                             <div className='col-md-3' style={{marginTop: '30px'}}>

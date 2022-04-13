@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const WheelHistorySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     requesterAddress: {
         type: String,
         required: true
