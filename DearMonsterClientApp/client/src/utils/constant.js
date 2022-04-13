@@ -19,8 +19,8 @@ export const addressList = {
     DMSExchange: '0xC2518Fa5f776F09f012186a2E7a1541182f8AEDf',
     DMSExchangeTest: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf',
 
-    stakingAddress: '0x8b4B3C67c504704cD7f64B55e75c3d82F210A23d',
-    stakingAddressTest: '0x8b4B3C67c504704cD7f64B55e75c3d82F210A23d',
+    stakingAddress: '0x0e036D9Be46040eBA7B0Fa60A9E4C3DC4807E202',
+    stakingAddressTest: '0x0e036D9Be46040eBA7B0Fa60A9E4C3DC4807E202',
 
     BUSDTokenAddress: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
     BUSDTokenAddressTest: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee'

@@ -9,6 +9,7 @@ import StakingTest from "../../contracts/StakingTest.json";
 import BUSDToken from '../../contracts/BUSDToken.json';
 import BUSDTokenTest from "../../contracts/BUSDTestToken.json";
 import { notification } from "../../utils/notification";
+import Loading from '../../components/common/Loading';
 
 const stakingAbi = appEnv === 'test' ? StakingTest : Staking
 const stakingAddress = appEnv === 'test' ? addressList.stakingAddressTest : addressList.stakingAddress
@@ -23,12 +24,7 @@ const StakingComponent = (props) => {
     const [stakeAmount, setStakeAmount] = useState('');
     const [stakeLength, setStakeLength] = useState('');
     const [stakeInfoArray, setStakeInfoArray] = useState([]);
-
-    const monsterArray = [
-        { end: 0, table_heading: "table td 3", progress: "progress-td-4", apy: {apyOne: "innerData", apyTwo: "innerData"}, principle: "table td 6", shares: "table td 6" },
-        { end: 0, table_heading: "table td 3", progress: "progress-td-4", apy: "apy-td 5", principle: "table td 6", shares: "table td 6" },
-        { end: 0, table_heading: "table td 3", progress: "progress-td-4", apy: "apy-td 5", principle: "table td 6", shares: "table td 6" }
-    ]
+	const [loading, setLoading] = useState(false)
  
     const handleChangeAmount = (e) => {
 		e.preventDefault();
@@ -51,7 +47,7 @@ const StakingComponent = (props) => {
         let accounts = await web3.eth.getAccounts()
         setOwner(accounts[0])
         dispatch(connectUserSuccess(accounts[0]))
-
+        setLoading(true)
         let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
         const noOfStakes = await StakingContract.methods.getStakeCount().call({ from: accounts[0] })
         var indexArray = [];
@@ -65,8 +61,21 @@ const StakingComponent = (props) => {
             }
         })
         const resolvedArray = await Promise.all(stakeInfoArray)
-        setStakeInfoArray(resolvedArray)
-        
+        const mappedArray = resolvedArray.map(item => {
+            const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
+            console.log('currentDaysCalculate', currentDaysCalculate)
+            const stakeDaysCalculate = (Number(item['3']) - Number(item['2']))/( 60 * 60 * 24)
+            // const stakeDaysCalculate = (( Number(item.endTime) / ( 60 * 60 * 24) ) - (Number(item.startTime) / (60 * 60 * 24)) )
+            console.log('stakeDaysCalculate', stakeDaysCalculate)
+            const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
+            console.log('calculatePercentage', calculatePercentage)
+            return {
+                ...item,
+                percentCompleted: calculatePercentage
+            }
+        })
+        setStakeInfoArray(mappedArray)
+        setLoading(false)
     }
 
     const formatDate = (date) => {
@@ -98,46 +107,81 @@ const StakingComponent = (props) => {
     const handleStaking = async () => {
         if (!userId) return
 
-        dispatch(startLoading(true))
-        let web3 = window.web3
-        let StakingToken = new web3.eth.Contract(BUSDTokenAbi.abi, BUSDTokenAddress)
-        let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
-
-        StakingToken.methods.balanceOf(userId).call().then(async function (balance) {
-
-            var _amount = Number(stakeAmount * 10 ** 18);
-            var amount = _amount.toLocaleString('fullwide', { useGrouping: false })
-            if (_amount >= balance) {
-                let notify = notification({
-                    type: 'error',
-                    message: 'Insufficient fund!',
-                });
-                dispatch(stopLoading(false))
-                notify();
-                return
-            }
-
-            try {
-                await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
-                console.log('StakingContract::', StakingContract)
-                await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), new Date().getTime() + stakeLength * 86400000).send({ from: userId })
-                dispatch(stopLoading(false))
-            } catch (e) {
-                dispatch(stopLoading(false))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Transaction was rejected from Metamask'
-                })
-                console.log("Error ----------------")
-                console.log(e)
-            }
-        })
+        if(Number(stakeLength) >= 14) {
+            dispatch(startLoading(true))
+            let web3 = window.web3
+            let StakingToken = new web3.eth.Contract(BUSDTokenAbi.abi, BUSDTokenAddress)
+            let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+    
+            StakingToken.methods.balanceOf(userId).call().then(async function (balance) {
+    
+                var _amount = Number(stakeAmount * 10 ** 18);
+                var amount = _amount.toLocaleString('fullwide', { useGrouping: false })
+                if (_amount >= balance) {
+                    let notify = notification({
+                        type: 'error',
+                        message: 'Insufficient fund!',
+                    });
+                    dispatch(stopLoading(false))
+                    notify();
+                    return
+                }
+    
+                try {
+                    // const endDate = ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
+                    const endDate = ( Math.floor(new Date().getTime() / 1000) + (stakeLength * 86400) )
+                    console.log('endDate', endDate)
+                    await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
+                    await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), endDate).send({ from: userId })
+                    dispatch(stopLoading(false))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Staking',
+                        text: `${stakeAmount} amount has been staked`
+                    })
+                } catch (e) {
+                    dispatch(stopLoading(false))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Transaction was rejected from Metamask'
+                    })
+                    console.log("Error ----------------")
+                    console.log(e)
+                }
+            })
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Minimum days should be 14'
+            })
+        }
+	}
+    
+    const handleUnstaking = async (item, stakeId) => {
+            dispatch(startLoading(true))
+            let web3 = window.web3
+            let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+                try {
+                    await StakingContract.methods.unStakeToken(stakeId).send({ from: userId })
+                    dispatch(stopLoading(false))
+                } catch (e) {
+                    dispatch(stopLoading(false))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Transaction was rejected from Metamask'
+                    })
+                    console.log("Error ----------------")
+                    console.log(e)
+                }
+            // })
 	}
     return (
         <div>
             <CurrenPageTitle title='Staking'></CurrenPageTitle>
-            {userId ? 
+            {loading ? <div className='center mt-6'><Loading /></div> : userId ? 
                 <div className='container center mt-2 theme-bg mb-5'>
 					<div className=''>
                         <div className='row'>
@@ -145,7 +189,7 @@ const StakingComponent = (props) => {
                                 <div class="mb-5 center fw-bold fw-24 bold text-capitalize">stake</div>
                                 <section class="center flex-column mt-9 staking text-lg-start text-center">
                                     <div class="mb-md-5 mb-4 stake-Form  position-relative">
-                                        <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in HEX" />
+                                        <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in USDC" />
                                         <div class="translate-right-middle end-5 mt-1 text-center">
                                             <span className='text-uppercase badge opacity'>max</span>
                                             <p className='fw-bold mb-0 text-uppercase text-white'>USDC</p>
@@ -168,17 +212,6 @@ const StakingComponent = (props) => {
                                     <table className='table table-responsive table-hover'>
                                             <thead className='th-bg'>
                                                 <tr>
-                                                    {/* <th>
-                                                        <div class="custom-select w-75 mt-1">
-                                                        <i class="fa-solid fa-arrow-down table-theme"></i>
-                                                            <div className='ms-2'>
-                                                                <option value="all" className='table-theme'>start</option>
-                                                                <option value="asc">Top Price</option>
-                                                                <option value="desc">Lowest Price</option>
-                                                            </div>
-                                                            
-                                                        </div> 
-                                                    </th> */}
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
                                                     <th>Percent Completed</th>
@@ -192,12 +225,15 @@ const StakingComponent = (props) => {
                                                     console.log('item', item)
                                                     return (
                                                         <tr key={index}>
-                                                            <td>{formatDate(item.startTime)}</td>
-                                                            <td>{formatDate(item.endTime)}</td>
-                                                            <td>{item.penaltyonWithdraw}</td>
-                                                            <td>{item.totalApr}</td>
-                                                            <td>{item.returned ? 'Closed' : 'Active'}</td>
-                                                            <td>{'Button'}</td>
+                                                            <td>{formatDate(item['2'])}</td>
+                                                            <td>{formatDate(item['3'])}</td>
+                                                            <td>{`${item.percentCompleted.toFixed(6)}%`}</td>
+                                                            <td>{item['4']}</td>
+                                                            <td>{item['1'] ? 'Closed' : 'Active'}</td>
+                                                            <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
+                                                                    {'Unstake'}
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     )
                                                 })}                 

@@ -52,12 +52,6 @@
         },
         {
             "anonymous": false,
-            "inputs": [],
-            "name": "PotExhausted",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
             "inputs": [
                 {
                     "indexed": false,
@@ -87,62 +81,6 @@
             ],
             "name": "UnStake",
             "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "rewardWithdrawed",
-            "type": "event"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_account",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_stakeID",
-                    "type": "uint256"
-                }
-            ],
-            "name": "calculateAccountStakePeriods",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "_stakeID",
-                    "type": "uint256"
-                }
-            ],
-            "name": "calculatePeriods",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
         },
         {
             "inputs": [
@@ -185,6 +123,41 @@
         },
         {
             "inputs": [],
+            "name": "getAllStakes",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "deposit_amount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "stake_creation_time",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "stake_end_time",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "returned",
+                            "type": "bool"
+                        }
+                    ],
+                    "internalType": "struct Staking.Stake[]",
+                    "name": "",
+                    "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "getBusdContractAddress",
             "outputs": [
                 {
@@ -213,7 +186,7 @@
             "inputs": [
                 {
                     "internalType": "uint256",
-                    "name": "_stakeID",
+                    "name": "_index",
                     "type": "uint256"
                 }
             ],
@@ -243,19 +216,6 @@
         },
         {
             "inputs": [],
-            "name": "getPotentialWithdrawAmount",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
             "name": "getStakeCount",
             "outputs": [
                 {
@@ -271,7 +231,7 @@
             "inputs": [
                 {
                     "internalType": "uint256",
-                    "name": "_stakeID",
+                    "name": "_index",
                     "type": "uint256"
                 }
             ],
@@ -279,42 +239,29 @@
             "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "stakedAmount",
+                    "name": "",
                     "type": "uint256"
                 },
                 {
                     "internalType": "bool",
-                    "name": "returned",
+                    "name": "",
                     "type": "bool"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "startTime",
+                    "name": "",
                     "type": "uint256"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "endTime",
+                    "name": "",
                     "type": "uint256"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "totalApr",
+                    "name": "",
                     "type": "uint256"
                 },
-                {
-                    "internalType": "uint256",
-                    "name": "penaltyonWithdraw",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "getTotalStakeAmount",
-            "outputs": [
                 {
                     "internalType": "uint256",
                     "name": "",
@@ -366,19 +313,6 @@
                 }
             ],
             "name": "setInterestPeriod",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "_irp",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setInterestRatePeriod",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -457,7 +391,7 @@
             "inputs": [
                 {
                     "internalType": "uint256",
-                    "name": "_stakeID",
+                    "name": "_index",
                     "type": "uint256"
                 }
             ],
@@ -476,25 +410,6 @@
             "inputs": [],
             "name": "withdraw",
             "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "_amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "withdrawFromPot",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
             "stateMutability": "nonpayable",
             "type": "function"
         }
