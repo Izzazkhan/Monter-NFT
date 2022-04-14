@@ -26,6 +26,7 @@ const StakingComponent = (props) => {
     const [stakeInfoArray, setStakeInfoArray] = useState([]);
     const [istakeUpdate, setIstakeUpdate] = useState(false);
 	const [loading, setLoading] = useState(false)
+	const [APR, setAPR] = useState('')
  
     const handleChangeAmount = (e) => {
 		e.preventDefault();
@@ -41,6 +42,8 @@ const StakingComponent = (props) => {
             setLoading(true)
             let web3 = window.web3
             let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+            const getAPR = await StakingContract.methods.getCurrentAPR().call({ from: userId })
+            setAPR(getAPR)
             const noOfStakes = await StakingContract.methods.getStakeCount().call({ from: userId })
             var indexArray = [];
             for (var i = 0; i < noOfStakes; i++) {
@@ -54,7 +57,8 @@ const StakingComponent = (props) => {
             })
             const resolvedArray = await Promise.all(stakeInfoArray)
             const mappedArray = resolvedArray.map(item => {
-                const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
+                // const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
+                const currentDaysCalculate = ( Date.now() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
                 const stakeDaysCalculate = (Number(item['3']/( 60 * 60 * 24)) - Number(item['2'])/( 60 * 60 * 24))
                 const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
                 return {
@@ -112,8 +116,8 @@ const StakingComponent = (props) => {
                 }
     
                 try {
-                    // const endDate = ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
-                    const endDate = ( Math.floor(new Date().getTime() / 1000) + (stakeLength * 86400) )
+                    const endDate = ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
+                    // const endDate = ( Math.floor(new Date().getTime() / 1000) + (stakeLength * 86400) )
                     await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
                     await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), endDate).send({ from: userId })
                     dispatch(stopLoading(false))
@@ -202,18 +206,18 @@ const StakingComponent = (props) => {
                                                     <th>Percent Completed</th>
                                                     <th>APR%</th>
                                                     <th>Status</th>
-                                                    <th>Action (Unstake button)</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {stakeInfoArray.map((item, index) => {
-                                                    // console.log('item', item)
+                                                {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
+                                                    console.log('item', item)
                                                     return (
                                                         <tr key={index}>
                                                             <td>{formatDate(item['2'])}</td>
                                                             <td>{formatDate(item['3'])}</td>
                                                             <td>{`${item.percentCompleted.toFixed(6)}%`}</td>
-                                                            <td>{item['4']}</td>
+                                                            <td>{APR}</td>
                                                             <td>{item['1'] ? 'Closed' : 'Active'}</td>
                                                             <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
                                                                     {'Unstake'}

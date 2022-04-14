@@ -76,6 +76,7 @@ input::-webkit-input-placeholder {
     text-transform: capitalize;
     border-bottom-color: #80777787 !important;
     color: #FFBD1C;
+    width: 200px
 }
 .table-theme{
     color: #FFBD1C;
