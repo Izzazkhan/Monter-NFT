@@ -55,12 +55,8 @@ const StakingComponent = (props) => {
             const resolvedArray = await Promise.all(stakeInfoArray)
             const mappedArray = resolvedArray.map(item => {
                 const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
-                // console.log('currentDaysCalculate', currentDaysCalculate)
-                const stakeDaysCalculate = (Number(item['3']) - Number(item['2']))/( 60 * 60 * 24)
-                // const stakeDaysCalculate = (( Number(item.endTime) / ( 60 * 60 * 24) ) - (Number(item.startTime) / (60 * 60 * 24)) )
-                // console.log('stakeDaysCalculate', stakeDaysCalculate)
+                const stakeDaysCalculate = (Number(item['3']/( 60 * 60 * 24)) - Number(item['2'])/( 60 * 60 * 24))
                 const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
-                // console.log('calculatePercentage', calculatePercentage)
                 return {
                     ...item,
                     percentCompleted: calculatePercentage
