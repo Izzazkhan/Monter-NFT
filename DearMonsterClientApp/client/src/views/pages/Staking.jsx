@@ -24,6 +24,7 @@ const StakingComponent = (props) => {
     const [stakeAmount, setStakeAmount] = useState('');
     const [stakeLength, setStakeLength] = useState('');
     const [stakeInfoArray, setStakeInfoArray] = useState([]);
+    const [istakeUpdate, setIstakeUpdate] = useState(false);
 	const [loading, setLoading] = useState(false)
  
     const handleChangeAmount = (e) => {
@@ -34,6 +35,41 @@ const StakingComponent = (props) => {
 		e.preventDefault();
 		setStakeLength(e.target.value);
 	};
+
+    useEffect(async () => {
+        if(userId) {
+            setLoading(true)
+            let web3 = window.web3
+            let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+            const noOfStakes = await StakingContract.methods.getStakeCount().call({ from: userId })
+            var indexArray = [];
+            for (var i = 0; i < noOfStakes; i++) {
+                indexArray.push(i);
+            }
+            const stakeInfoArray = indexArray.map(async (index) => {
+                const stakeInfo = await StakingContract.methods.getStakeInfo(index).call({ from: userId })
+                return {
+                    ...stakeInfo
+                }
+            })
+            const resolvedArray = await Promise.all(stakeInfoArray)
+            const mappedArray = resolvedArray.map(item => {
+                const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
+                // console.log('currentDaysCalculate', currentDaysCalculate)
+                const stakeDaysCalculate = (Number(item['3']) - Number(item['2']))/( 60 * 60 * 24)
+                // const stakeDaysCalculate = (( Number(item.endTime) / ( 60 * 60 * 24) ) - (Number(item.startTime) / (60 * 60 * 24)) )
+                // console.log('stakeDaysCalculate', stakeDaysCalculate)
+                const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
+                // console.log('calculatePercentage', calculatePercentage)
+                return {
+                    ...item,
+                    percentCompleted: calculatePercentage
+                }
+            })
+            setStakeInfoArray(mappedArray)
+            setLoading(false)
+        }
+    }, [userId, istakeUpdate])
 
     const handleConnect = async () => {
         await window.ethereum.request({
@@ -47,35 +83,6 @@ const StakingComponent = (props) => {
         let accounts = await web3.eth.getAccounts()
         setOwner(accounts[0])
         dispatch(connectUserSuccess(accounts[0]))
-        setLoading(true)
-        let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
-        const noOfStakes = await StakingContract.methods.getStakeCount().call({ from: accounts[0] })
-        var indexArray = [];
-        for (var i = 0; i < noOfStakes; i++) {
-            indexArray.push(i);
-        }
-        const stakeInfoArray = indexArray.map(async (index) => {
-            const stakeInfo = await StakingContract.methods.getStakeInfo(index).call({ from: accounts[0] })
-            return {
-                ...stakeInfo
-            }
-        })
-        const resolvedArray = await Promise.all(stakeInfoArray)
-        const mappedArray = resolvedArray.map(item => {
-            const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
-            // console.log('currentDaysCalculate', currentDaysCalculate)
-            const stakeDaysCalculate = (Number(item['3']) - Number(item['2']))/( 60 * 60 * 24)
-            // const stakeDaysCalculate = (( Number(item.endTime) / ( 60 * 60 * 24) ) - (Number(item.startTime) / (60 * 60 * 24)) )
-            // console.log('stakeDaysCalculate', stakeDaysCalculate)
-            const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
-            // console.log('calculatePercentage', calculatePercentage)
-            return {
-                ...item,
-                percentCompleted: calculatePercentage
-            }
-        })
-        setStakeInfoArray(mappedArray)
-        setLoading(false)
     }
 
     const formatDate = (date) => {
@@ -111,10 +118,10 @@ const StakingComponent = (props) => {
                 try {
                     // const endDate = ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
                     const endDate = ( Math.floor(new Date().getTime() / 1000) + (stakeLength * 86400) )
-                    console.log('endDate', endDate)
                     await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
                     await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), endDate).send({ from: userId })
                     dispatch(stopLoading(false))
+                    setIstakeUpdate(!istakeUpdate)
                     Swal.fire({
                         icon: 'success',
                         title: 'Staking',
@@ -147,6 +154,7 @@ const StakingComponent = (props) => {
                 try {
                     await StakingContract.methods.unStakeToken(stakeId).send({ from: userId })
                     dispatch(stopLoading(false))
+                    setIstakeUpdate(!istakeUpdate)
                 } catch (e) {
                     dispatch(stopLoading(false))
                     Swal.fire({
