@@ -63,12 +63,12 @@ const StakingComponent = (props) => {
         const resolvedArray = await Promise.all(stakeInfoArray)
         const mappedArray = resolvedArray.map(item => {
             const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
-            console.log('currentDaysCalculate', currentDaysCalculate)
+            // console.log('currentDaysCalculate', currentDaysCalculate)
             const stakeDaysCalculate = (Number(item['3']) - Number(item['2']))/( 60 * 60 * 24)
             // const stakeDaysCalculate = (( Number(item.endTime) / ( 60 * 60 * 24) ) - (Number(item.startTime) / (60 * 60 * 24)) )
-            console.log('stakeDaysCalculate', stakeDaysCalculate)
+            // console.log('stakeDaysCalculate', stakeDaysCalculate)
             const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
-            console.log('calculatePercentage', calculatePercentage)
+            // console.log('calculatePercentage', calculatePercentage)
             return {
                 ...item,
                 percentCompleted: calculatePercentage
@@ -79,29 +79,10 @@ const StakingComponent = (props) => {
     }
 
     const formatDate = (date) => {
-        const formatedData = new Date(Number(date));
-
-        let minutes = "";
-
-        if (formatedData.getHours().toString().length === 1) {
-            minutes = "0" + formatedData.getHours();
-        } else {
-            minutes = formatedData.getHours();
-        }
-
-        return (
-            formatedData.getDate()
-                .toString()
-                .padStart(2, "0") +
-            "-" +
-            (formatedData.getMonth() + 1).toString().padStart(2, "0") +
-            "-" +
-            formatedData.getFullYear() +
-            " " +
-            minutes +
-            ":" +
-            ("00" + formatedData.getMinutes()).slice(-2)
-        );
+        const milliseconds = date * 1000 
+        const dateObject = new Date(milliseconds)           
+        const humanDateFormat = dateObject.toLocaleString()
+        return humanDateFormat
     };
 
     const handleStaking = async () => {
@@ -222,7 +203,7 @@ const StakingComponent = (props) => {
                                             </thead>
                                             <tbody>
                                                 {stakeInfoArray.map((item, index) => {
-                                                    console.log('item', item)
+                                                    // console.log('item', item)
                                                     return (
                                                         <tr key={index}>
                                                             <td>{formatDate(item['2'])}</td>

@@ -102,14 +102,14 @@ export const NavbarRoutes = [
 		// hidden: true,
 		component: lazy(() => import('../views/pages/Market')),
 	},
-	// {
-	// 	path: STACKING,
-	// 	pathForNavabr: STACKING,
-	// 	title: 'Staking',
-	// 	exact: true,
-	// 	// hidden: true,
-	// 	component: lazy(() => import('../views/pages/Staking')),
-	// },
+	{
+		path: STACKING,
+		pathForNavabr: STACKING,
+		title: 'Staking',
+		exact: true,
+		// hidden: true,
+		component: lazy(() => import('../views/pages/Staking')),
+	},
 	{
 		path: FORTUNE_WHEEL_OWNED,
 		pathForNavabr: FORTUNE_WHEEL_OWNED,
