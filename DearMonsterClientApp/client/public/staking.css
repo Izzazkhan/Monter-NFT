@@ -96,8 +96,8 @@ input::-webkit-input-placeholder {
     border-bottom: 1px solid #80777787;
 }
 .stake-table .table tbody tr:hover{
-    background-color: #151515b3;
-    color: #fff;
+    background-color: rgba(232, 232, 232, 0.8);
+    /* color: #fff !important; */
 }
 .shadow-scroll-x{
     overflow-x: auto;

@@ -148,24 +148,64 @@ const StakingComponent = (props) => {
 	}
     
     const handleUnstaking = async (item, stakeId) => {
-            dispatch(startLoading(true))
-            let web3 = window.web3
-            let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
-                try {
-                    await StakingContract.methods.unStakeToken(stakeId).send({ from: userId })
-                    dispatch(stopLoading(false))
-                    setIstakeUpdate(!istakeUpdate)
-                } catch (e) {
-                    dispatch(stopLoading(false))
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Transaction was rejected from Metamask'
-                    })
-                    console.log("Error ----------------")
-                    console.log(e)
+
+		let web3 = window.web3
+        let StakingContract  = new web3.eth.Contract(stakingAbi.abi, stakingAddress);
+        let currentStake = stakeInfoArray[stakeId];
+
+        let currentDate = parseInt( Date.now() / 1000 )
+        let endTime = parseInt(item[3])
+        
+        if(currentDate < endTime){
+            let currentPenalty = web3.utils.fromWei(currentStake[5], 'ether');
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure!',
+                text: `Emergency unstake penalty will be: ${currentPenalty} BUSD`,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Unstake!'
+            }).then( async (result) => {
+                if (result.isConfirmed) {
+                    dispatch(startLoading(true))
+                    try {
+                        await StakingContract.methods.unStakeToken(stakeId).send({ from: userId })
+                        dispatch(stopLoading(false))
+                        setIstakeUpdate(!istakeUpdate)
+                    } catch (e) {
+                        dispatch(stopLoading(false))
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Transaction was rejected from Metamask'
+                        })
+                        console.log("Error ----------------")
+                        console.log(e)
+                    }
                 }
-            // })
+                
+            })
+
+        } else {
+            dispatch(startLoading(true))
+            try {
+                await StakingContract.methods.unStakeToken(stakeId).send({ from: userId })
+                dispatch(stopLoading(false))
+                setIstakeUpdate(!istakeUpdate)
+            } catch (e) {
+                dispatch(stopLoading(false))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Transaction was rejected from Metamask'
+                })
+                console.log("Error ----------------")
+                console.log(e)
+            }
+        }
+
 	}
     return (
         <div>
@@ -175,29 +215,29 @@ const StakingComponent = (props) => {
 					<div className=''>
                         <div className='row'>
                             <div className='col-12'>
-                                <div class="mb-5 center fw-bold fw-24 bold text-capitalize">stake</div>
-                                <section class="center flex-column mt-9 staking text-lg-start text-center">
-                                    <div class="mb-md-5 mb-4 stake-Form  position-relative">
-                                        <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in USDC" />
-                                        <div class="translate-right-middle end-5 mt-1 text-center">
+                                <div className="mb-5 center fw-bold fw-24 bold text-capitalize">stake</div>
+                                <section className="center flex-column mt-9 staking text-lg-start text-center mb-5">
+                                    <div className="mb-md-5 mb-4 stake-Form  position-relative">
+                                        <input value={stakeAmount} onChange={handleChangeAmount} type="number" className="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
+                                        <div className="translate-right-middle end-5 mt-1 text-center">
                                             <span className='text-uppercase badge opacity'>max</span>
-                                            <p className='fw-bold mb-0 text-uppercase text-white'>USDC</p>
+                                            <p className='fw-bold mb-0 text-uppercase text-white'>BUSD</p>
                                         </div>
                                     </div>
-                                    <div class="mb-md-5 mb-4 stake-Form position-relative">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Stake Length in Days" value={stakeLength} onChange={handleChangeLength} />
-                                        <div class="translate-right-middle end-5 mt-1 text-center">
+                                    <div className="mb-md-5 mb-4 stake-Form position-relative">
+                                        <input type="number" className="form-control" id="exampleFormControlInput1" placeholder="Stake Length in Days" value={stakeLength} onChange={handleChangeLength} />
+                                        <div className="translate-right-middle end-5 mt-1 text-center">
                                             <span className='text-dark badge opacity'>
-                                                <i class="fa-solid fa-calendar-days text-white"></i>
+                                                <i className="fa-solid fa-calendar-days text-white"></i>
                                             </span>
                                             <p className='fw-bold mb-0 text-uppercase text-white'>Days</p>
                                         </div>
                                     </div>
                                     <div className={`header-Connect-btn h-40px w-100px center px-4 fs-16 bold cursor mb-4`} onClick={() => handleStaking()}>
-                                        {'Staking'}
+                                        {'Stake'}
                                     </div>
                                 </section>
-                                <div className='stake-table shadow-scroll-x'>
+                                <div className='stake-table shadow-scroll-x mt-5'>
                                     <table className='table table-responsive table-hover'>
                                             <thead className='th-bg'>
                                                 <tr>
@@ -211,20 +251,21 @@ const StakingComponent = (props) => {
                                             </thead>
                                             <tbody>
                                                 {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
-                                                    console.log('item', item)
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td>{formatDate(item['2'])}</td>
-                                                            <td>{formatDate(item['3'])}</td>
-                                                            <td>{`${item.percentCompleted.toFixed(6)}%`}</td>
-                                                            <td>{APR}</td>
-                                                            <td>{item['1'] ? 'Closed' : 'Active'}</td>
-                                                            <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
-                                                                    {'Unstake'}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    )
+                                                    if(!item['1']){
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td><p> {formatDate(item['2'])} </p></td>
+                                                                <td><p> {formatDate(item['3'])} </p></td>
+                                                                <td><p> {`${item.percentCompleted.toFixed(3)}%`} </p></td>
+                                                                <td><p> {APR}% </p></td>
+                                                                <td><p> {item['1'] ? 'Closed' : 'Active'} </p></td>
+                                                                <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
+                                                                        {'Unstake'}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
                                                 })}                 
                                             </tbody>
                                     </table>
