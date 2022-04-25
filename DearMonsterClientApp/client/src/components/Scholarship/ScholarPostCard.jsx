@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { apiUrl } from '../../utils/constant'
 
 const PostCard = ({ className, getData, post, stepImg, account }) => {
+    console.log('scholarshipsItems', post)
 
     const [owner, setOwner] = useState(null);
 

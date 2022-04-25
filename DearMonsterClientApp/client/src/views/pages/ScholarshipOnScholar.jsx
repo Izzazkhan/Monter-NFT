@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
 import NavLinks from '../../components/Scholarship/NavLinks';
 import PostCard from '../../components/Scholarship/ScholarPostCard';
-import { usePagination } from '../../hooks/usePagination';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectUserSuccess } from '../../store/actions/auth/login';
 import Web3 from 'web3';
-import DearMonster from '../../contracts/DearMonster.json';
-import data from "../../data/Post.json";
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant'
 
-
-
 const ScholarshipScholar = () => {
-    const dispatch = useDispatch();
-    const history = useHistory();
 
+    const dispatch = useDispatch();
     const { userId } = useSelector((state) => state.auth);
 
     const [posts, setPosts] = useState([]);
     const [account, setAccount] = useState();
-    const [paths, setPaths] = useState([]);
-    const [attributes, setAttributes] = useState([]);
+    const [limit] = useState(30);
+	const [skip, setSkip] = useState(0);
+	const [count, setCount] = useState(0);
 	const match = {params : { slug: 'scholar' }}
-
-    const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
-        usePagination(posts, 30, history.location.pathname);
 
     const handleConnect = async () => {
 
@@ -77,10 +68,10 @@ const ScholarshipScholar = () => {
     };
 
     useEffect(() => {
-        getCave();
-    }, [userId])
+        getCave(skip, limit);
+    }, [userId, skip, limit])
 
-    const getCave = async () => {
+    const getCave = async (skip, limit) => {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum)
             await window.ethereum.enable();
@@ -95,17 +86,27 @@ const ScholarshipScholar = () => {
         // Load account
         let accounts = await web3.eth.getAccounts()
         setAccount(accounts[0]);
-        getData(accounts[0]);
+        getData(accounts[0], skip, limit);
     };
 
-    function getData(owner) {
+    const nextPage = () => {
+        setSkip(skip + limit)
+    }
+
+    const previousPage = () => {
+        setSkip(skip - limit)
+    }
+
+    function getData(owner, skip, limit) {
         let _posts = []
-        axios.get(`${apiUrl}/api/scholarship/` + owner)
+        axios.get(`${apiUrl}/api/scholarship/onScholar/${owner}?limit=${limit}&skip=${skip}`)
             .then((res) => {
-                console.log('response::::', res)
+                if(res.data.count) {
+					setCount(res.data.count)
+				}
                 if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
                     res.data.mintedMonster.forEach(item => {
-                        if (item.tradeitem.length < 1 && item.scholarshipsItems.length) {
+                        if (item.tradeitem.length < 1) {
                             let post = {}
                             post['mintedId'] = item._id
                             post['monsterId'] = item.monster._id
@@ -126,7 +127,6 @@ const ScholarshipScholar = () => {
                     })
                 }
                 setPosts(_posts)
-                doPagination(_posts);
             })
             .catch((e) => {
                 console.log("Error ----------------")
@@ -178,25 +178,28 @@ const ScholarshipScholar = () => {
 
                     <div className='container mt-10 px-md-auto px-8'>
                         <div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
-                            {pageData.map((post) => {
+                            {posts.map((post) => {
                                 return (
                                     <PostCard getData={getData} account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
                                 );
                             })}
                         </div>
-                        {pageData.length == 0 ? (
+                        {posts.length == 0 ? (
                             ''
                         ) : (
                             <footer className='center pb-8 pt-4'>
                                 <img
                                     src='/assets/imgs/ArrowLeft.png '
-                                    className='cursor'
-                                    onClick={previousPage}
+                                    className={'cursor'}
+                                    onClick={(skip / limit) + 1 != 1 ? previousPage : undefined}
                                 />
                                 <p className='text-white fs-22 mx-5'>
-                                    {currentPage}/{totalPages}
+                                    {(skip / limit) + 1}/{Math.ceil(count / limit)}
                                 </p>
-                                <img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+                                <img src='/assets/imgs/ArrowRight.png' 
+                                    className={'cursor'}
+                                    onClick={(skip / limit) + 1 != Math.ceil(count / limit) ? nextPage : undefined} 
+                                />
                             </footer>
                         )}
                     </div>

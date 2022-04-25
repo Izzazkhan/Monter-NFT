@@ -17,11 +17,8 @@ const ChooseDearMonster = ({ handleonSelect, selectedMonster, updateMonsterAfter
 	useEffect(() => {
 		function getDearMonster() {
 			let monsters = []
-			// const account = '0x7ACf46627094FA89339DB5b2EB862F0E8Ea4D9fc'
-			// axios.get(`${apiUrl}/api/mintedMonster/ownerItems/` + userId)
 			axios.get(`${apiUrl}/api/scholarship/scholarItems/` + userId)
 				.then((res) => {
-					// console.log('scholar minted', res)
 					if (res.data.mintedMonster && res.data.mintedMonster.length > 0) {
 						res.data.mintedMonster.forEach(item => {
 							let singleMonster = {}

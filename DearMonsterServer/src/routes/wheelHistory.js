@@ -12,8 +12,11 @@ router.get('/', WheelHistory.index);
 //SAVE
 router.post('/', WheelHistory.store);
 
-//SHOW
-// router.get('/:id', WheelHistory.show);
+//GET ALL CATEGORIES
+router.get('/getAllCategories', WheelHistory.getAllCategories);
+
+//CATEGORY
+router.get('/:name', WheelHistory.historyByCategory);
 
 // //UPDATE
 // router.put('/:id', authenticate, WheelHistory.update);

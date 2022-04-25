@@ -7,6 +7,10 @@ import Web3 from 'web3';
 import { connectUserSuccess } from '../../redux/WalletAuth/login';
 import DearMonster from '../../contracts/DearMonster.json'
 import DearMonsterTest from '../../contracts/DearMonsterTest.json'
+import Staking from '../../contracts/Staking.json';
+import StakingTest from "../../contracts/StakingTest.json";
+import BUSDToken from '../../contracts/BUSDToken.json';
+import BUSDTokenTest from "../../contracts/BUSDTestToken.json";
 import axios from 'axios'
 import { getProbabilty, deleteProbability } from '../../redux/probabilty/action';
 import { getSpinCost } from '../../redux/spinCost/action';
@@ -14,6 +18,13 @@ import { connect } from 'react-redux';
 
 const nftContractAbi = appEnv === 'test' ? DearMonsterTest : DearMonster
 const nftContractAddress = appEnv === 'test' ? addressList.nftAddressTest : addressList.nftAddress
+
+const stakingAbi = appEnv === 'test' ? StakingTest : Staking
+const stakingAddress = appEnv === 'test' ? addressList.stakingAddressTest : addressList.stakingAddress
+
+const BUSDTokenAbi = appEnv === 'test' ? BUSDTokenTest : BUSDToken
+const BUSDTokenAddress = appEnv === 'test' ? addressList.BUSDTokenAddress : addressList.BUSDTokenAddress
+
 const star_mappings = {
     'Star 1': 1,
     'Star 2': 2,
@@ -33,7 +44,10 @@ function SideSetting(props) {
         price: '',
         maxSupply: '',
         maxPurchase: '',
-        selectStar: ''
+        selectStar: '',
+        interestRate: '',
+        minStakeTime: '',
+        penaltyValue: ''
     })
     
     const headers = ['Token ID', 'Wallet'];
@@ -65,7 +79,10 @@ function SideSetting(props) {
                 price: propsData['price'],
                 maxSupply: propsData['maxSupply'],
                 maxPurchase: propsData['maxPurchase'],
-                selectStar: propsData['selectStar']
+                selectStar: propsData['selectStar'],
+                interestRate: propsData['interestRate'],
+                minStakeTime: propsData['minStakeTime'],
+                penaltyValue: propsData['penaltyValue']
             })
         }
     }, [])
@@ -106,6 +123,36 @@ function SideSetting(props) {
 		await DearMonsterContract.methods.setMaxPurchaseLimit(parseInt(state.maxPurchase)).send({ from: accounts[0] });
 	}
 
+    const handleInterestRate = async (e) => {
+		if (!userId) return
+
+		let web3 = window.web3
+		let accounts = await web3.eth.getAccounts()
+		
+		let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+        console.log('StakingContract', StakingContract, parseInt(state.interestRate))
+		await StakingContract.methods.setIntrestRate(parseInt(state.interestRate)).send({ from: accounts[0] });
+	}
+
+    const handleMinStakeTime = async (e) => {
+		if (!userId) return
+
+		let web3 = window.web3
+		let accounts = await web3.eth.getAccounts()
+		
+		let DearMonsterContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+		await DearMonsterContract.methods.setMinimumStakeTime(parseInt(state.minStakeTime)).send({ from: accounts[0] });
+	}
+
+    const handlePenaltyValue = async (e) => {
+		if (!userId) return
+
+		let web3 = window.web3
+		let accounts = await web3.eth.getAccounts()
+		
+		let DearMonsterContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
+		await DearMonsterContract.methods.setPenaltyValue(parseInt(state.penaltyValue)).send({ from: accounts[0] });
+	}
 
     const connectWallet = async () => {
         if (window.ethereum) {
@@ -313,7 +360,64 @@ function SideSetting(props) {
                         </div>
                     </div>
                         <br />
-                    </div></div> :
+                    </div>
+
+                    <div className="content-box">
+                        <h3>Interest Rate</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Interest Rate`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'interestRate'} value={state.interestRate}
+                        placeholder={`Enter Interest Rate`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handleInterestRate}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+
+                    <div className="content-box">
+                        <h3>Minimum stake time</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Minimum stake time`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'minStakeTime'} value={state.minStakeTime}
+                        placeholder={`Enter Minimum stake time`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handleMinStakeTime}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+
+                    <div className="content-box">
+                        <h3>Penalty Value</h3>
+                        <div className="row">
+                                <div className={`col-md-8`}>
+                        <label className="control-label">{`Penalty Value`}</label>
+                        <input type="text" required="required" className="form-control" onChange={handleChange}
+                        name={'penaltyValue'} value={state.penaltyValue}
+                        placeholder={`Enter Penalty Value`}
+                        type='number'
+                        />
+                        </div>
+                        <div className={`col-md-4`}>
+                        <button className="btn-default hvr-bounce-in" onClick={handlePenaltyValue}>ADD</button>
+                        </div>
+                    </div>
+                        <br />
+                    </div>
+
+                    </div> 
+                    :
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">

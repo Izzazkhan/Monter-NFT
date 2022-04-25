@@ -1,10 +1,30 @@
 const WheelHistory = require('../models/wheelHistory');
 
-
 exports.index = async function (req, res) {
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const count = await WheelHistory.find().countDocuments()
+    const wheelHistory = await WheelHistory.find({}).skip(skip).limit(limit)
+    res.status(200).json({ wheelHistory, count });
+};
 
+exports.getAllCategories = async function (req, res) {
+
+    const count = await WheelHistory.find().countDocuments()
     const wheelHistory = await WheelHistory.find()
-    res.status(200).json({wheelHistory});
+    const filteredCategories = wheelHistory.filter((category, i) => 
+    wheelHistory.findIndex((s) => category.name === s.name) === i)
+    res.status(200).json({ filteredCategories, count });
+};
+
+exports.historyByCategory = async function (req, res) {
+
+    const name = req.params.name;
+    // const limit = parseInt(req.query.limit); 
+    // const skip = parseInt(req.query.skip);
+    const count = await WheelHistory.find({ name: name }).countDocuments()
+    const wheelHistory = await WheelHistory.find({ name: name }) // .skip(skip).limit(limit);
+    res.status(200).json({ wheelHistory, count });
 };
 
 

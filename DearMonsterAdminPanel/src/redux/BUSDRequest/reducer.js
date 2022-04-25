@@ -4,7 +4,6 @@ const initialstate = {
 };
 
 const BUSDRequestReducer = (state = initialstate, action) => {
-    console.log('stateeeeee', state, action.payload)
     switch (action.type) {
         case 'GET_BUSD_REQUEST':
             return {

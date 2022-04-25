@@ -6,6 +6,7 @@ import { Modal, Button, Spinner } from "react-bootstrap"
 import { usePagination } from '../../hooks/userPagination';
 function BUSDRequest(props) {
     const [show, setShow] = useState({ selectedRequest: '', isShow: false })
+    const [transactionHash, setTransactionHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
     const [data, setData] = useState([])
     const [limit] = useState(30);
@@ -61,16 +62,16 @@ function BUSDRequest(props) {
 
     const handleClose = () => {
         setShow(false)
+        setTransactionHash('')
     }
     const handleMark = () => {
-            props.markResolved(show.selectedRequest)
-            setShow(false)
+        props.markResolved(show.selectedRequest)
+        setShow(false)
     }
 
     const markResolved = (data) => {
         setShow({ selectedRequest: data._id, isShow: true })
     }
-
 
     const onChangeWallet = (e) => {
         setWalletAddress(e.target.value)
@@ -114,8 +115,8 @@ function BUSDRequest(props) {
             <div className="col-lg-9 col-md-8">
                 <div className="content-wrapper">
                     <div className="content-box">
-                        <h3>BUSD Requests</h3>
-                        {/* <div className="row">
+                        <h3>Withdraw Requests</h3>
+                        <div className="row">
                             <div className={`col-md-12`}>
                                 <label className="control-label">{`Wallet Address`}</label>
                                 <input type="text" required="required" className="form-control" onChange={onChangeWallet}
@@ -123,7 +124,7 @@ function BUSDRequest(props) {
                                     placeholder={`Enter Wallet Address`}
                                 />
                             </div>
-                        </div> */}
+                        </div>
                         <table className="table">
                             <thead className="table__head">
                                 <tr>
