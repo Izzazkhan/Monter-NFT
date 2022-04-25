@@ -107,7 +107,7 @@ export const NavbarRoutes = [
 		pathForNavabr: STACKING,
 		title: 'Staking',
 		exact: true,
-		hidden: true,
+		hidden: false,
 		component: lazy(() => import('../views/pages/Staking')),
 	},
 	{
