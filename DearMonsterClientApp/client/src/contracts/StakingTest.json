@@ -216,6 +216,19 @@
         },
         {
             "inputs": [],
+            "name": "getMinimumStakeTime",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "getOwner",
             "outputs": [
                 {
@@ -378,7 +391,7 @@
                 },
                 {
                     "internalType": "uint256",
-                    "name": "_stake_end_time",
+                    "name": "_no_of_days",
                     "type": "uint256"
                 }
             ],

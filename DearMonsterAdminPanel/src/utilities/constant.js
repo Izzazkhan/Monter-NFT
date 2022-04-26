@@ -12,7 +12,13 @@ export const addressList = {
     nftAddressTest: '0x180b36a4293507bd31f56fd211c7b879f2827286',
 
     tradingAddress: '0x9Bb677527369922e1cC9d55D49025843b86Ad467',
-    tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5'
+    tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5',
+
+    stakingAddress: '0xF5f01a8BCe845Ef86a36CbfEf8f06051213B51D1',
+    stakingAddressTest: '0x24daDB85aFEf6c5316c7EBCD7E22b13de92F69A3',
+
+    BUSDTokenAddress: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+    BUSDTokenAddressTest: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee'
 }
 
 
@@ -24,6 +30,7 @@ export const Monster = url + '/api/monster'
 export const WithdrawRequest = url + '/api/withdrawRequest'
 export const RewardByWallet = url + '/api/userEarning/rewardByWallet'
 export const RequestByWallet = url + '/api/withdrawRequest/requestByWallet'
+// export const BUSDRequestByWallet = url + '/api/busdRequestByWallet'
 export const Bonus = url + '/api/levelBonus'
 export const ProbilityList = url + '/api/probabiltyList'
 export const FightHistory = url + '/api/fightHistory'
@@ -33,7 +40,9 @@ export const Shards = url + '/api/shards'
 export const FortuneWheel = url + '/api/fortuneWheel'
 export const SpinCost = url + '/api/spinCost'
 export const BUSDRequest = url + '/api/BUSDRequest'
-export const WheelHistory = url + '/api/wheelHistory'
+export const BUSDRequestByWallet = url + '/api/BUSDRequest/busdRequestByWallet'
+
+export const WheelHistoryAPI = url + '/api/wheelHistory'
 
 
 export const uploadsUrl = `${url}/`

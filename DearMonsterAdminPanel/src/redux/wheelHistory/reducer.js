@@ -1,5 +1,6 @@
 const initialstate = {
-    wheelHistory: []
+    wheelHistory: [],
+    count: 0
 };
 
 const WheelHistoryReducer = (state = initialstate, action) => {
@@ -7,7 +8,8 @@ const WheelHistoryReducer = (state = initialstate, action) => {
         case 'GET_WHEEL_HISTORY':
             return {
                 ...state,
-                wheelHistory: [...action.payload]
+                wheelHistory: [...action.payload.wheelHistory],
+                count: action.payload.count
             }
         default:
             return state;

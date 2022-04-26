@@ -15,7 +15,7 @@ const stakingAbi = appEnv === 'test' ? StakingTest : Staking
 const stakingAddress = appEnv === 'test' ? addressList.stakingAddressTest : addressList.stakingAddress
 
 const BUSDTokenAbi = appEnv === 'test' ? BUSDTokenTest : BUSDToken
-const BUSDTokenAddress = appEnv === 'test' ? addressList.BUSDTokenAddress : addressList.BUSDTokenAddress
+const BUSDTokenAddress = appEnv === 'test' ? addressList.BUSDTokenAddressTest : addressList.BUSDTokenAddress
 
 const StakingComponent = (props) => {
     const { userId } = useSelector(state => state.auth)
@@ -116,7 +116,7 @@ const StakingComponent = (props) => {
                 }
     
                 try {
-                    const endDate = ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
+                    const endDate = (stakeLength * 86400) // ( Math.floor(Date.now() / 1000) + (stakeLength * 86400) )
                     // const endDate = ( Math.floor(new Date().getTime() / 1000) + (stakeLength * 86400) )
                     await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
                     await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), endDate).send({ from: userId })
@@ -215,7 +215,6 @@ const StakingComponent = (props) => {
 					<div className=''>
                         <div className='row'>
                             <div className='col-12'>
-                                <div className="mb-5 center fw-bold fw-24 bold text-capitalize">stake</div>
                                 <section className="center flex-column mt-9 staking text-lg-start text-center mb-5">
                                     <div className="mb-md-5 mb-4 stake-Form  position-relative">
                                         <input value={stakeAmount} onChange={handleChangeAmount} type="number" className="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
