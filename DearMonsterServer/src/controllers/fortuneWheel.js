@@ -49,6 +49,7 @@ exports.update = async function (req, res) {
         // if (userId.toString() !== id.toString()) return res.status(401).json({message: "Access denied.."});
 
         const fortuneWheel = await FortuneWheel.findByIdAndUpdate(id, {$set: update}, {new: true});
+        // const fortuneWheel = await FortuneWheel.find({});
         return res.status(200).json({fortuneWheel, message: 'fortune Wheel has been updated'});
     } catch (error) {
         res.status(500).json({message: error.message});

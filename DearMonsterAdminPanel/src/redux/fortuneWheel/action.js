@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { Monster, FortuneWheel } from '../../utilities/constant'
-
 export const getFortuneWheel = (limit, skip) => dispatch => {
     axios
         .get(`${FortuneWheel}`)
@@ -15,7 +14,7 @@ export const getFortuneWheel = (limit, skip) => dispatch => {
         })
 };
 
-export const addFortuneWheel = (data, token) => dispatch => {
+export const addFortuneWheel = (data, token, props) => dispatch => {
 
     const params = new URLSearchParams()
     params.append('isActive', data.isActive)
@@ -31,18 +30,18 @@ export const addFortuneWheel = (data, token) => dispatch => {
     axios
         .post(FortuneWheel, params, config)
         .then((res) => {
-            console.log('response', res)
-            return dispatch({
+            const response = dispatch({
                 type: 'ADD_FORTUNE_WHEEL',
                 payload: res.data.fortuneWheel
             })
+            props.history.push('/fortune-wheel')
+            return response
         }).catch((e) => {
             console.log("Error", e)
         })
 };
 
-export const editFortuneWheel = (data, token) => dispatch => {
-
+export const editFortuneWheel = (data, token, props) => dispatch => {
     const params = new URLSearchParams()
     params.append('isActive', data.isActive)
     params.append('wheelName', data.wheelName)
@@ -58,11 +57,14 @@ export const editFortuneWheel = (data, token) => dispatch => {
         .put(`${FortuneWheel}/${data._id}`, params, config)
         .then((res) => {
             console.log('response', res)
-            return dispatch({
+            const response = dispatch({
                 type: 'EDIT_FORTUNE_WHEEL',
                 payload: res.data.fortuneWheel
             })
-        }).catch((e) => {
+            props.history.push('/fortune-wheel')
+            return response
+        })
+        .catch((e) => {
             console.log("Error", e)
         })
 };

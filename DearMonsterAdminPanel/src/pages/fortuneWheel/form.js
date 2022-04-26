@@ -101,11 +101,9 @@ function FortuneWheelForm(props) {
             alert('Sum of slots in not 100')
         }
         else if (!state._id) {
-            props.addFortuneWheel({...state, slots}, JSON.parse(localStorage.getItem('token')))
-            props.history.push('/fortune-wheel')
+            props.addFortuneWheel({...state, slots}, JSON.parse(localStorage.getItem('token')), props)
         } else if (state._id) {
-            props.editFortuneWheel({...state, slots}, JSON.parse(localStorage.getItem('token')))
-            props.history.push('/fortune-wheel')
+            props.editFortuneWheel({...state, slots}, JSON.parse(localStorage.getItem('token')), props)
         } else {
             alert('Enter Details.');
         }
