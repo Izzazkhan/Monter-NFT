@@ -63,8 +63,6 @@ function FortuneWheelForm(props) {
         setSlots(list)
       }
 
-      console.log('shardTypeIdshardTypeId', shardTypeId)
-
     const addSlot = () => {
         setSlots([
           ...slots,

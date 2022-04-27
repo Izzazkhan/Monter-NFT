@@ -30,13 +30,13 @@ export const addFortuneWheel = (data, token, props) => dispatch => {
     axios
         .post(FortuneWheel, params, config)
         .then((res) => {
-            const response = dispatch({
+            return dispatch({
                 type: 'ADD_FORTUNE_WHEEL',
                 payload: res.data.fortuneWheel
             })
-            props.history.push('/fortune-wheel')
-            return response
-        }).catch((e) => {
+        })
+        .then(props.history.push('/fortune-wheel'))
+        .catch((e) => {
             console.log("Error", e)
         })
 };
@@ -57,13 +57,12 @@ export const editFortuneWheel = (data, token, props) => dispatch => {
         .put(`${FortuneWheel}/${data._id}`, params, config)
         .then((res) => {
             console.log('response', res)
-            const response = dispatch({
+            return dispatch({
                 type: 'EDIT_FORTUNE_WHEEL',
                 payload: res.data.fortuneWheel
             })
-            props.history.push('/fortune-wheel')
-            return response
         })
+        .then(props.history.push('/fortune-wheel'))
         .catch((e) => {
             console.log("Error", e)
         })
