@@ -19,7 +19,7 @@ export const addressList = {
     DMSExchange: '0xC2518Fa5f776F09f012186a2E7a1541182f8AEDf',
     DMSExchangeTest: '0xff2a77be463481abd826d1415b0e6e5adc9b5abf',
 
-    stakingAddress: '0xF5f01a8BCe845Ef86a36CbfEf8f06051213B51D1',
+    stakingAddress: '0x06391B145618896EAde2f7Bf8378C4beC7d555d8',
     stakingAddressTest: '0x24daDB85aFEf6c5316c7EBCD7E22b13de92F69A3',
 
     BUSDTokenAddress: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',

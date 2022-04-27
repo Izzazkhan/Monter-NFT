@@ -14,7 +14,7 @@ export const addressList = {
     tradingAddress: '0x9Bb677527369922e1cC9d55D49025843b86Ad467',
     tradingAddressTest: '0x51979BBd8dd70A13148dD03Ce37f7cF2b84633E5',
 
-    stakingAddress: '0xF5f01a8BCe845Ef86a36CbfEf8f06051213B51D1',
+    stakingAddress: '0x06391B145618896EAde2f7Bf8378C4beC7d555d8',
     stakingAddressTest: '0x24daDB85aFEf6c5316c7EBCD7E22b13de92F69A3',
 
     BUSDTokenAddress: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
