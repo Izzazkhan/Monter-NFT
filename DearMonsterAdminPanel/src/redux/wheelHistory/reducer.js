@@ -11,6 +11,12 @@ const WheelHistoryReducer = (state = initialstate, action) => {
                 wheelHistory: [...action.payload.wheelHistory],
                 count: action.payload.count
             }
+        case 'GET_WHEEL_HISTORY_BY_WALLET':
+            return {
+                ...state,
+                wheelHistory: [...action.payload.wheelHistory],
+                count: action.payload.count
+            }
         default:
             return state;
     }

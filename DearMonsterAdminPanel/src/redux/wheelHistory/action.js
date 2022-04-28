@@ -3,7 +3,6 @@ import { WheelHistoryAPI } from '../../utilities/constant'
 
 export const getWheelHistory = (limit, skip) => dispatch => {
     axios
-        // .get(`${WheelHistory}`)
         .get(`${WheelHistoryAPI}?limit=${limit}&skip=${skip}`)
         .then((res) => {
             return dispatch({
@@ -16,13 +15,12 @@ export const getWheelHistory = (limit, skip) => dispatch => {
         })
 }
 
-export const getWheelHistoryByWallet = (limit, skip) => dispatch => {
+export const getWheelHistoryByWallet = (walletAddress,limit, skip) => dispatch => {
     axios
-        // .get(`${WheelHistory}`)
-        .get(`${WheelHistoryAPI}?limit=${limit}&skip=${skip}`)
+        .get(`${WheelHistoryAPI}/rewardGainByUser/${walletAddress}?limit=${limit}&skip=${skip}`)
         .then((res) => {
             return dispatch({
-                type: 'GET_WHEEL_HISTORY',
+                type: 'GET_WHEEL_HISTORY_BY_WALLET',
                 payload: res.data
             })
         })

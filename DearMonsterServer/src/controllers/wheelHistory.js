@@ -27,6 +27,23 @@ exports.historyByCategory = async function (req, res) {
     res.status(200).json({ wheelHistory, count });
 };
 
+exports.spinCountByUser = async function (req, res) {
+
+    const walletAddress = req.params.walletAddress;
+    const count = await WheelHistory.find({ requesterAddress: walletAddress }).countDocuments()
+    res.status(200).json({ count });
+};
+
+exports.rewardGainByUser = async function (req, res) {
+
+    const walletAddress = req.params.walletAddress;
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const count = await WheelHistory.find({ requesterAddress: walletAddress, actionType: 'DMS' }).countDocuments()
+    const wheelHistory = await WheelHistory.find({ requesterAddress: walletAddress, actionType: 'DMS' }).skip(skip).limit(limit);
+    res.status(200).json({ wheelHistory, count });
+};
+
 
 exports.store = async (req, res) => {
     try {

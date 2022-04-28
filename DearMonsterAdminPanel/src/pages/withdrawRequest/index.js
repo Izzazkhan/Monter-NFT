@@ -21,7 +21,7 @@ function WithdrawRequest(props) {
     }, [skip, limit])
 
     useEffect(() => {
-        if (searchSkip != 0) {
+        if (walletAddress != '') {
             props.getWithdrawRequestByWallet(walletAddress, searchLimit, searchSkip)
         }
     }, [searchSkip, searchLimit])
@@ -95,7 +95,7 @@ function WithdrawRequest(props) {
         if (e.target.value != '') {
             props.getWithdrawRequestByWallet(e.target.value, limit, skip)
         } else {
-            props.getWithdrawRequestByWallet('', limit, skip)
+            props.getWithdrawRequest(limit, skip)
 
         }
     }
