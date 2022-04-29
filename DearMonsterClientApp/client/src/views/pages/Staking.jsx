@@ -252,7 +252,7 @@ const StakingComponent = (props) => {
                                        </div>
                                     </div>
                                     <div class="mb-md-5 mb-4 stake-Form w-100  position-relative">
-                                       <input type="text" class="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
+                                       <input type="text" class="form-control staking-usd-form filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
                                        <div class="translate-right-middle end-5 mt-1 text-center">
                                           <p class="fw-bold mb-0 text-uppercase text-white">0</p>
                                           <p class="fw-bold mb-0 text-uppercase text-white">~0 USD</p>
@@ -278,7 +278,7 @@ const StakingComponent = (props) => {
                                        <li className='me-0'><a href=''>5w</a></li>
                                     </ul>
                                     <div className='d-flex align-items-center mb-5'>
-                                       <input type="text" class="form-control p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
+                                       <input type="text" class="form-control staking-week-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
                                        <span className='week'>Week</span>
                                     </div>
 
