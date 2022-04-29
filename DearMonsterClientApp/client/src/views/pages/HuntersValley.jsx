@@ -625,6 +625,7 @@ const HuntersValley = () => {
 						)}
 					</footer>
 				</div>
+
 			</div>
 		</div>
 	);

@@ -141,6 +141,136 @@ input::-webkit-input-placeholder {
     padding: 5px;
     margin-top: 2px;
 }
+.create-box{
+    width: 270px;
+    margin: 0 auto;
+    font-weight: 700;
+}
+.duration-week li{
+    width: 20%;text-align: center;
+    padding: 15px 0;
+    background: #353535;
+    border-radius: 30px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.duration-week li:hover{
+    background: #ffffff;
+}
+.duration-week li:hover a{color: #000;}
+.duration-week li a{
+    color: #fff;
+}
+.week{font-size: 18px;line-height: 21px;font-weight: 600;}
+.overview-box{
+    background: #000;
+    padding: 20px 15px;
+    color: #fff;
+    border-radius: 30px;
+}
+.overview-box li{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.overview-box li label{
+    color: rgb(215, 198, 198);
+}
+.overview-box li span{
+    font-weight: 700;
+}
+.confirm-btn{background-color: #ff961d !important;color: #fff !important;}
+.staking-card .cake-img img{
+    width: 100px;
+    height: 100px;
+}
+.staking-card .cake-bottom-img{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    
+}
+.staking-card .cake-bottom-img img{
+    width: 45px;
+    height: 45px;
+}
+.staking-card .card-header{
+    padding: 25px 20px;
+    background: transparent;
+    border-radius: 30px 30px 0 0 !important;
+    border-bottom: 1px solid white;
+}
+.staking-card .card{
+    border-radius: 30px;
+    border: none;
+    background: #000000b5;
+}
+.staking-card .card-title{
+    font-size: 30px;
+    font-weight: 700;
+    color: #ff961d;
+}
+.staking-card .card-subtitle{
+    color: #FFBD1C;
+}
+.staking-card .card-body{
+    color: #ff961d;
+    padding: 25px 20px;
+    border-bottom: 1px solid #fff;
+}
+.staking-card .card-body .apy{
+    margin-bottom: 30px;
+}
+.staking-card .apy-value{
+    font-weight: 700;
+}
+.staking-card .add-subtract-btn .btn{
+    border: 2px solid #ff961d;
+    border-radius: 20px;
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    color: #ff961d;
+    font-size: 30px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.staking-card .usd-price{
+    font-size: 20px;
+    font-weight: 700;
+}
+.staking-card .card-footer{
+    padding: 25px 20px;
+    border-radius: 0 0 30px 30px;
+}
+.staking-card .card-footer .dropdown button{
+    border: none;
+    background: transparent;
+    color: #ff961d;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.staking-card .card-footer .dropdown-toggle::after{
+    margin-left: 15px;
+}
+.staking-card .auto-btn{
+    border: 2px solid #ff961d;
+    border-radius: 30px;
+    padding: 10px 20px;
+    background: #fff;
+    color: #ff961d;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+/* .stake-model .btn-close{
+    color: #153537;
+} */
 @media (max-width: 1399px) {
     
     .stake-table .table td, .stake-table .table tr{
