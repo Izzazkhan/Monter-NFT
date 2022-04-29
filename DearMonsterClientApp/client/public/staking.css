@@ -150,9 +150,11 @@ input::-webkit-input-placeholder {
     width: 20%;text-align: center;
     padding: 15px 0;
     background: #353535;
+    border: 1px solid #353535;
     border-radius: 30px;
     margin-right: 10px;
     cursor: pointer;
+    transition: all ease-in-out .3s;
 }
 .duration-week li:hover{
     background: #ffffff;
@@ -268,9 +270,58 @@ input::-webkit-input-placeholder {
     font-weight: 700;
     cursor: pointer;
 }
-/* .stake-model .btn-close{
-    color: #153537;
+/* .slide-container {
+    width: 300px;
 } */
+  
+.staking .slider {
+-webkit-appearance: none;
+width: 100%;
+height: 5px;
+border-radius: 5px;
+background: #FFFFFF;
+outline: none;
+opacity: 0.7;
+-webkit-transition: .2s;
+transition: opacity .2s;
+margin-bottom: 20px;
+}
+
+.staking .slider:hover {
+opacity: 1;
+}
+
+.staking .slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 23px;
+height: 24px;
+border: 0;
+    border-radius: 50%;
+background-image: url('https://img.icons8.com/material-outlined/344/average-2.png');
+background-size: contain;
+background-position: center center;
+background-repeat: no-repeat;
+cursor: pointer;
+}
+
+.staking .slider::-moz-range-thumb {
+width: 23px;
+height: 24px;
+border: 0;
+    border-radius: 50%;
+background-image: url('https://img.icons8.com/material-outlined/344/average-2.png');
+background-size: contain;
+background-position: center center;
+background-repeat: no-repeat;
+cursor: pointer;
+}
+.staking .duration-percentage li{
+    width: 25%;
+}
+.staking.modal-content{
+    background: #257089;
+}
 @media (max-width: 1399px) {
     
     .stake-table .table td, .stake-table .table tr{
