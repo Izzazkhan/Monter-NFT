@@ -149,8 +149,8 @@ input::-webkit-input-placeholder {
 .duration-week li{
     width: 20%;text-align: center;
     padding: 15px 0;
-    background: #353535;
-    border: 1px solid #353535;
+    background: #151515b3;
+    border: 1px solid #151515b3;
     border-radius: 30px;
     margin-right: 10px;
     cursor: pointer;
@@ -165,7 +165,7 @@ input::-webkit-input-placeholder {
 }
 .week{font-size: 18px;line-height: 21px;font-weight: 600;}
 .overview-box{
-    background: #000;
+    background: #423214;
     padding: 20px 15px;
     color: #fff;
     border-radius: 30px;
@@ -182,7 +182,8 @@ input::-webkit-input-placeholder {
 .overview-box li span{
     font-weight: 700;
 }
-.confirm-btn{background-color: #ff961d !important;color: #fff !important;}
+.confirm-btn{background-color: #423214 !important;color: #ff961d !important;font-weight: 700;}
+.confirm-btn:hover{background: #fff !important;}
 .staking-card .cake-img img{
     width: 100px;
     height: 100px;
@@ -320,7 +321,21 @@ cursor: pointer;
     width: 25%;
 }
 .staking.modal-content{
-    background: #257089;
+    background: #ab7511;
+    color: #fff
+}
+.staking-usd-form::placeholder{
+    font-size: 20px;
+    line-height: 24px;
+}
+.staking-week-form{
+    height: 50px !important;
+    font-size: 20px !important;
+    line-height: 23px !important;
+}
+.staking-week-form::placeholder{
+    font-size: 18px !important;
+    line-height: 21px !important;
 }
 @media (max-width: 1399px) {
     
