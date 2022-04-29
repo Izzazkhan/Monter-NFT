@@ -56,13 +56,26 @@ const StakingComponent = (props) => {
             }
          })
          const resolvedArray = await Promise.all(stakeInfoArray)
+         console.log('resolvedArray', resolvedArray)
          const mappedArray = resolvedArray.map(item => {
             // const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
             const currentDaysCalculate = (Date.now() / (1000 * 60 * 60 * 24)) - (Number(item['2']) / (60 * 60 * 24))
+            console.log('currentDaysCalculate', currentDaysCalculate)
+            console.log('calculation', (100 * (item['0'] / 10 ** 18)))
+
+            const profit = getAPR / (100 * (item['0'] / 10 ** 18))
+            const dailyProfit = ( profit / 12 ) / 30 
+            // const hourlyProfit = dailyProfit / 24
+            const DMSProfit = dailyProfit * currentDaysCalculate
+
+
             const stakeDaysCalculate = (Number(item['3'] / (60 * 60 * 24)) - Number(item['2']) / (60 * 60 * 24))
+            console.log('stakeDaysCalculate', stakeDaysCalculate)
             const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
             return {
                ...item,
+               passedDays: currentDaysCalculate,
+               DMSProfit: DMSProfit,
                percentCompleted: calculatePercentage
             }
          })
@@ -207,6 +220,10 @@ const StakingComponent = (props) => {
       }
 
    }
+
+   const onChangeSlider = (e) => {
+    console.log('e.targer.value', e.target.value)
+   }
    return (
       <div>
          <CurrenPageTitle title='Staking'></CurrenPageTitle>
@@ -243,7 +260,7 @@ const StakingComponent = (props) => {
                                     </div>
                                     <p className='text-end'>Balance: 0</p>
                                     <div className='input-slider mb-4'>
-                                       <input type="range" class="form-range slider" id="customRange1" />
+                                       <input type="range" class="form-range slider" id="customRange1" onChange={onChangeSlider} />
                                        <ul className='duration-week duration-percentage list-unstyled d-flex'>
                                           <li><a href=''>25%</a></li>
                                           <li><a href=''>50%</a></li>
@@ -355,14 +372,97 @@ const StakingComponent = (props) => {
                                     </table>
                                 </div> */}
                      </div>
-                     <div className='col-lg-6'>
+
+                     {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
+                        if (!item['1']) {
+                            return (
+                                <>
+                                {/* <tr key={index}>
+                                    <td><p> {formatDate(item['2'])} </p></td>
+                                    <td><p> {formatDate(item['3'])} </p></td>
+                                    <td><p> {`${item.percentCompleted.toFixed(3)}%`} </p></td>
+                                    <td><p> {APR}% </p></td>
+                                    <td><p> {item['1'] ? 'Closed' : 'Active'} </p></td>
+                                    <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
+                                        {'Unstake'}
+                                    </div>
+                                    </td>
+                                </tr> */}
+                                <div className='col-lg-6'>
+                                    <div className='staking-card'>
+                                    <div className="card">
+                                        <div className='card-header'>
+                                            <div className='d-flex justify-content-between align-items-center'>
+                                                <div>
+                                                <h2 className='card-title'>DMS TOKEN</h2>
+                                                <h4 className='card-subtitle'>Staking</h4>
+                                                </div>
+                                                <div className='position-relative'>
+                                                <div className='cake-img'>
+                                                    <img src='/assets/imgs/coin.png' />
+                                                </div>
+                                                <div className='cake-bottom-img'>
+                                                    <img src='/assets/imgs/coin.png' />
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div className='d-flex justify-content-between align-items-center apy'>
+                                                <span className='text-uppercase'>APY:</span>
+                                                <span className='apy-value'>{`${APR}%`}</span>
+                                            </div>
+                                            <div className='d-flex justify-content-between align-items-center mb-2'>
+                                                <span>DMS Profit:</span>
+                                                <span>{item.DMSProfit}</span>
+                                            </div>
+                                            <div className='d-flex justify-content-between align-items-center mb-5'>
+                                                <span >Penalty from contract</span>
+                                                <span >{Math.floor(item.passedDays) > 14 ? `${0}d` : `${14 - Math.floor(item.passedDays)}d`}</span>
+                                            </div>
+                                            <span className='text-uppercase'>Stacked amount</span>
+                                            <div className='d-flex justify-content-between align-items-center'>
+                                                 <div>
+                                                <p className='usd-price'>{item['0']/10 ** 18}</p>
+                                                {/* <span>~22.32 USD</span> */}
+                                                </div> 
+                                                {/*<div className='add-subtract-btn d-flex'>
+                                                <button className='btn me-2'>-</button>
+                                                <button className='btn'>+</button>
+                                                </div> */}
+                                            </div>
+                                        </div>
+                                        <div className='card-footer'>
+                                            <div className='d-flex justify-content-between align-items-center'>
+                                                <button className='auto-btn btn'>Unstake</button>
+                                                {/* <div class="dropdown">
+                                                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Dropdown button
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                </ul>
+                                                </div> */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </>
+                            )
+                        }
+                    })}
+
+                     {/* <div className='col-lg-6'>
                         <div className='staking-card'>
                            <div className="card">
                               <div className='card-header'>
                                  <div className='d-flex justify-content-between align-items-center'>
                                     <div>
-                                       <h2 className='card-title'>Auto CAKE</h2>
-                                       <h4 className='card-subtitle'>Automatic restaking</h4>
+                                       <h2 className='card-title'>DMS TOKEN</h2>
+                                       <h4 className='card-subtitle'>Staking</h4>
                                     </div>
                                     <div className='position-relative'>
                                        <div className='cake-img'>
@@ -416,7 +516,7 @@ const StakingComponent = (props) => {
                               </div>
                            </div>
                         </div>
-                     </div>
+                     </div> */}
                   </div>
                </div>
             </div> :
