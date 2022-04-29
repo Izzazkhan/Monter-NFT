@@ -27,20 +27,36 @@ const StakingComponent = (props) => {
    const [istakeUpdate, setIstakeUpdate] = useState(false);
    const [loading, setLoading] = useState(false)
    const [APR, setAPR] = useState('')
+   const [BUSDBalance, setBUSDBalance] = useState('')
+   const [modalOpen, setModalOpen] = useState('NotModal')
 
    const handleChangeAmount = (e) => {
       e.preventDefault();
       setStakeAmount(e.target.value);
    };
+
+   const onChangeSlider = (e) => {
+        e.preventDefault();
+        setStakeAmount(e.target.value);
+   }
+
    const handleChangeLength = (e) => {
       e.preventDefault();
       setStakeLength(e.target.value);
    };
 
+   const onChangeWeek = (days) => {
+        setStakeLength(days);
+   }
+
    useEffect(async () => {
       if (userId) {
          setLoading(true)
          let web3 = window.web3
+         let StakingToken = new web3.eth.Contract(BUSDTokenAbi.abi, BUSDTokenAddress)
+         const balance = await StakingToken.methods.balanceOf(userId).call()
+         setBUSDBalance(balance / 10 ** 18)
+
          let StakingContract = new web3.eth.Contract(stakingAbi.abi, stakingAddress)
          const getAPR = await StakingContract.methods.getCurrentAPR().call({ from: userId })
          setAPR(getAPR)
@@ -56,22 +72,17 @@ const StakingComponent = (props) => {
             }
          })
          const resolvedArray = await Promise.all(stakeInfoArray)
-         console.log('resolvedArray', resolvedArray)
-         const mappedArray = resolvedArray.map(item => {
-            // const currentDaysCalculate = ( new Date().getTime() / (1000 * 60 * 60 * 24) ) - (Number(item['2']) / (60 * 60 * 24)) 
+         const mappedArray = resolvedArray.map((item, index) => { 
             const currentDaysCalculate = (Date.now() / (1000 * 60 * 60 * 24)) - (Number(item['2']) / (60 * 60 * 24))
-            console.log('currentDaysCalculate', currentDaysCalculate)
-            console.log('calculation', (100 * (item['0'] / 10 ** 18)))
 
             const profit = getAPR / (100 * (item['0'] / 10 ** 18))
             const dailyProfit = ( profit / 12 ) / 30 
             // const hourlyProfit = dailyProfit / 24
             const DMSProfit = dailyProfit * currentDaysCalculate
 
-
             const stakeDaysCalculate = (Number(item['3'] / (60 * 60 * 24)) - Number(item['2']) / (60 * 60 * 24))
-            console.log('stakeDaysCalculate', stakeDaysCalculate)
             const calculatePercentage = (currentDaysCalculate / stakeDaysCalculate) * 100
+
             return {
                ...item,
                passedDays: currentDaysCalculate,
@@ -79,7 +90,16 @@ const StakingComponent = (props) => {
                percentCompleted: calculatePercentage
             }
          })
-         setStakeInfoArray(mappedArray)
+         const penaltyMapped = mappedArray.map((item, index) => {
+            let currentStake = mappedArray[index]
+            let currentPenalty = web3.utils.fromWei((currentStake[5]), 'ether');
+             return {
+                 ...item,
+                 currentPenalty: currentPenalty
+             }
+         })
+
+         setStakeInfoArray(penaltyMapped)
          setLoading(false)
       }
    }, [userId, istakeUpdate])
@@ -134,6 +154,7 @@ const StakingComponent = (props) => {
                await StakingToken.methods.approve(stakingAddress, web3.utils.toBN(amount.toString())).send({ from: userId });
                await StakingContract.methods.stakeToken(web3.utils.toBN(amount.toString()), endDate).send({ from: userId })
                dispatch(stopLoading(false))
+               setModalOpen('modal')
                setIstakeUpdate(!istakeUpdate)
                Swal.fire({
                   icon: 'success',
@@ -221,9 +242,7 @@ const StakingComponent = (props) => {
 
    }
 
-   const onChangeSlider = (e) => {
-    console.log('e.targer.value', e.target.value)
-   }
+   
    return (
       <div>
          <CurrenPageTitle title='Staking'></CurrenPageTitle>
@@ -233,18 +252,19 @@ const StakingComponent = (props) => {
                   <div className='row'>
                      <div className='col-12'>
                         <button type="button " class="btn headingBox h-70px center fs-17 create-box" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                           Lock CAKE
+                           Lock BUSD
                         </button>
-                        <div class="modal fade stake-model" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade stake-model" id="exampleModal" tabindex="-1" 
+                            aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-dismiss={modalOpen}>
                            <div class="modal-dialog">
                               <div class="staking modal-content">
                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Lock CAKE</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Lock BUSD</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                  </div>
                                  <div class="modal-body">
                                     <div className='d-flex justify-content-between align-items-center'>
-                                       <span className='text-uppercase'> Cake to Lock</span>
+                                       <span className='text-uppercase'> BUSD to Lock</span>
                                        <div className='d-flex align-items-center'>
                                           <div className='cake-img'>
                                              <img src='/assets/imgs/coin.png ' />
@@ -252,142 +272,66 @@ const StakingComponent = (props) => {
                                        </div>
                                     </div>
                                     <div class="mb-md-5 mb-4 stake-Form w-100  position-relative">
-                                       <input type="text" class="form-control staking-usd-form filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
+                                       <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control staking-usd-form filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
                                        <div class="translate-right-middle end-5 mt-1 text-center">
-                                          <p class="fw-bold mb-0 text-uppercase text-white">0</p>
-                                          <p class="fw-bold mb-0 text-uppercase text-white">~0 USD</p>
+                                          {/* <p class="fw-bold mb-0 text-uppercase text-white">0</p> */}
+                                          <p class="fw-bold mb-0 text-uppercase text-white">{`~${BUSDBalance} BUSD`}</p>
                                        </div>
                                     </div>
-                                    <p className='text-end'>Balance: 0</p>
+                                    <p className='text-end'>Balance: {BUSDBalance}</p>
                                     <div className='input-slider mb-4'>
-                                       <input type="range" class="form-range slider" id="customRange1" onChange={onChangeSlider} />
-                                       <ul className='duration-week duration-percentage list-unstyled d-flex'>
-                                          <li><a href=''>25%</a></li>
-                                          <li><a href=''>50%</a></li>
-                                          <li><a href=''>75%</a></li>
-                                          <li><a href=''>100%</a></li>
-                                       </ul>
+                                       <input type="range" class="form-range slider" id="customRange1" onChange={onChangeSlider} 
+                                            min="0"
+                                            max={`${BUSDBalance}`}
+                                            step="0.01"
+                                            value={stakeAmount}
+                                       />
                                     </div>
                                     <h5 className='text-uppercase mb-4'>Add Duration</h5>
 
                                     <ul className='duration-week list-unstyled d-flex'>
-                                       <li><a href=''>1w</a></li>
-                                       <li><a href=''>2w</a></li>
-                                       <li><a href=''>3w</a></li>
-                                       <li><a href=''>4w</a></li>
-                                       <li className='me-0'><a href=''>5w</a></li>
+                                       <li onClick={() => onChangeWeek(14)}><a>2w</a></li>
+                                       <li onClick={() => onChangeWeek(21)}><a>3w</a></li>
+                                       <li onClick={() => onChangeWeek(28)}><a>4w</a></li>
+                                       <li className='me-0' onClick={() => onChangeWeek(35)}><a>5w</a></li>
                                     </ul>
                                     <div className='d-flex align-items-center mb-5'>
-                                       <input type="text" class="form-control staking-week-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" value="" />
-                                       <span className='week'>Week</span>
+                                       <input value={stakeLength} onChange={handleChangeLength} type="number" class="form-control staking-week-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Length in Days" />
+                                       <span className='week'>Days</span>
                                     </div>
 
                                     <h5 className='text-uppercase mb-4'>Lock Overview</h5>
                                     <ul className='overview-box'>
                                        <li>
-                                          <label>Cake to b Locked</label>
-                                          <span>0.00</span>
+                                          <label>DMS to be Locked</label>
+                                          <span>{stakeAmount}</span>
                                        </li>
                                        <li>
-                                          <label>API</label>
-                                          <span>15.37%</span>
+                                          <label>APY</label>
+                                          <span>{`${APR}%`}</span>
                                        </li>
                                        <li>
                                           <label>Duration</label>
-                                          <span>1 Week</span>
-                                       </li>
-                                       <li>
-                                          <label>Yield boost</label>
-                                          <span>1.38x</span>
-                                       </li>
-                                       <li>
-                                          <label>Unlock on</label>
-                                          <span>May 4th, 2022</span>
+                                          <span>{`${stakeLength} Days`}</span>
                                        </li>
                                        <li className='mb-0'>
                                           <label>Expected ROI</label>
-                                          <span>$0.00</span>
+                                          <span>{`$${APR}`}</span>
                                        </li>
                                     </ul>
                                     <div class="modal-footer">
                                        {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> */}
-                                       <button type="button" class="btn confirm-btn w-100">Confirm</button>
+                                       <button type="button" class="btn confirm-btn w-100" onClick={() => handleStaking()}>Confirm</button>
                                     </div>
                                  </div>
                               </div>
                            </div>
                         </div>
-                        <section className="center flex-column mt-9 staking text-lg-start text-center mb-5">
-                           <div className="mb-md-5 mb-4 stake-Form  position-relative">
-                              <input value={stakeAmount} onChange={handleChangeAmount} type="number" className="form-control filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
-                              <div className="translate-right-middle end-5 mt-1 text-center">
-                                 <span className='text-uppercase badge opacity'>max</span>
-                                 <p className='fw-bold mb-0 text-uppercase text-white'>BUSD</p>
-                              </div>
-                           </div>
-                           <div className="mb-md-5 mb-4 stake-Form position-relative">
-                              <input type="number" className="form-control" id="exampleFormControlInput1" placeholder="Stake Length in Days" value={stakeLength} onChange={handleChangeLength} />
-                              <div className="translate-right-middle end-5 mt-1 text-center">
-                                 <span className='text-dark badge opacity'>
-                                    <i className="fa-solid fa-calendar-days text-white"></i>
-                                 </span>
-                                 <p className='fw-bold mb-0 text-uppercase text-white'>Days</p>
-                              </div>
-                           </div>
-                           <div className={`header-Connect-btn h-40px w-100px center px-4 fs-16 bold cursor mb-4`} onClick={() => handleStaking()}>
-                              {'Stake'}
-                           </div>
-                        </section>
-                        {/* <div className='stake-table shadow-scroll-x mt-5'>
-                                    <table className='table table-responsive table-hover'>
-                                        <thead className='th-bg'>
-                                            <tr>
-                                                <th>Start Date</th>
-                                                <th>End Date</th>
-                                                <th>Percent Completed</th>
-                                                <th>APR%</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
-                                                if (!item['1']) {
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td><p> {formatDate(item['2'])} </p></td>
-                                                            <td><p> {formatDate(item['3'])} </p></td>
-                                                            <td><p> {`${item.percentCompleted.toFixed(3)}%`} </p></td>
-                                                            <td><p> {APR}% </p></td>
-                                                            <td><p> {item['1'] ? 'Closed' : 'Active'} </p></td>
-                                                            <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
-                                                                {'Unstake'}
-                                                            </div>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                }
-                                            })}
-                                        </tbody>
-                                    </table>
-                                </div> */}
                      </div>
 
                      {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
                         if (!item['1']) {
                             return (
-                                <>
-                                {/* <tr key={index}>
-                                    <td><p> {formatDate(item['2'])} </p></td>
-                                    <td><p> {formatDate(item['3'])} </p></td>
-                                    <td><p> {`${item.percentCompleted.toFixed(3)}%`} </p></td>
-                                    <td><p> {APR}% </p></td>
-                                    <td><p> {item['1'] ? 'Closed' : 'Active'} </p></td>
-                                    <td><div className={`header-Connect-btn h-40px w-100px center text-black px-4 fs-16 bold cursor`} onClick={() => handleUnstaking(item, index)}>
-                                        {'Unstake'}
-                                    </div>
-                                    </td>
-                                </tr> */}
                                 <div className='col-lg-6'>
                                     <div className='staking-card'>
                                     <div className="card">
@@ -434,7 +378,7 @@ const StakingComponent = (props) => {
                                         </div>
                                         <div className='card-footer'>
                                             <div className='d-flex justify-content-between align-items-center'>
-                                                <button className='auto-btn btn'>Unstake</button>
+                                                <button className='auto-btn btn' onClick={() => handleUnstaking(item, index)}>Unstake</button>
                                                 {/* <div class="dropdown">
                                                 <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                                     Dropdown button
@@ -450,73 +394,9 @@ const StakingComponent = (props) => {
                                     </div>
                                     </div>
                                 </div>
-                                </>
                             )
                         }
                     })}
-
-                     {/* <div className='col-lg-6'>
-                        <div className='staking-card'>
-                           <div className="card">
-                              <div className='card-header'>
-                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <div>
-                                       <h2 className='card-title'>DMS TOKEN</h2>
-                                       <h4 className='card-subtitle'>Staking</h4>
-                                    </div>
-                                    <div className='position-relative'>
-                                       <div className='cake-img'>
-                                          <img src='/assets/imgs/coin.png' />
-                                       </div>
-                                       <div className='cake-bottom-img'>
-                                          <img src='/assets/imgs/coin.png' />
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="card-body">
-                                 <div className='d-flex justify-content-between align-items-center apy'>
-                                    <span className='text-uppercase'>APY:</span>
-                                    <span className='apy-value'>140.46%</span>
-                                 </div>
-                                 <div className='d-flex justify-content-between align-items-center mb-2'>
-                                    <span>Recent Cake Profite:</span>
-                                    <span>0</span>
-                                 </div>
-                                 <div className='d-flex justify-content-between align-items-center mb-5'>
-                                    <span >0.1% unstaking fee until</span>
-                                    <span >2d : 23h : 59m</span>
-                                 </div>
-                                 <span className='text-uppercase'>CAKE staked (uncomponding)</span>
-                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <div>
-                                       <p className='usd-price'>0.600</p>
-                                       <span>~22.32 USD</span>
-                                    </div>
-                                    <div className='add-subtract-btn d-flex'>
-                                       <button className='btn me-2'>-</button>
-                                       <button className='btn'>+</button>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div className='card-footer'>
-                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <button className='auto-btn btn'>Auto</button>
-                                    <div class="dropdown">
-                                       <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                          Dropdown button
-                                       </button>
-                                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                          <li><a class="dropdown-item" href="#">Action</a></li>
-                                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                                          <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                       </ul>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div> */}
                   </div>
                </div>
             </div> :

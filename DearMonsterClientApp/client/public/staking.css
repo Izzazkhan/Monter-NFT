@@ -8,6 +8,7 @@ body{
     /* width: 100vw; */
     overflow-x: hidden;
 }
+
 .filterCheckBtn {
     background: #151515fa;
     background-repeat: repeat;
@@ -205,6 +206,7 @@ input::-webkit-input-placeholder {
     border-bottom: 1px solid white;
 }
 .staking-card .card{
+    margin-top: 10px;
     border-radius: 30px;
     border: none;
     background: #000000b5;
@@ -374,3 +376,4 @@ cursor: pointer;
     padding: 5px;
     background-color: #353535;
 }
+
