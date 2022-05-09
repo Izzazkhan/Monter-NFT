@@ -148,14 +148,20 @@ input::-webkit-input-placeholder {
     font-weight: 700;
 }
 .duration-week li{
-    width: 20%;text-align: center;
+    width: 25%;
+    text-align: center;
     padding: 15px 0;
-    background: #151515b3;
+    /* background: #151515b3;
     border: 1px solid #151515b3;
     border-radius: 30px;
     margin-right: 10px;
     cursor: pointer;
-    transition: all ease-in-out .3s;
+    transition: all ease-in-out .3s; */
+    background: url('/assets/imgs/header/connectBtn.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 20px 15px;
+    /* width: 100%; */
 }
 .duration-week li:hover{
     background: #ffffff;
@@ -166,11 +172,12 @@ input::-webkit-input-placeholder {
 }
 .week{font-size: 18px;line-height: 21px;font-weight: 600;}
 .overview-box{
-    background: #423214;
+    background: #FFAD1C;
     padding: 20px 15px;
     color: #fff;
     border-radius: 30px;
 }
+
 .overview-box li{
     display: flex;
     align-items: center;

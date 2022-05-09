@@ -105,6 +105,25 @@
      background-size: 100% 100%;
      width: 100%;
  }
+
+ .modalLock {
+  background: url('/assets/imgs/header/connectBtn.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 160px;
+  padding: 20px 15px;
+  width: 570px;
+  
+}
+
+.modalMargin {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.innerModal {
+  width: 530px;
+}
  
  .findDearMonster {
      background: url('/assets/imgs/BoardForFindMonster.png');

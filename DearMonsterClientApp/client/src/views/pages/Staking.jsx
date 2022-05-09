@@ -118,13 +118,6 @@ const StakingComponent = (props) => {
       dispatch(connectUserSuccess(accounts[0]))
    }
 
-   const formatDate = (date) => {
-      const milliseconds = date * 1000
-      const dateObject = new Date(milliseconds)
-      const humanDateFormat = dateObject.toLocaleString()
-      return humanDateFormat
-   };
-
    const handleStaking = async () => {
       if (!userId) return
 
@@ -251,35 +244,32 @@ const StakingComponent = (props) => {
                <div className=''>
                   <div className='row'>
                      <div className='col-12'>
-                        <button type="button " class="btn headingBox h-70px center fs-17 create-box" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                           Lock BUSD
-                        </button>
-                        <div class="modal fade stake-model" id="exampleModal" tabindex="-1" 
-                            aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-dismiss={modalOpen}>
-                           <div class="modal-dialog">
-                              <div class="staking modal-content">
-                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Lock BUSD</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                 </div>
-                                 <div class="modal-body">
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                       <span className='text-uppercase'> BUSD to Lock</span>
-                                       <div className='d-flex align-items-center'>
-                                          <div className='cake-img'>
-                                             <img src='/assets/imgs/coin.png ' />
-                                          </div>
-                                       </div>
+                        <section className='mt-5 center'>
+                                <div className='header-Connect-btn py-3 w-190px center bold fs-13 cursor'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#exampleModal'>
+                                    Stack BUSD
+                                </div>
+                                <div className='modal fade' id={`exampleModal`} tabIndex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true' >
+                                    <div className='modal-dialog modal-lg'>
+                                        <div style={{ padding: "35px" }} className='instructionsBoard modal-content py-3 bg-dark shadow-lg'>
+
+                                            <div className='modal-header center p-4 mt-6 border-bottom-0' style={{ border: "none" }}> <h3 className='text-black'>Stack BUSD</h3>
+                                            </div>
+                                    <div className='modal-body'>
+                                        <div className='d-flex justify-content-between align-items-center'>
+                                            <h5 className='text-uppercase mb-4 modalMargin'>BUSD to Lock</h5>
+                                            <div className='d-flex align-items-center'>
+                                                <div className='cake-img'>
+                                                    <img src='/assets/imgs/coin.png ' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div className='d-flex align-items-center mb-1'>
+                                       <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control modalMargin staking-usd-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
                                     </div>
-                                    <div class="mb-md-5 mb-4 stake-Form w-100  position-relative">
-                                       <input value={stakeAmount} onChange={handleChangeAmount} type="number" class="form-control staking-usd-form filterCheckBtn" id="exampleFormControlInput1" placeholder="Stake Amount in BUSD" />
-                                       <div class="translate-right-middle end-5 mt-1 text-center">
-                                          {/* <p class="fw-bold mb-0 text-uppercase text-white">0</p> */}
-                                          <p class="fw-bold mb-0 text-uppercase text-white">{`~${BUSDBalance} BUSD`}</p>
-                                       </div>
-                                    </div>
-                                    <p className='text-end'>Balance: {BUSDBalance}</p>
-                                    <div className='input-slider mb-4'>
+                                    <p className='text-end modalMargin'>Balance: {BUSDBalance}</p>
+                                    <div className='input-slider mb-4 modalMargin mt-1'>
                                        <input type="range" class="form-range slider" id="customRange1" onChange={onChangeSlider} 
                                             min="0"
                                             max={`${BUSDBalance}`}
@@ -287,46 +277,66 @@ const StakingComponent = (props) => {
                                             value={stakeAmount}
                                        />
                                     </div>
-                                    <h5 className='text-uppercase mb-4'>Add Duration</h5>
+                                    <h5 className='text-uppercase mb-4 modalMargin'>Add Duration</h5>
 
-                                    <ul className='duration-week list-unstyled d-flex'>
+                                    <ul className='duration-week list-unstyled d-flex modalMargin'>
                                        <li onClick={() => onChangeWeek(14)}><a>2w</a></li>
                                        <li onClick={() => onChangeWeek(21)}><a>3w</a></li>
                                        <li onClick={() => onChangeWeek(28)}><a>4w</a></li>
                                        <li className='me-0' onClick={() => onChangeWeek(35)}><a>5w</a></li>
                                     </ul>
+
                                     <div className='d-flex align-items-center mb-5'>
-                                       <input value={stakeLength} onChange={handleChangeLength} type="number" class="form-control staking-week-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Length in Days" />
+                                       <input value={stakeLength} onChange={handleChangeLength} type="number" class="form-control modalMargin staking-week-form p-3 filterCheckBtn me-2" id="exampleFormControlInput1" placeholder="Stake Length in Days" />
                                        <span className='week'>Days</span>
                                     </div>
 
-                                    <h5 className='text-uppercase mb-4'>Lock Overview</h5>
-                                    <ul className='overview-box'>
-                                       <li>
-                                          <label>DMS to be Locked</label>
-                                          <span>{stakeAmount}</span>
-                                       </li>
-                                       <li>
-                                          <label>APY</label>
-                                          <span>{`${APR}%`}</span>
-                                       </li>
-                                       <li>
-                                          <label>Duration</label>
-                                          <span>{`${stakeLength} Days`}</span>
-                                       </li>
-                                       <li className='mb-0'>
-                                          <label>Expected ROI</label>
-                                          <span>{`$${APR}`}</span>
-                                       </li>
-                                    </ul>
-                                    <div class="modal-footer">
-                                       {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> */}
-                                       <button type="button" class="btn confirm-btn w-100" onClick={() => handleStaking()}>Confirm</button>
+                                    <h5 className='text-uppercase modalMargin'>Lock Overview</h5>
+                                    <div>
+                                        <section className='modalLock mt-2 bold fs-17 center mx-auto h-70px' style={{height: '160px'}}>
+                                        <div className='innerModal'>
+                                            <div className='row'>
+                                                <div className='col-md-8'>
+                                                    <label>DMS to be Locked</label>
+                                                </div>
+                                                <div className='col-md-2'>
+                                                    <span>{stakeAmount ? stakeAmount : '0'}</span>
+                                                </div>
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-md-8'>
+                                                    <label>APY</label>
+                                                </div>
+                                                <div className='col-md-2'>
+                                                    <span>{`${APR}%`}</span>
+                                                </div>
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-md-8'>
+                                                    <label>Duration</label>
+                                                </div>
+                                                <div className='col-md-2'>
+                                                    <span>{`${stakeLength} Days`}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </section>
                                     </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                                </div>
+                                    <div className='modal-footer border-top-0 mb-8'>
+                                        <div className='header-Connect-btn h-40px center w-100px px-2 bold cursor'
+                                            onClick={() => handleStaking()}
+                                        >
+                                            Confirm
+                                        </div>
+                                        <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                      </div>
 
                      {stakeInfoArray.length && stakeInfoArray.map((item, index) => {
