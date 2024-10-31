@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BUSDRequest, RequestByWallet } from '../../utilities/constant'
+import { BUSDRequest, BUSDRequestByWallet } from '../../utilities/constant'
 
 export const getBUSDRequest = (limit, skip) => dispatch => {
     axios
@@ -16,9 +16,10 @@ export const getBUSDRequest = (limit, skip) => dispatch => {
 }
 
 export const getBUSDRequestByWallet = (walletAddress, limit, skip) => dispatch => {
+    console.log('walletAddress::', walletAddress)
     if(walletAddress != '') {
         axios
-            .get(`${RequestByWallet}/${walletAddress}?limit=${limit}&skip=${skip}`)
+            .get(`${BUSDRequestByWallet}/${walletAddress}?limit=${limit}&skip=${skip}`)
             .then((res) => {
                 return dispatch({
                     type: 'GET_BUSD_REQUEST_BY_WALLET',

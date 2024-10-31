@@ -2,7 +2,8 @@ const FightHistory = require('../models/fightHistory');
 
 
 exports.index = async function (req, res) {
-
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
     const fightLog = await FightHistory.aggregate([
         {
             $lookup: {
@@ -26,8 +27,49 @@ exports.index = async function (req, res) {
         {
             $unwind: '$minion'
         }
-    ])
-    res.status(200).json({fightLog});
+    ]).skip(skip).limit(limit)
+    const count = await FightHistory.find().countDocuments()
+
+    res.status(200).json({fightLog, count});
+};
+
+exports.fightHistoryBySearch = async function (req, res) {
+    const type = req.params.type;
+    // const rating = req.params.rating;
+
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    const fightLog = await FightHistory.aggregate([
+        
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'minions',
+                foreignField: '_id',
+                localField: 'minionId',
+                as: 'minion'
+            }
+        },
+        {
+            $unwind: '$minion'
+        },
+        {
+            $match: { type: type } //'minion.totalRating': rating }
+        }
+    ]).skip(skip).limit(limit)
+    const count = await FightHistory.find({type: type}).countDocuments()
+
+    res.status(200).json({fightLog, count});
 };
 
 

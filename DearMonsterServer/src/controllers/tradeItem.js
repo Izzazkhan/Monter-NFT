@@ -99,7 +99,8 @@ exports.destroy = async function (req, res) {
 
 exports.inTradeItems = async function (req, res) {
     const seller = req.params.owner;
-
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
     const tradeItems = await TradeItem.aggregate([
         {
             $match: { seller }
@@ -126,13 +127,18 @@ exports.inTradeItems = async function (req, res) {
         {
             $unwind: '$monster'
         },
-    ]);
-    res.status(200).json({ tradeItems, message: "Trade items retrived successfully" });
+    ]).skip(skip).limit(limit)
+    const count = await TradeItem.find().countDocuments()
+    res.status(200).json({ tradeItems, count, message: "Trade items retrived successfully" });
 };
 
 
 
 exports.allInTrade = async function (req, res) {
+
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+
     const tradeItems = await TradeItem.aggregate([
         {
             $lookup: {
@@ -156,8 +162,123 @@ exports.allInTrade = async function (req, res) {
         {
             $unwind: '$monster'
         },
-    ]);
-    res.status(200).json({ tradeItems, message: "Trade items retrived successfully" });
+    ]).skip(skip).limit(limit)
+
+    const count = await TradeItem.find().countDocuments()
+    res.status(200).json({ tradeItems, count, message: "Trade items retrived successfully" });
+};
+
+exports.allInTradeSearch = async function (req, res) {
+
+    const parsed = JSON.parse(req.body.data)
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+
+    const tokenId = parsed.tokenId
+    const starArray = parsed.starArray
+    const order = parsed.order
+
+    let filter = {}
+    let count = 0
+    let tradeItems
+
+    if(starArray.length > 0) {
+        filter['mintedMonster.rating'] = {
+            $in: starArray
+        }
+    }
+    if(tokenId != '') {
+        filter['mintedMonster.tokenId'] = tokenId
+    }
+    
+    if(starArray.length > 0 || tokenId != '') {
+        tradeItems = await TradeItem.aggregate([
+            {
+                $lookup: {
+                    from: 'mintedmonsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonsterId',
+                    as: 'mintedMonster'
+                }
+            },
+            {
+                $unwind: '$mintedMonster'
+            },
+            {
+                $lookup: {
+                    from: 'monsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonster.monsterId',
+                    as: 'monster'
+                }
+            },
+            {
+                $unwind: '$monster'
+            },
+            {
+                $match: { ...filter }
+            },
+            
+        ]).skip(skip).limit(limit)
+        const countArray = await TradeItem.aggregate([
+            {
+                $lookup: {
+                    from: 'mintedmonsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonsterId',
+                    as: 'mintedMonster'
+                }
+            },
+            {
+                $unwind: '$mintedMonster'
+            },
+            {
+                $match: { ...filter }
+            },
+            {
+                $count: "count"
+              }
+            
+        ])
+        count = countArray.length && countArray[0].count
+    } else {
+        tradeItems = await TradeItem.aggregate([
+            {
+                $lookup: {
+                    from: 'mintedmonsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonsterId',
+                    as: 'mintedMonster'
+                }
+            },
+            {
+                $unwind: '$mintedMonster'
+            },
+            {
+                $lookup: {
+                    from: 'monsters',
+                    foreignField: '_id',
+                    localField: 'mintedMonster.monsterId',
+                    as: 'monster'
+                }
+            },
+            {
+                $unwind: '$monster'
+            },
+        ]).skip(skip).limit(limit)
+        count = await TradeItem.find().countDocuments()
+    }
+    if(order == 'asc') {
+        tradeItems.sort(function(a, b) {
+            return Number(a.price) - Number(b.price);
+        });
+    } else if(order == 'desc') {
+        tradeItems.sort(function(a, b) {
+            return Number(b.price) - Number(a.price);
+        })
+    }
+
+    res.status(200).json({ tradeItems, count, message: "Trade items retrived successfully" });
 };
 
 

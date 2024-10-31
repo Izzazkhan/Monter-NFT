@@ -1,105 +1,114 @@
 import React, { useState, useEffect } from 'react';
 import FindMonster from '../../components/TradingPost/FindMonster';
 import PostCard from '../../components/postCard/PostCard';
-import { useHistory } from 'react-router';
 import CurrenPageTitle from '../../components/common/CurrenPageTitle';
-import jsonData from '../..//data/Post.json';
-import { usePagination } from '../../hooks/usePagination';
-import { getTradeItemsAction } from './../../store/actions/auth/tradeItem';
-import { useSelector } from 'react-redux';
-import { getTradItems } from '../../store/actions/auth/login';
-import { useDispatch } from 'react-redux';
-import { baseUrl } from "../../config/config"
 import axios from 'axios'
 import { apiUrl } from '../../utils/constant';
 
+const config = {
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `xx Umaaah haaalaaa ${process.env.REACT_APP_APP_SECRET} haaalaaa Umaaah xx`
+    }
+}
+
 const TradingPost = ({ }) => {
-	const dispatch = useDispatch();
-	const history = useHistory();
 	const [data, setData] = useState([])
-	const [filteredData, setFilteredData] = useState(null)
-	const [filterObject, setFilterObject] = useState({})
+	const [filteredData, setFilteredData] = useState([])
+    const [limit] = useState(30);
+	const [skip, setSkip] = useState(0);
+    const [searchLimit] = useState(30);
+    const [searchSkip, setSearchSkip] = useState(0);
+	const [count, setCount] = useState(0)
+	const [searchCount, setSearchCount] = useState(0)
 
+	const [starArray, setStarArray] = useState([])
+	const [tokenId, setTokenId] = useState('')
+	const [order, setOrder] = useState('')
 
-	const [error, setError] = useState('');
-	const [filterValues, setFilterValues] = useState();
-	const [searchedData, setSearchedData] = useState()
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30, history.location.pathname);
-
+	const [error, setError] = useState('')
 	useEffect(() => {
-		getTradingData()
-	}, [])
+		getTradingData(skip, limit)
+	}, [skip, limit])
 
-	useEffect(() => {
-		if (Object.keys(filterObject).length > 0) {
-			let localFilterData = []
-			let filterApplied = false
+    useEffect(() => {
+        // if (searchSkip != 0) {
+            filterData(tokenId, starArray, order)
+        // }
+    }, [searchSkip, searchLimit])
 
-			if (filterObject.starsArray && filterObject.starsArray.length > 0) {
-				data.forEach(item => {
-					if (filterObject.starsArray.includes(`${item.rating}`)) {
-						localFilterData.push(item)
-						filterApplied = true
-					}
-					else {
-						filterApplied = true
-					}
-				})
-			}
+    const nextPage = () => {
+        setSkip(skip + limit)
+    }
 
-			if (filterObject.tokenId && filterObject.tokenId != '') {
-				let searchDataLocal
-				if (filterApplied) {
-					searchDataLocal = localFilterData.filter((element) => element.id == parseInt(filterObject.tokenId))
-				} else {
-					searchDataLocal = data.filter((element) => element.id == parseInt(filterObject.tokenId))
-					filterApplied = true
-				}
-				localFilterData = searchDataLocal
-			}
+    const previousPage = () => {
+        setSkip(skip - limit)
+    }
 
-			if (filterObject.order && filterObject.order != 'all') {
-				let sortBy = 'price'
-				if (filterApplied) {
-					let sortingData = localFilterData.sort((a, b) => {
-						if (filterObject.order === 'desc') {
-							return +a[sortBy] - +b[sortBy];
-						} else if (filterObject.order == 'asc') {
-							return +b[sortBy] - +a[sortBy];
-						}
-						return 0;
-					})
-					localFilterData = sortingData
-				} else {
-					filterApplied = true
-					let sortingData = data.sort((a, b) => {
-						if (filterObject.order === 'desc') {
-							return +a[sortBy] - +b[sortBy];
-						} else if (filterObject.order == 'asc') {
-							return +b[sortBy] - +a[sortBy];
-						}
-						return 0;
-					})
-					localFilterData = sortingData
-				}
+    const nextSearchPage = () => {
+        setSearchSkip(searchSkip + searchLimit)
+    }
 
-			}
+    const previousSearchPage = () => {
+        setSearchSkip(searchSkip - searchLimit)
+    }
 
-			if (filterApplied) {
-				setFilteredData(localFilterData)
-				doPagination(localFilterData)
-			}
-		} else {
-			if (data && data.length > 0) {
-				setFilteredData(data)
-				doPagination(data)
-			}
-		}
-	}, [filterObject])
+    const filterData = (tokenId, starArray, order) => {
+        const typedStarArray = starArray.map(star => Number(star))
+        
+		let formData = new URLSearchParams()
+        const params = {
+            tokenId: tokenId != '' ? Number(tokenId) : tokenId,
+            starArray: typedStarArray,
+            order: order
+        }
+        formData.append("data", JSON.stringify(params))
+        axios.post(`${apiUrl}/api/tradeItem/allInTrade?limit=${searchLimit}&skip=${searchSkip}`, formData, config)
+        .then((res) => {
+            // console.log('filter response', res)
+            if(res.data.count) {
+                setSearchCount(res.data.count)
+            }
+            let _posts = []
+            if (res.data.tradeItems && res.data.tradeItems.length > 0) {
+                res.data.tradeItems.forEach(item => {
+                    let post = {}
+                    post['onSale'] = true
+                    post['onTrading'] = true
+                    post['tradeId'] = item._id
+                    post['seller'] = item.seller
+                    post['price'] = item.price
+                    post['monsterId'] = item.monster._id
+                    post['title'] = item.monster.title
+                    post['img'] = item.monster.img
+                    post['totalRating'] = item.monster.totalRating
+                    post['values'] = {}
+                    post['id'] = item.mintedMonster.tokenId
+                    post['owner'] = item.mintedMonster.owner
+                    post['rating'] = item.mintedMonster.rating
+                    post['mintedId'] = item.mintedMonster._id
+                    post.values['Level'] = item.mintedMonster.values.Level
+                    post.values['EXP'] = item.mintedMonster.values.EXP
+                    post.values['Element'] = 'None'
+                    post.values['Energy'] = item.mintedMonster.values.Energy
+                    post.values['OwnerID'] = `${item.seller.substring(0, 4)}...${item.seller.slice(-4)}`
+                    _posts.push(post);
+                })
+            }
+            setFilteredData(_posts)
+        })
+        .catch((e) => {
+            console.log(e)
+            setError(e)
+        })
+    }
 
-	const getTradingData = async () => {
-		axios.get(`${apiUrl}/api/tradeItem/allInTrade`)
+	const getTradingData = async (skip, limit) => {
+		axios.get(`${apiUrl}/api/tradeItem/allInTrade?limit=${limit}&skip=${skip}`)
 			.then((res) => {
+                if(res.data.count) {
+					setCount(res.data.count)
+				}
 				let _posts = []
 				if (res.data.tradeItems && res.data.tradeItems.length > 0) {
 					res.data.tradeItems.forEach(item => {
@@ -127,63 +136,44 @@ const TradingPost = ({ }) => {
 					})
 				}
 				setData(_posts)
-				doPagination(_posts)
-
 			})
 			.catch((e) => {
 				console.log(e)
+                setError(e)
 			})
 	}
 
 	const clearFilterData = () => {
-		let tempObj = { ...filterObject }
-		delete tempObj.starsArray
-		setFilterObject(tempObj)
+        setStarArray([])
+        filterData(tokenId, [], order)
 	}
 
-	const sortData = (order, sortBy = 'price') => {
-		if (order != 'all') {
-			setFilterObject({ ...filterObject, order })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.order
-			setFilterObject(tempObj)
-		}
+	const sortData = (order) => {
+        setOrder(order)
+        filterData(tokenId, starArray, order)
+		// if (order != 'all') {
+		// 	setFilterObject({ ...filterObject, order })
+		// } else {
+		// 	let tempObj = { ...filterObject }
+		// 	delete tempObj.order
+		// 	setFilterObject(tempObj)
+		// }
 	}
-
-    console.log('filteredData', pageData, currentPage, totalPages)
-
 
 	const searchData = (tokenId) => {
-		if (tokenId != '') {
-			setFilterObject({ ...filterObject, tokenId })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.tokenId
-
-			setFilterObject(tempObj)
-		}
+        setTokenId(tokenId)
+        filterData(tokenId, starArray, order)
 	}
 
 	const clearSearchData = () => {
-		// setFilterObject({})
-		let tempObj = { ...filterObject }
-		delete tempObj.tokenId
-		setFilterObject(tempObj)
+        setTokenId('')
+        filterData('', starArray, order)
 	}
 
 	const filterDataByStar = (starsArray) => {
-		if (starsArray.length > 0) {
-			setFilterObject({ ...filterObject, starsArray })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.starsArray
-
-			setFilterObject(tempObj)
-		}
+        setStarArray(starsArray)
+        filterData(tokenId, starsArray, order)
 	}
-
-
 
 	return (
 		<div>
@@ -201,63 +191,90 @@ const TradingPost = ({ }) => {
 					</div>
 					<div className='col-lg-9 col-md-7 col-12'>
 						<div className='px-md-0'>
-
 							{
-								filteredData ?
-									<section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
-										{error && filteredData?.length === 0 ? (
-											<div className='col-12 center w-100 text-white mt-5'>
-												<h3>{error}</h3>
-											</div>
-										) : (
-											pageData.length > 0 ? pageData.map((post) => {
-												return (
-													<PostCard
-														post={post}
-														stepImg='/assets/imgs/droganBord.png'
-														className='mb-9'
-													/>
-												);
-											}) : ""
-										)}
-									</section>
-									:
-									<section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
-										{error && data?.length === 0 ? (
-											<div className='col-12 center w-100 text-white mt-5'>
-												<h3>{error}</h3>
-											</div>
-										) : (
-											pageData.length > 0 ? pageData.map((post) => {
-												return (
-													<PostCard
-														post={post}
-														stepImg='/assets/imgs/droganBord.png'
-														className='mb-9'
-													/>
-												);
-											}) : ""
-										)}
-									</section>
-
+								(tokenId != '' || starArray.length > 0 || order != '') ?
+                                <>
+                                <section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
+                                    {error && filteredData?.length === 0 ? (
+                                        <div className='col-12 center w-100 text-white mt-5'>
+                                            <h3>{error}</h3>
+                                        </div>
+                                    ) : (
+                                        filteredData.length > 0 ? filteredData.map((post) => {
+                                            return (
+                                                <PostCard
+                                                    post={post}
+                                                    stepImg='/assets/imgs/droganBord.png'
+                                                    className='mb-9'
+                                                />
+                                            );
+                                        }) : ""
+                                    )}
+                                </section>
+                                </>
+                                :
+                                <>
+                                <section className='row row-cols-lg-3  gx-8 mt-9 	mt-md-0 '>
+                                    {error && data?.length === 0 ? (
+                                        <div className='col-12 center w-100 text-white mt-5'>
+                                            <h3>{error}</h3>
+                                        </div>
+                                    ) : (
+                                        data.length > 0 ? data.map((post) => {
+                                            return (
+                                                <PostCard
+                                                    post={post}
+                                                    stepImg='/assets/imgs/droganBord.png'
+                                                    className='mb-9'
+                                                />
+                                            );
+                                        }) : ""
+                                    )}
+                                </section>
+                                </>
 							}
-
-
 						</div>
-						{'error' && pageData?.length == 0 ? (
-							''
-						) : (
-							<footer className='center pb-8 pt-4'>
-								<img
-									src='/assets/imgs/ArrowLeft.png '
-									className='cursor'
-									onClick={previousPage}
-								/>
-								<p className='text-white fs-22 mx-5'>
-									{currentPage}/{totalPages}
-								</p>
-								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
-							</footer>
+						{
+                        (tokenId != '' || starArray.length > 0 || order != '') ?
+                        (
+                            <>
+                            {filteredData.length > 0 ?
+                                <footer className='center pb-8 pt-4'>
+                                    <img
+                                        src='/assets/imgs/ArrowLeft.png '
+                                        className={'cursor'}
+                                        onClick={(searchSkip / searchLimit) + 1 != 1 ? previousSearchPage : undefined}
+                                    />
+                                    <p className='text-white fs-22 mx-5'>
+                                        {(searchSkip / searchLimit) + 1}/{Math.ceil(searchCount / searchLimit)}
+                                    </p>
+                                    <img src='/assets/imgs/ArrowRight.png' 
+                                        className={'cursor'}
+                                        onClick={(searchSkip / searchLimit) + 1 != Math.ceil(searchCount / searchLimit) ? nextSearchPage : undefined} 
+                                    />
+                                </footer> : ""
+                            }
+                            </>
+                        )
+                        : (
+                            <>
+                            {data.length > 0 ?
+                                <footer className='center pb-8 pt-4'>
+                                    <img
+                                        src='/assets/imgs/ArrowLeft.png '
+                                        className={'cursor'}
+                                        onClick={(skip / limit) + 1 != 1 ? previousPage : undefined}
+                                    />
+                                    <p className='text-white fs-22 mx-5'>
+                                        {(skip / limit) + 1}/{Math.ceil(count / limit)}
+                                    </p>
+                                    <img src='/assets/imgs/ArrowRight.png' 
+                                        className={'cursor'}
+                                        onClick={(skip / limit) + 1 != Math.ceil(count / limit) ? nextPage  : undefined} 
+                                    />
+                                </footer> : ""
+                            }
+                            </>
 						)}
 					</div>
 				</div>

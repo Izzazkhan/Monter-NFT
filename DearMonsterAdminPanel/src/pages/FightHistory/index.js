@@ -1,7 +1,8 @@
 
 import React, {useState, useEffect} from 'react'
 import "../../App.css";
-import { getWithdrawRequest } from '../../redux/fightHistory/action';
+import { getWithdrawRequest, getFigthHistoryBySearch } from '../../redux/fightHistory/action';
+
 import { connect } from 'react-redux';
 import { Modal, Button, Spinner } from "react-bootstrap"
 import { usePagination } from '../../hooks/userPagination';
@@ -16,103 +17,78 @@ const star_mappings = {
 }
 
 function WithdrawRequest(props) {
-
-    const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
-    const [winRate, setWinRate] = useState(0)
+    const [limit] = useState(30);
+    const [skip, setSkip] = useState(0);
+    const [searchLimit] = useState(30);
+    const [searchSkip, setSearchSkip] = useState(0);
     const [filteredData, setFilteredData] = useState(null)
-	const [filterObject, setFilterObject] = useState({})
+    const [loading, setLoading] = useState(true)
     const [state, setState] = useState({monsterType: '', rating: 1})
 
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } = usePagination(filteredData != null ? filteredData : data, 30)
+    useEffect(() => {
+        props.getWithdrawRequest(limit, skip)
+    }, [skip, limit])
 
     useEffect(() => {
-        props.getWithdrawRequest()
-    }, [])
+        if (searchSkip != 0) {
+            props.getFigthHistoryBySearch(state.monsterType, searchLimit, searchSkip)
+        }
+    }, [searchSkip, searchLimit])
 
     useEffect(() => {
-        setLoading(true)
-        const lastFights = props.fightHistory.fightHistory.slice(0, 500) // last 500 fights
-        const filtered = lastFights.length && lastFights.filter(item => item.fightStatus === 'win')
-        const calculatedWinRate = (filtered.length / lastFights.length) * 100
-        setWinRate(calculatedWinRate)
-        setData(props.fightHistory.fightHistory)
-        doPagination(props.fightHistory.fightHistory)
-    }, [props])
+        if (state.monsterType != '') {
+            setFilteredData(props.fightHistory.fightHistory)
+        } else {
+            setFilteredData(null)
+            setData(props.fightHistory.fightHistory)
+        }
+
+    }, [props, searchSkip, searchLimit])
 
     useEffect(() => {
-        if(data.length) {
+        if (data.length) {
             setLoading(false)
         }
     }, [data])
 
-    useEffect(() => {
-        setLoading(true)
-		if (Object.keys(filterObject).length > 0) {
-			let localFilterData = []
-			let filterApplied = false
+    const nextPage = () => {
+        setSkip(skip + limit)
+    }
 
-			if (filterObject.monsterType && filterObject.monsterType != '') {
-				let searchDataLocal
-				if (filterApplied) {
-					searchDataLocal = localFilterData.filter((element) => element.type == filterObject.monsterType)
-				} else {
-					searchDataLocal = data.filter((element) => element.type == filterObject.monsterType)
-					filterApplied = true
-				}
-				localFilterData = searchDataLocal
-			}
+    const previousPage = () => {
+        setSkip(skip - limit)
+    }
 
-            if (filterObject.rating && filterObject.rating != '') {
-				let searchDataLocal
-				if (filterApplied) {
-					searchDataLocal = localFilterData.filter((element) => element.rating && element.rating == parseInt(star_mappings[filterObject.rating]))
-				} else {
-					searchDataLocal = data.filter((element) => element.rating && element.rating == parseInt(star_mappings[filterObject.rating]))
-					filterApplied = true
-				}
-				localFilterData = searchDataLocal
-			}
+    const nextSearchPage = () => {
+        setSearchSkip(searchSkip + searchLimit)
+    }
 
-			if (filterApplied) {
-				setFilteredData(localFilterData)
-				doPagination(localFilterData)
-                setLoading(false)
-			}
-		} else {
-			if (data && data.length > 0) {
-				setFilteredData(data)
-				doPagination(data)
-                setLoading(false)
-			}
-		}
-	}, [filterObject])
+    const previousSearchPage = () => {
+        setSearchSkip(searchSkip - searchLimit)
+    }
 
     const onChangeValue = (e) => {
         setState({...state, monsterType: e.target.value})
-        const monsterType = e.target.value
-        if (monsterType != '') {
-			setFilterObject({ ...filterObject, monsterType })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.monsterType
-
-			setFilterObject(tempObj)
-		}
+        if(e.target.value != '') {
+            props.getFigthHistoryBySearch(e.target.value, searchLimit, searchSkip)
+        } else {
+            props.getWithdrawRequest(limit, skip)
+        }
     }
 
-    const onChangerating = (e) => {
-        setState({...state, rating: star_mappings[e.target.value]})
-        const rating = e.target.value
-        if (rating != '') {
-			setFilterObject({ ...filterObject, rating })
-		} else {
-			let tempObj = { ...filterObject }
-			delete tempObj.rating
+    // const onChangerating = (e) => {
+    //     setState({...state, rating: star_mappings[e.target.value]})
+    //     const rating = e.target.value
+    //     if (rating != '') {
+	// 		setFilterObject({ ...filterObject, rating })
+	// 	} else {
+	// 		let tempObj = { ...filterObject }
+	// 		delete tempObj.rating
 
-			setFilterObject(tempObj)
-		}
-    }
+	// 		setFilterObject(tempObj)
+	// 	}
+    // }
 
     return (
         <>
@@ -128,12 +104,8 @@ function WithdrawRequest(props) {
                             placeholder={`Enter Monster Type`}
                             />
                             </div>
-                            <div className={`col-md-6`}>
+                            {/* <div className={`col-md-6`}>
                             <label className="control-label">{`Star Rating`}</label>
-                            {/* <input type="text" required="required" className="form-control" onChange={onChangeValue}
-                            name={'rating'} value={state.rating}
-                            placeholder={`Enter Star Rating`}
-                            /> */}
                             <select name='rating' className='form-control  w-100px' onChange={onChangerating}>
 										<option>Star 1</option>
 										<option>Star 2</option>
@@ -141,7 +113,7 @@ function WithdrawRequest(props) {
 										<option>Star 4</option>
 										<option>Star 5</option>
 									</select>
-                            </div>
+                            </div> */}
                         </div>
                         <table className="table">
                             <thead className="table__head">
@@ -155,74 +127,105 @@ function WithdrawRequest(props) {
 
                             <tbody className="table__body">
 
-                                {loading ? <Spinner animation="border" /> :
-                                filteredData ?
-                                <>
-										{filteredData?.length === 0 ? (
-											<div className='text-center'>
-												<h3>{'No Data'}</h3>
-											</div>
-										) : (
-											pageData.length > 0 ? pageData.map((data, index) => {
-												return (
-													<tr key={(index + 1)}>
-                                                        <td>{`${data.monster.title}`}</td>
+                                { loading ? <Spinner animation="border" /> :
+                                    filteredData ?
+                                        <>
+                                            {filteredData?.length === 0 ? (
+                                                <div className='text-center'>
+                                                    <h3>{'No Data'}</h3>
+                                                </div>
+                                            ) : (
+                                                filteredData.length > 0 ? filteredData.map((data, index) => {
+                                                    return (
+                                                        <tr key={(index + 1)}>
+                                                            <td>{`${data.monster.title}`}</td>
                                                         <td>{data.minion.title}</td>
                                                         <td>{(data.type)}</td>
                                                         <td>{(data.fightStatus)}</td>
-                                                    </tr>
-												);
-											}) : ""
-										)}
-									</> : 
-                                    <>
-                                    {data?.length === 0 ? (
-											<div className='text-center'>
-												<h3>{'No Data'}</h3>
-											</div>
-										) : (
-											pageData.length > 0 ? pageData.map((data, index) => {
-												return (
-													<tr key={(index + 1)}>
-                                                        <td>{`${data.monster.title}`}</td>
+                                                        </tr>
+                                                    );
+                                                }) : ""
+                                            )}
+                                        </>
+                                        :
+                                        <>
+                                            {data?.length === 0 ? (
+                                                <div className='text-center'>
+                                                    <h3>{'No Data'}</h3>
+                                                </div>
+                                            ) : (
+                                                data.length > 0 ? data.map((data, index) => {
+                                                    return (
+                                                        <tr key={(index + 1)}>
+                                                             <td>{`${data.monster.title}`}</td>
                                                         <td>{data.minion.title}</td>
                                                         <td>{(data.type)}</td>
                                                         <td>{(data.fightStatus)}</td>
-                                                    </tr>
-												);
-											}) : ""
-										)}
-                                    </>
-                                
+                                                        </tr>
+                                                    );
+                                                }) : ""
+                                            )}
+                                        </>
+
                                 }
 
                             </tbody>
                         </table>
-                        {pageData?.length == 0 ? (
-							''
-						) : (
+                        {filteredData && filteredData?.length == 0 ? (
+                            ''
+                        ) : (filteredData && filteredData.length) ?
+
                             <div className="row">
                                 <div className='col-md-4'>
-                                <img
-									src='/assets/imgs/ArrowLeft.png'
-                                    style={{cursor: 'pointer'}}
-									onClick={previousPage}
-								/>
+                                    {(searchSkip / limit) + 1 != 1 &&
+                                        <img
+                                            src='/assets/imgs/ArrowLeft.png'
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={previousSearchPage}
+                                        />}
                                 </div>
                                 <div className='col-md-4'>
-                                <p className='col-md-2'>
-									{currentPage}/{totalPages}
-								</p>
+                                    <p className='col-md-2'>
+                                        {(searchSkip / limit) + 1}/{Math.ceil(props.fightHistory.count / limit)}
+                                    </p>
                                 </div>
                                 <div className='col-md-4'>
-                                <img src='/assets/imgs/ArrowRight.png' 
-                                    style={{cursor: 'pointer'}}
-                                    className='col-md-4' onClick={nextPage} />
+                                    {(searchSkip / limit) + 1 != Math.ceil(props.fightHistory.count / limit) &&
+                                        <img src='/assets/imgs/ArrowRight.png'
+                                            style={{ cursor: 'pointer' }}
+                                            className='col-md-4' onClick={nextSearchPage} />
+                                    }
+
                                 </div>
-                                
+
+                            </div> : data?.length == 0 ? '' : (
+                                <div className="row">
+                                    <div className='col-md-4'>
+                                        {(skip / limit) + 1 != 1 &&
+                                            <img
+                                                src='/assets/imgs/ArrowLeft.png'
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={previousPage}
+                                            />}
+                                    </div>
+                                    <div className='col-md-4'>
+                                        <p className='col-md-2'>
+                                            {(skip / limit) + 1}/{Math.ceil(props.fightHistory.count / limit)}
+                                        </p>
+                                    </div>
+                                    <div className='col-md-4'>
+                                        {(skip / limit) + 1 != Math.ceil(props.fightHistory.count / limit) &&
+                                            <img src='/assets/imgs/ArrowRight.png'
+                                                style={{ cursor: 'pointer' }}
+                                                className='col-md-4' onClick={nextPage} />
+                                        }
+
+                                    </div>
+
                                 </div>
-							
-						)}
+
+
+                            )}
                     </div>
                 </div>
             </div>
@@ -237,4 +240,4 @@ const mapStateToProps = state => ({
     fightHistory: state.FightHistoryReducer
 });
 
-export default connect(mapStateToProps, { getWithdrawRequest })(WithdrawRequest); 
+export default connect(mapStateToProps, { getWithdrawRequest, getFigthHistoryBySearch })(WithdrawRequest); 

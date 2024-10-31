@@ -9,6 +9,9 @@ const router = express.Router();
 //INDEX
 router.get('/', FightHistory.index);
 
+//FIGHT BY TYPE
+router.get('/:type', FightHistory.fightHistoryBySearch);
+
 //SAVE
 router.post('/', FightHistory.store);
 

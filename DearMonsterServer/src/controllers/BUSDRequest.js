@@ -32,7 +32,6 @@ exports.index = async function (req, res) {
     const skip = parseInt(req.query.skip);
     const count = await BUSDRequest.find().countDocuments()
     const BUSDRequest_ = await BUSDRequest.find({}).skip(skip).limit(limit)
-    console.log('BUSDRequest_', BUSDRequest_)
     res.status(200).json({ BUSDRequest_, count });
 };
 
@@ -51,9 +50,9 @@ exports.requestByWallet = async function (req, res) {
     const skip = parseInt(req.query.skip);
     const count = await BUSDRequest.find({ requesterAddress: wallet }).countDocuments()
 
-    const BUSDRequest = await BUSDRequest.find({ requesterAddress: wallet }).skip(skip).limit(limit);
-    console.log(BUSDRequest)
-    res.status(200).json({ BUSDRequest, count });
+    const BUSDRequest_ = await BUSDRequest.find({ requesterAddress: wallet }).skip(skip).limit(limit);
+    // console.log(BUSDRequest)
+    res.status(200).json({ BUSDRequest: BUSDRequest_, count });
 };
 
 

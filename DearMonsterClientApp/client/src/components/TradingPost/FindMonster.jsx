@@ -110,7 +110,7 @@ const FindMonster = ({
 				<select
 					className='form-select w-75 mt-1'
 					onChange={(e) => {
-						sortData(e.target.value, 'price');
+						sortData(e.target.value);
 					}}
 				>
 					<option selected value='all'>

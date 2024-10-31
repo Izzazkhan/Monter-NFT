@@ -18,15 +18,12 @@ const Inventory = () => {
 	const [posts, setPosts] = React.useState([]);
 	const { userId } = useSelector((state) => state.auth);
 	const [account, setAccount] = useState();
-	const [paths, setPaths] = useState([]);
-	const [attributes, setAttributes] = useState([]);
 	const dispatch = useDispatch();
-	const history = useHistory();
-	const { pageData, currentPage, previousPage, nextPage, totalPages, doPagination } =
-		usePagination(posts, 30, history.location.pathname);
+	const [limit] = useState(30);
+	const [skip, setSkip] = useState(0);
+	const [count, setCount] = useState(0);
 
 	const handleConnect = async () => {
-
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -72,11 +69,11 @@ const Inventory = () => {
 	};
 
 	useEffect(() => {
-		getCave();
-	}, [userId])
+		getCave(skip, limit);
+	}, [userId, skip, limit])
 
 
-	const getCave = async () => {
+	const getCave = async (skip, limit) => {
 		if (window.ethereum) {
 			window.web3 = new Web3(window.ethereum)
 			await window.ethereum.enable();
@@ -91,15 +88,25 @@ const Inventory = () => {
 		// Load account
 		let accounts = await web3.eth.getAccounts()
 		setAccount(accounts[0]);
-		getData(accounts[0]);
+		getData(accounts[0], skip, limit);
 
 	};
 
-	function getData(owner) {
-		let _posts = []
-		axios.get(`${apiUrl}/api/tradeItem/inTradeItems/` + owner)
-			.then((res) => {
+	const nextPage = () => {
+        setSkip(skip + limit)
+    }
 
+    const previousPage = () => {
+        setSkip(skip - limit)
+    }
+
+	function getData(owner, skip, limit) {
+		let _posts = []
+		axios.get(`${apiUrl}/api/tradeItem/inTradeItems/${owner}?limit=${limit}&skip=${skip}`)
+			.then((res) => {
+				if(res.data.count) {
+					setCount(res.data.count)
+				}
 				if (res.data.tradeItems && res.data.tradeItems.length > 0) {
 					res.data.tradeItems.forEach(item => {
 						let post = {}
@@ -123,7 +130,6 @@ const Inventory = () => {
 					})
 				}
 				setPosts(_posts)
-				doPagination(_posts);
 			})
 			.catch((e) => {
 				console.log("Error ----------------")
@@ -140,7 +146,7 @@ const Inventory = () => {
 					<div className='container'>
 						<div className='center'>
 							{
-								pageData.length < 1 ? (
+								posts.length < 1 ? (
 									<p className='text-white  mt-9 fs-23 bg-dark bg-opacity-50 p-3 rounded-3 w-auto'>
 										You Don't have any item in trading
 									</p>
@@ -173,25 +179,28 @@ const Inventory = () => {
 				userId ?
 					<div className='container mt-10 px-md-auto px-8'>
 						<div className='row row-cols-lg-3 row-cols-md-2 gx-10'>
-							{pageData.map((post) => {
+							{posts.map((post) => {
 								return (
 									<PostCard getData={getData} account={account} post={post} stepImg='/assets/imgs/droganBord.png' className='mb-9' />
 								);
 							})}
 						</div>
-						{pageData.length == 0 ? (
+						{posts.length == 0 ? (
 							''
 						) : (
 							<footer className='center pb-8 pt-4'>
 								<img
 									src='/assets/imgs/ArrowLeft.png '
-									className='cursor'
-									onClick={previousPage}
+									className={'cursor'}
+									onClick={(skip / limit) + 1 != 1 ? previousPage : undefined}
 								/>
 								<p className='text-white fs-22 mx-5'>
-									{currentPage}/{totalPages}
+									{(skip / limit) + 1}/{Math.ceil(count / limit)}
 								</p>
-								<img src='/assets/imgs/ArrowRight.png' className='cursor' onClick={nextPage} />
+								<img src='/assets/imgs/ArrowRight.png' 
+									className={'cursor'}
+									onClick={(skip / limit) + 1 != Math.ceil(count / limit) ? nextPage : undefined} 
+								/>
 							</footer>
 						)}
 					</div>

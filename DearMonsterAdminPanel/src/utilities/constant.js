@@ -1,8 +1,8 @@
-let url = "https://www.dearmonsters.io"
-// let url = "http://localhost:4000"
+// let url = "https://www.dearmonsters.io"
+let url = "http://localhost:4000"
 
-// export const appEnv = 'test'
-export const appEnv = 'live'
+export const appEnv = 'test'
+// export const appEnv = 'live'
 
 export const addressList = {
     tokenAddress: '0x9bfd1348cf574e3eb2b114cc18374b09ad012c69',

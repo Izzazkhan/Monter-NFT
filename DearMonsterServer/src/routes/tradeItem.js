@@ -9,6 +9,8 @@ const router = express.Router();
 
 // const upload = multer().single('profileImage');
 
+router.post('/allInTrade', TradeItem.allInTradeSearch);
+
 router.get('/allInTrade', TradeItem.allInTrade);
 
 router.get('/inTradeItems/:owner', TradeItem.inTradeItems);

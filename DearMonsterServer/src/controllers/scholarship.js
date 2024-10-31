@@ -21,6 +21,8 @@ exports.store = async (req, res) => {
 
 exports.index = async function (req, res) {
     const { owner } = req.params;
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
 
     let mintedMonster = await MintedMonster.aggregate([
         {
@@ -52,16 +54,96 @@ exports.index = async function (req, res) {
                 localField: 'scholarId',
                 as: 'scholarshipsItems'
             }
+        }
+    ]).skip(skip).limit(limit)
+
+    const count = await MintedMonster.find({owner: owner}).countDocuments()
+    res.status(200).json({ mintedMonster, count, message: "Minted monsters retrived successfully" });
+}
+
+exports.onScholar = async function (req, res) {
+    console.log('onScholar')
+    const { owner } = req.params;
+    const limit = parseInt(req.query.limit); 
+    const skip = parseInt(req.query.skip);
+    let mintedMonster = await MintedMonster.aggregate([
+        {
+            $match: { owner }
+        },
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'tradeitems',
+                foreignField: 'mintedMonsterId',
+                localField: '_id',
+                as: 'tradeitem'
+            }
+        },
+        {
+            $lookup: {
+                from: 'scholarships',
+                foreignField: '_id',
+                localField: 'scholarId',
+                as: 'scholarshipsItems'
+            }
+        },
+        {
+            $unwind: '$scholarshipsItems'
+        },
+    ]).skip(skip).limit(limit)
+    const countArray = await MintedMonster.aggregate([
+        {
+            $match: { owner }
+        },
+        {
+            $lookup: {
+                from: 'monsters',
+                foreignField: '_id',
+                localField: 'monsterId',
+                as: 'monster'
+            }
+        },
+        {
+            $unwind: '$monster'
+        },
+        {
+            $lookup: {
+                from: 'tradeitems',
+                foreignField: 'mintedMonsterId',
+                localField: '_id',
+                as: 'tradeitem'
+            }
+        },
+        {
+            $lookup: {
+                from: 'scholarships',
+                foreignField: '_id',
+                localField: 'scholarId',
+                as: 'scholarshipsItems'
+            }
+        },
+        {
+            $unwind: '$scholarshipsItems'
         },
     ])
 
-    res.status(200).json({ mintedMonster, message: "Minted monsters retrived successfully" });
+    const count = countArray.length
+    res.status(200).json({ mintedMonster, count, message: "Minted monsters retrived successfully" });
 }
 
 exports.scholarItems = async function (req, res) {
     const { scholar } = req.params;
     
-
     let mintedMonster = await MintedMonster.aggregate([
         {
             $lookup: {

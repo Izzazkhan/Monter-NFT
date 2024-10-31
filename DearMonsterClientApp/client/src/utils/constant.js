@@ -1,8 +1,8 @@
-// export const appEnv = 'test'
-export const appEnv = 'live'
+export const appEnv = 'test'
+// export const appEnv = 'live'
 
-export const apiUrl = 'https://www.dearmonsters.io'
-// export const apiUrl = 'http://localhost:4000'
+// export const apiUrl = 'https://www.dearmonsters.io'
+export const apiUrl = 'http://localhost:4000'
 
 export const uploadsUrl = `${apiUrl}/`
 
